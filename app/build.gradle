@@ -18,11 +18,37 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        release {
+            def properties = new Properties()
+            def inputStream = project.rootProject.file('local.properties').newDataInputStream()
+            properties.load( inputStream )
+
+            File strFile = new File (properties.getProperty('fileDir'))
+            storeFile file ( strFile )
+            storePassword properties.getProperty('storePassword')
+            keyAlias properties.getProperty('keyAlias')
+            keyPassword properties.getProperty('keyPassword')
+
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "$rootProject.name-v${variant.versionName}(${variant.versionCode})-${variant.buildType.name}.apk"
+        }
+    }
+
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
