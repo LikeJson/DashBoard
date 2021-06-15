@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DashBoard</string>
+    <string name="title_ip_check">IP 检查</string>
+    <string name="title_web_dashboard">网页面板</string>
+</resources>
