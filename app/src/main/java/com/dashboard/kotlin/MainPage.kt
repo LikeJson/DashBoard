@@ -72,18 +72,16 @@ class MainPage : Fragment() {
         toolbar.title = getString(R.string.app_name)
 
         menu_ip_check.setOnClickListener {
-            clashStatusClass.stopGetTraffic()
 
             val navController = it.findNavController()
-            val bundle = Bundle()
-            bundle.putString("URL","https://ip.skk.moe/")
-            navController.navigate(R.id.webViewPage,bundle)
+//            val bundle = Bundle()
+//            bundle.putString("URL","https://ip.skk.moe/")
+            navController.navigate(R.id.ipCheckPage)
 
         }
 
 
         menu_web_dashboard.setOnClickListener {
-            clashStatusClass.stopGetTraffic()
 
 
             val navController = it.findNavController()
@@ -94,4 +92,10 @@ class MainPage : Fragment() {
 
     }
 
+
+    override fun onDestroyView() {
+        clashStatusClass.stopGetTraffic()
+        Log.d("Destroy","MainPageDestroy")
+        super.onDestroyView()
+    }
 }

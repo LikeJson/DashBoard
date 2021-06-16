@@ -15,4 +15,9 @@
         android:name="com.dashboard.kotlin.WebViewPage"
         android:label="fragment_webview_page"
         tools:layout="@layout/fragment_webview_page" />
+    <fragment
+        android:id="@+id/ipCheckPage"
+        android:name="com.dashboard.kotlin.ipCheckPage"
+        android:label="fragment_ip_check_page"
+        tools:layout="@layout/fragment_ip_check_page" />
 </navigation>
