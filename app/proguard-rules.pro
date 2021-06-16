@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+#####方法名等混淆指定配置
+-obfuscationdictionary dictionary.txt
+#####类名混淆指定配置
+-classobfuscationdictionary dictionary.txt
+#####包名混淆指定配置
+-packageobfuscationdictionary dictionary.txt
