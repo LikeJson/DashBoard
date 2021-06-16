@@ -7,8 +7,8 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class clashStatus {
-    public var trafficThreadFlag: Boolean = true
-    public var trafficRawText: String = "{\"up\":\"0\",\"down\":\"0\"}"
+    var trafficThreadFlag: Boolean = true
+    var trafficRawText: String = "{\"up\":\"0\",\"down\":\"0\"}"
 
 
     fun runStatus(): Boolean {
@@ -17,7 +17,7 @@ class clashStatus {
         return true
     }
 
-    fun getTraffic(): Unit {
+    fun getTraffic() {
         trafficThreadFlag = true
         Thread{
             var conn: HttpURLConnection? =null
@@ -35,7 +35,7 @@ class clashStatus {
             }
         }.start()
     }
-    fun stopGetTraffic(): Unit {
+    fun stopGetTraffic() {
         trafficThreadFlag = false
     }
 
