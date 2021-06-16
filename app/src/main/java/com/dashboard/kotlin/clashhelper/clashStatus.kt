@@ -18,6 +18,7 @@ class clashStatus {
     }
 
     fun getTraffic(): Unit {
+        trafficThreadFlag = true
         Thread{
             var conn: HttpURLConnection? =null
             try {
