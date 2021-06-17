@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Default"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:scrollbars="none"
     tools:context=".ipCheckPage">
 
-    <include layout="@layout/toolbar"/>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:textAppearance="?attr/textAppearanceHeadline6"
-        android:text="IP 地址查询" />
-
-    <ScrollView
+    <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         style="@style/Default"
-        android:scrollbars="none">
-        <LinearLayout
-            style="@style/Default"
-            android:orientation="vertical">
+        android:orientation="vertical">
+
+        <include layout="@layout/toolbar" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="IP 地址查询"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+
+
 
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/DefaultCard"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#CCCACA">
+                app:strokeColor="#CCCACA"
+                app:strokeWidth="1dp">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Default"
                     android:layout_gravity="center"
                     android:orientation="vertical">
@@ -43,46 +46,46 @@
 
                     <TextView
                         style="@style/IpCheckDefaultCardText"
-                        android:text="从国内查询 (Sukka)"
-                        android:gravity="center"
                         android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="从国内查询 (Sukka)"
                         android:textAppearance="?attr/textAppearanceHeadline6" />
 
                     <TextView
                         style="@style/IpCheckDefaultCardText"
-                        android:text="数据来自 Sukka API"
-                        android:textSize="10sp"
-                        android:textColor="#BDBDBD"
-                        android:gravity="center"
                         android:layout_gravity="center"
-                        android:textAppearance="?attr/textAppearanceHeadline6"/>
+                        android:gravity="center"
+                        android:text="数据来自 Sukka API"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="#BDBDBD"
+                        android:textSize="10sp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
-                        android:background="#CCCACA"/>
+                        android:background="#CCCACA" />
 
                     <TextView
                         android:id="@+id/sukka_api_result"
                         style="@style/IpCheckDefaultCardText"
-                        android:textSize="10sp"
-                        android:gravity="center"
                         android:layout_gravity="center"
-                        android:textAppearance="?attr/textAppearanceHeadline6"/>
+                        android:gravity="center"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textSize="10sp" />
 
 
-
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </com.google.android.material.card.MaterialCardView>
+
             <com.google.android.material.card.MaterialCardView
                 style="@style/DefaultCard"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#CCCACA">
+                app:strokeColor="#CCCACA"
+                app:strokeWidth="1dp">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Default"
                     android:layout_gravity="center"
                     android:orientation="vertical">
@@ -90,47 +93,46 @@
 
                     <TextView
                         style="@style/IpCheckDefaultCardText"
-                        android:text="从国内查询 (搜狐)"
-                        android:gravity="center"
                         android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="从国内查询 (搜狐)"
                         android:textAppearance="?attr/textAppearanceHeadline6" />
 
                     <TextView
                         style="@style/IpCheckDefaultCardText"
-                        android:text="数据来自 IPIP.net"
-                        android:textSize="10sp"
-                        android:textColor="#BDBDBD"
-                        android:gravity="center"
                         android:layout_gravity="center"
-                        android:textAppearance="?attr/textAppearanceHeadline6"/>
+                        android:gravity="center"
+                        android:text="数据来自 IPIP.net"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="#BDBDBD"
+                        android:textSize="10sp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
-                        android:background="#CCCACA"/>
+                        android:background="#CCCACA" />
 
                     <TextView
                         android:id="@+id/ipip_net_result"
                         style="@style/IpCheckDefaultCardText"
-                        android:textSize="10sp"
-                        android:gravity="center"
                         android:layout_gravity="center"
-                        android:textAppearance="?attr/textAppearanceHeadline6"/>
+                        android:gravity="center"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textSize="10sp" />
 
 
-
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
                 style="@style/DefaultCard"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#CCCACA">
+                app:strokeColor="#CCCACA"
+                app:strokeWidth="1dp">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Default"
                     android:layout_gravity="center"
                     android:orientation="vertical">
@@ -168,15 +170,16 @@
                         android:textSize="10sp" />
 
 
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </com.google.android.material.card.MaterialCardView>
+
             <com.google.android.material.card.MaterialCardView
                 style="@style/DefaultCard"
                 app:cardElevation="0dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="#CCCACA">
+                app:strokeColor="#CCCACA"
+                app:strokeWidth="1dp">
 
-                <LinearLayout
+                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Default"
                     android:layout_gravity="center"
                     android:orientation="vertical">
@@ -184,46 +187,265 @@
 
                     <TextView
                         style="@style/IpCheckDefaultCardText"
-                        android:text="从国外查询 (Sukka API)"
-                        android:gravity="center"
                         android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="从国外查询 (Sukka API)"
                         android:textAppearance="?attr/textAppearanceHeadline6" />
 
                     <TextView
                         style="@style/IpCheckDefaultCardText"
-                        android:text="数据来自 skk.moe + 纯真 IP 数据库"
-                        android:textSize="10sp"
-                        android:textColor="#BDBDBD"
-                        android:gravity="center"
                         android:layout_gravity="center"
-                        android:textAppearance="?attr/textAppearanceHeadline6"/>
+                        android:gravity="center"
+                        android:text="数据来自 skk.moe + 纯真 IP 数据库"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="#BDBDBD"
+                        android:textSize="10sp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="20dp"
-                        android:background="#CCCACA"/>
+                        android:background="#CCCACA" />
 
                     <TextView
                         android:id="@+id/sukka_api_global_result"
                         style="@style/IpCheckDefaultCardText"
-                        android:textSize="10sp"
-                        android:gravity="center"
                         android:layout_gravity="center"
-                        android:textAppearance="?attr/textAppearanceHeadline6"/>
+                        android:gravity="center"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textSize="10sp" />
 
 
-
-                </LinearLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </com.google.android.material.card.MaterialCardView>
 
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="6dp"/>
 
-        </LinearLayout>
-    </ScrollView>
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="网站访问检测"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Default"
+            android:orientation="horizontal">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/DefaultCard"
+                app:cardElevation="0dp"
+                app:strokeColor="#CCCACA"
+                app:strokeWidth="1dp">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Default"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="百度搜素"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                    <TextView
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="国内网站"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="#BDBDBD"
+                        android:textSize="10sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="#CCCACA" />
+
+                    <TextView
+                        android:id="@+id/baiduCheck"
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/DefaultCard"
+                app:cardElevation="0dp"
+                app:strokeColor="#CCCACA"
+                app:strokeWidth="1dp">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Default"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="网易云音乐"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                    <TextView
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="国内网站"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="#BDBDBD"
+                        android:textSize="10sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="#CCCACA" />
+
+                    <TextView
+                        android:id="@+id/neteaseMusicCheck"
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Default"
+            android:orientation="horizontal">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/DefaultCard"
+                app:cardElevation="0dp"
+                app:strokeColor="#CCCACA"
+                app:strokeWidth="1dp">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Default"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="GitHub"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                    <TextView
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="国外网站"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="#BDBDBD"
+                        android:textSize="10sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="#CCCACA" />
+
+                    <TextView
+                        android:id="@+id/githubCheck"
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                style="@style/DefaultCard"
+                app:cardElevation="0dp"
+                app:strokeColor="#CCCACA"
+                app:strokeWidth="1dp">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Default"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+
+                    <TextView
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="YouTube"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                    <TextView
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="海外网站"
+                        android:textAppearance="?attr/textAppearanceHeadline6"
+                        android:textColor="#BDBDBD"
+                        android:textSize="10sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="20dp"
+                        android:background="#CCCACA" />
+
+                    <TextView
+                        android:id="@+id/youtubeCheck"
+                        style="@style/IpCheckDefaultCardText"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</ScrollView>

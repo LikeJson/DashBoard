@@ -6,9 +6,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import kotlinx.android.synthetic.main.fragment_ip_check_page.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
+import java.net.HttpURLConnection
 import java.net.URL
 
 class ipCheckPage : Fragment() {
@@ -18,6 +20,10 @@ class ipCheckPage : Fragment() {
     private lateinit var ipipNetThreadContext: ExecutorCoroutineDispatcher
     private lateinit var ipSbApiThreadContext: ExecutorCoroutineDispatcher
     private lateinit var sukkaGlobalThreadContext: ExecutorCoroutineDispatcher
+    private lateinit var baiduCheckThreadContext: ExecutorCoroutineDispatcher
+    private lateinit var netEaseCheckThreadContext: ExecutorCoroutineDispatcher
+    private lateinit var githubCheckThreadContext: ExecutorCoroutineDispatcher
+    private lateinit var youtubeCheckThreadContext: ExecutorCoroutineDispatcher
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +40,10 @@ class ipCheckPage : Fragment() {
         ipipNetThreadContext = newSingleThreadContext("ipipNetThread")
         ipSbApiThreadContext = newSingleThreadContext("ipSbApiThread")
         sukkaGlobalThreadContext = newSingleThreadContext("sukkaGlobalThread")
+        baiduCheckThreadContext = newSingleThreadContext("baiduCheckThread")
+        netEaseCheckThreadContext = newSingleThreadContext("netEaseCheckThread")
+        githubCheckThreadContext = newSingleThreadContext("githubCheckThread")
+        youtubeCheckThreadContext = newSingleThreadContext("youtubeCheckThread")
 
 
         coroutineScope = GlobalScope.launch(Dispatchers.IO) {
@@ -142,6 +152,126 @@ class ipCheckPage : Fragment() {
                     }
                 }
             }
+
+
+            async(baiduCheckThreadContext) {
+                var tempStr: String
+                try {
+                    val conn = URL("https://baidu.com/").openConnection()
+                    conn.connectTimeout =   1000 * 10
+                    conn.readTimeout =      1000 * 10
+                    if (conn.getInputStream().reader().readText() != "") tempStr =
+                        "连接正常" else tempStr = "无法访问"
+                } catch (ex: Exception) {
+                    Log.d("ConnError",ex.toString())
+                    tempStr = "无法访问"
+                }
+                withContext(Dispatchers.Main) {
+                    try {
+                        val color: Int
+                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                            resources,
+                            R.color.green,
+                            context?.theme
+                        ) else color =
+                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        baiduCheck.text = tempStr
+                        baiduCheck.setTextColor(color)
+                    } catch (ex: Exception) {
+
+                    }
+                }
+
+            }
+            async(netEaseCheckThreadContext) {
+                var tempStr: String
+                try {
+                    val conn = URL("https://music.163.com/").openConnection()
+                    conn.connectTimeout =   1000 * 10
+                    conn.readTimeout =      1000 * 10
+                    if (conn.getInputStream().reader().readText() != "") tempStr =
+                        "连接正常" else tempStr = "无法访问"
+                } catch (ex: Exception) {
+                    Log.d("ConnError",ex.toString())
+                    tempStr = "无法访问"
+                }
+                withContext(Dispatchers.Main) {
+                    try {
+                        val color: Int
+                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                            resources,
+                            R.color.green,
+                            context?.theme
+                        ) else color =
+                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        neteaseMusicCheck.text = tempStr
+                        neteaseMusicCheck.setTextColor(color)
+                    } catch (ex: Exception) {
+
+                    }
+                }
+
+            }
+            async(githubCheckThreadContext) {
+                var tempStr: String
+                try {
+                    val conn = URL("https://github.com/").openConnection()
+                    conn.connectTimeout =   1000 * 10
+                    conn.readTimeout =      1000 * 10
+                    if (conn.getInputStream().reader().readText() != "") tempStr =
+                        "连接正常" else tempStr = "无法访问"
+                } catch (ex: Exception) {
+                    Log.d("ConnError",ex.toString())
+                    tempStr = "无法访问"
+                }
+                withContext(Dispatchers.Main) {
+                    try {
+                        val color: Int
+                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                            resources,
+                            R.color.green,
+                            context?.theme
+                        ) else color =
+                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        githubCheck.text = tempStr
+                        githubCheck.setTextColor(color)
+                    } catch (ex: Exception) {
+
+                    }
+                }
+
+            }
+            async(youtubeCheckThreadContext) {
+                var tempStr: String
+                try {
+                    val conn = URL("https://www.youtube.com/").openConnection()
+                    conn.connectTimeout =   1000 * 10
+                    conn.readTimeout =      1000 * 10
+                    if (conn.getInputStream().reader().readText() != "") tempStr =
+                        "连接正常" else tempStr = "无法访问"
+                } catch (ex: Exception) {
+                    Log.d("ConnError",ex.toString())
+                    tempStr = "无法访问"
+                }
+                withContext(Dispatchers.Main) {
+                    try {
+                        val color: Int
+                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                            resources,
+                            R.color.green,
+                            context?.theme
+                        ) else color =
+                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        youtubeCheck.text = tempStr
+                        youtubeCheck.setTextColor(color)
+                    } catch (ex: Exception) {
+
+                    }
+                }
+
+            }
+
+
         }
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "ipCheckPageViewCreated")
@@ -153,6 +283,11 @@ class ipCheckPage : Fragment() {
             ipipNetThreadContext.close()
             ipSbApiThreadContext.close()
             sukkaGlobalThreadContext.close()
+            baiduCheckThreadContext.close()
+            netEaseCheckThreadContext.close()
+            githubCheckThreadContext.close()
+            youtubeCheckThreadContext.close()
+
 
             coroutineScope.cancel()
 
@@ -164,6 +299,7 @@ class ipCheckPage : Fragment() {
             Log.d("ViewDestroy", "ipCheckPageDestroyView")
         }
         super.onDestroyView()
+
     }
 
 }

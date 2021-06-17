@@ -14,4 +14,6 @@
     <color name="service_off">#666600</color>
     <color name="colorPrimary">#336699</color>
     <color name="colorPrimaryDark">#154A74</color>
+    <color name="green">#00C54C</color>
+    <color name="orange">#F84800</color>
 </resources>
