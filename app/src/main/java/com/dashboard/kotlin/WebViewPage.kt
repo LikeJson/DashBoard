@@ -23,6 +23,8 @@ class WebViewPage : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("ViewCreated","WebViewPageViewCreated")
+
         arguments?.getString("URL")?.let {
             webView.settings.javaScriptEnabled = true
             webView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
@@ -31,4 +33,10 @@ class WebViewPage : Fragment() {
             Log.i("T", it) }
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("Destroy","WebViewPageDestroyView")
+
+    }
 }

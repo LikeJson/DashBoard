@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.dashboard.kotlin.clashhelper.clashStatus
@@ -29,6 +30,7 @@ class MainPage : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("ViewCreated","MainPageViewCreated")
 
         if (clashStatus().runStatus()){
             clash_status.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
@@ -95,7 +97,7 @@ class MainPage : Fragment() {
 
     override fun onDestroyView() {
         clashStatusClass.stopGetTraffic()
-        Log.d("Destroy","MainPageDestroy")
+        Log.d("DestroyView","MainPageDestroyView")
         super.onDestroyView()
     }
 }
