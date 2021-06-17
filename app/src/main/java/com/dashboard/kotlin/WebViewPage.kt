@@ -8,7 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebViewClient
+import androidx.core.content.res.ResourcesCompat
+import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.fragment_webview_page.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 
 class WebViewPage : Fragment() {
@@ -25,12 +28,22 @@ class WebViewPage : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated","WebViewPageViewCreated")
 
+        toolbar.navigationIcon = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.ic_back,
+            context?.theme
+        )
+        toolbar.setNavigationOnClickListener {
+            val controller = it.findNavController()
+            controller.popBackStack()
+        }
+
+
         arguments?.getString("URL")?.let {
             webView.settings.javaScriptEnabled = true
             webView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
             webView.webViewClient = WebViewClient()
-            webView.loadUrl(it)
-            Log.i("T", it) }
+            webView.loadUrl(it)}
     }
 
 

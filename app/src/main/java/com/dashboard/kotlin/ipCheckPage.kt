@@ -7,7 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
+import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.fragment_ip_check_page.*
+import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -158,12 +160,12 @@ class ipCheckPage : Fragment() {
                 var tempStr: String
                 try {
                     val conn = URL("https://baidu.com/").openConnection()
-                    conn.connectTimeout =   1000 * 10
-                    conn.readTimeout =      1000 * 10
+                    conn.connectTimeout = 1000 * 10
+                    conn.readTimeout = 1000 * 10
                     if (conn.getInputStream().reader().readText() != "") tempStr =
                         "连接正常" else tempStr = "无法访问"
                 } catch (ex: Exception) {
-                    Log.d("ConnError",ex.toString())
+                    Log.d("ConnError", ex.toString())
                     tempStr = "无法访问"
                 }
                 withContext(Dispatchers.Main) {
@@ -187,12 +189,12 @@ class ipCheckPage : Fragment() {
                 var tempStr: String
                 try {
                     val conn = URL("https://music.163.com/").openConnection()
-                    conn.connectTimeout =   1000 * 10
-                    conn.readTimeout =      1000 * 10
+                    conn.connectTimeout = 1000 * 10
+                    conn.readTimeout = 1000 * 10
                     if (conn.getInputStream().reader().readText() != "") tempStr =
                         "连接正常" else tempStr = "无法访问"
                 } catch (ex: Exception) {
-                    Log.d("ConnError",ex.toString())
+                    Log.d("ConnError", ex.toString())
                     tempStr = "无法访问"
                 }
                 withContext(Dispatchers.Main) {
@@ -216,12 +218,12 @@ class ipCheckPage : Fragment() {
                 var tempStr: String
                 try {
                     val conn = URL("https://github.com/").openConnection()
-                    conn.connectTimeout =   1000 * 10
-                    conn.readTimeout =      1000 * 10
+                    conn.connectTimeout = 1000 * 10
+                    conn.readTimeout = 1000 * 10
                     if (conn.getInputStream().reader().readText() != "") tempStr =
                         "连接正常" else tempStr = "无法访问"
                 } catch (ex: Exception) {
-                    Log.d("ConnError",ex.toString())
+                    Log.d("ConnError", ex.toString())
                     tempStr = "无法访问"
                 }
                 withContext(Dispatchers.Main) {
@@ -245,12 +247,12 @@ class ipCheckPage : Fragment() {
                 var tempStr: String
                 try {
                     val conn = URL("https://www.youtube.com/").openConnection()
-                    conn.connectTimeout =   1000 * 10
-                    conn.readTimeout =      1000 * 10
+                    conn.connectTimeout = 1000 * 10
+                    conn.readTimeout = 1000 * 10
                     if (conn.getInputStream().reader().readText() != "") tempStr =
                         "连接正常" else tempStr = "无法访问"
                 } catch (ex: Exception) {
-                    Log.d("ConnError",ex.toString())
+                    Log.d("ConnError", ex.toString())
                     tempStr = "无法访问"
                 }
                 withContext(Dispatchers.Main) {
@@ -275,6 +277,18 @@ class ipCheckPage : Fragment() {
         }
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "ipCheckPageViewCreated")
+
+        toolbar.navigationIcon = ResourcesCompat.getDrawable(
+            resources,
+            R.drawable.ic_back,
+            context?.theme
+        )
+        toolbar.setNavigationOnClickListener {
+            val controller = it.findNavController()
+            controller.popBackStack()
+        }
+
+
     }
 
     override fun onDestroyView() {

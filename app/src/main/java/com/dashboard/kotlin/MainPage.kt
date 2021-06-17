@@ -32,6 +32,9 @@ class MainPage : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "MainPageViewCreated")
 
+        toolbar.title = getString(R.string.app_name)
+        //TODO 添加 app 图标
+
         if (clashStatus().runStatus()) {
             clash_status.setCardBackgroundColor(
                 ResourcesCompat.getColor(resources, R.color.colorPrimary, context?.theme)
@@ -89,7 +92,6 @@ class MainPage : Fragment() {
 
 
 
-        toolbar.title = getString(R.string.app_name)
 
         menu_ip_check.setOnClickListener {
 
