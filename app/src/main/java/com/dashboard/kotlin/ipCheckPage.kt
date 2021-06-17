@@ -37,8 +37,8 @@ class ipCheckPage : Fragment() {
 
 
         coroutineScope = GlobalScope.launch(Dispatchers.IO) {
-            val sukkAPi = async(sukkAPiThreadContext) {
-                var tempStr: String = ""
+            async(sukkAPiThreadContext) {
+                var tempStr: String
                 try {
                     val sukkaApiObj =
                         JSONObject(URL("https://forge.speedtest.cn/api/location/info").readText())
@@ -63,9 +63,9 @@ class ipCheckPage : Fragment() {
             }
 
 
-            val ipipNet = async(ipipNetThreadContext) {
+            async(ipipNetThreadContext) {
                 //IPIP.NET
-                var tempStr: String = ""
+                var tempStr: String
                 try {
                     var ipipNetText = URL("https://myip.ipip.net").readText()
                     ipipNetText = ipipNetText.replace("当前 IP：", "")
@@ -87,8 +87,8 @@ class ipCheckPage : Fragment() {
 
 
             //IP.SB Api
-            val ipSbApi = async(ipSbApiThreadContext) {   // IP.SB API
-                var tempStr: String = ""
+            async(ipSbApiThreadContext) {   // IP.SB API
+                var tempStr: String
                 try {
                     val ipsbObj = JSONObject(URL("https://api.ip.sb/geoip").readText())
                     tempStr = "${ipsbObj.optString("ip")}\n" +
@@ -110,8 +110,8 @@ class ipCheckPage : Fragment() {
 
 
             //Sukka Global Api
-            val sukkaGlobalAPi = async(sukkaGlobalThreadContext) {
-                var tempStr: String = ""
+            async(sukkaGlobalThreadContext) {
+                var tempStr: String
                 try {
                     var ipSkkRip = URL("https://ip.skk.moe/cdn-cgi/trace").readText()
                     ipSkkRip = ipSkkRip.replaceBefore("ip=", "")

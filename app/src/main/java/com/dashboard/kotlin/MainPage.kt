@@ -30,12 +30,16 @@ class MainPage : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("ViewCreated","MainPageViewCreated")
+        Log.d("ViewCreated", "MainPageViewCreated")
 
-        if (clashStatus().runStatus()){
-            clash_status.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
-            clash_status_icon.setImageDrawable(resources.getDrawable(R.drawable.ic_activited))
-            clash_status_text.text = "Clash 运行正常"
+        if (clashStatus().runStatus()) {
+            clash_status.setCardBackgroundColor(
+                ResourcesCompat.getColor(resources, R.color.colorPrimary, context?.theme)
+            )
+            clash_status_icon.setImageDrawable(
+                ResourcesCompat.getDrawable(resources, R.drawable.ic_activited, context?.theme)
+            )
+            clash_status_text.text = getString(R.string.clash_enable)
 
             netspeed_status_text.visibility = View.VISIBLE
 
@@ -43,26 +47,40 @@ class MainPage : Fragment() {
             clashStatusClass.getTraffic()
 
             GlobalScope.launch(Dispatchers.IO) {
-                while (clashStatusClass.trafficThreadFlag){
-                        try {
-                            val jsonObject = JSONObject(clashStatusClass.trafficRawText)
-                            val upText: String = commandhelper().autoUnit(jsonObject.optString("up"))
-                            val downText: String = commandhelper().autoUnit(jsonObject.optString("down"))
+                while (clashStatusClass.trafficThreadFlag) {
+                    try {
+                        val jsonObject = JSONObject(clashStatusClass.trafficRawText)
+                        val upText: String = commandhelper().autoUnit(jsonObject.optString("up"))
+                        val downText: String =
+                            commandhelper().autoUnit(jsonObject.optString("down"))
 
-                            withContext(Dispatchers.Main){
-                                netspeed_status_text.text = "上传 ${upText} 下载 ${downText}"
-                            }
-                        }catch(ex: Exception){Log.w("trafficText",ex.toString())}
-                delay(1000)
+                        withContext(Dispatchers.Main) {
+                            netspeed_status_text.text =
+                                getString(R.string.netspeed_status_text).format(
+                                    upText,
+                                    downText
+                                )
+                        }
+                    } catch (ex: Exception) {
+                        Log.w("trafficText", ex.toString())
+                    }
+                    delay(1000)
                 }
             }
 
 
-
-        }else{
-            clash_status.setCardBackgroundColor(resources.getColor(R.color.error))
-            clash_status_icon.setImageDrawable(resources.getDrawable(R.drawable.ic_service_not_running))
-            clash_status_text.text = "Clash 运行异常"
+        } else {
+            clash_status.setCardBackgroundColor(
+                ResourcesCompat.getColor(resources, R.color.error, context?.theme)
+            )
+            clash_status_icon.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_service_not_running,
+                    context?.theme
+                )
+            )
+            clash_status_text.text = getString(R.string.clash_disable)
             netspeed_status_text.visibility = View.GONE
 
         }
@@ -88,8 +106,8 @@ class MainPage : Fragment() {
 
             val navController = it.findNavController()
             val bundle = Bundle()
-            bundle.putString("URL","http://127.0.0.1:9090/ui")
-            navController.navigate(R.id.webViewPage,bundle)
+            bundle.putString("URL", "http://127.0.0.1:9090/ui")
+            navController.navigate(R.id.webViewPage, bundle)
         }
 
     }
@@ -97,7 +115,7 @@ class MainPage : Fragment() {
 
     override fun onDestroyView() {
         clashStatusClass.stopGetTraffic()
-        Log.d("DestroyView","MainPageDestroyView")
+        Log.d("DestroyView", "MainPageDestroyView")
         super.onDestroyView()
     }
 }
