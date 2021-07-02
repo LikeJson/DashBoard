@@ -1,6 +1,7 @@
 package com.dashboard.kotlin.clashhelper
 
 import android.util.Log
+import com.dashboard.kotlin.suihelper.suihelper
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -14,11 +15,19 @@ class commandhelper {
                 double /= 1024
                 index -=-1
             }
-            return "${BigDecimal(double).setScale(2,RoundingMode.HALF_UP).toString()}${unitList[index]}"
+            return "${BigDecimal(double).setScale(2,RoundingMode.HALF_UP)}${unitList[index]}"
 
         }catch(ex: Exception){
             Log.w("autoUnit",ex.toString())
             return "error"
+        }
+
+    }
+
+    fun installZip(filePath: String, type: String){
+        when(type){
+//            "SUB" ->
+            "DashBoard" ->suihelper().suCmd("unzip -o $filePath -d ${clashStatus().getConfigPath()}")
         }
 
     }

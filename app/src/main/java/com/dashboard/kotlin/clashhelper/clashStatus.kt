@@ -46,6 +46,9 @@ class clashStatus {
         trafficThreadFlag = false
     }
 
+    fun getConfigPath(): String{
+        return "/data/clash/"
+    }
 }
 
 private class clashConfig {
@@ -71,6 +74,8 @@ private class clashConfig {
     private fun getPort(): String {
         return "9090"
     }
+
+
 
 
 }

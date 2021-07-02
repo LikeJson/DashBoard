@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menu_web_dashboard"
+    style="@style/DefaultCard"
+    android:layout_height="wrap_content"
+    app:cardElevation="0dp"
+    app:strokeColor="#CCCACA"
+    app:strokeWidth="1dp">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp">
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/download_card_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="-3dp"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="默认文本1"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/download_card_desc"
+                    android:paddingTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="默认文本2"
+                    android:textAppearance="?attr/textAppearanceHeadline1"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <ImageView
+                android:id="@+id/downloadButton"
+                style="@style/DefaultCardImage"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_file_download" />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <com.daimajia.numberprogressbar.NumberProgressBar
+            android:id="@+id/downloadProgressBar"
+            style="@style/NumberProgressBar_Default"
+            tools:visibility="visible"
+            android:visibility="gone"
+            android:paddingTop="10dp"
+            android:paddingBottom="0dp"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <!--    <LinearLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--            android:paddingStart="10dp"-->
+    <!--            android:paddingEnd="10dp"-->
+    <!--            android:paddingTop="10dp"-->
+    <!--            android:paddingBottom="10dp">-->
+
+    <!--        <RelativeLayout-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:layout_weight="2">-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/download_card_title"-->
+    <!--                android:text="默认文本1"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_alignParentTop="true"-->
+    <!--                android:layout_marginTop="-3dp"-->
+    <!--                android:ellipsize="end"-->
+    <!--                android:maxLines="2"-->
+    <!--                android:textAppearance="?attr/textAppearanceHeadline6"-->
+    <!--                android:textSize="18sp" />-->
+
+    <!--            <TextView-->
+    <!--                android:id="@+id/download_card_desc"-->
+    <!--                android:text="默认文本2"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_alignParentBottom="true"-->
+    <!--                android:ellipsize="end"-->
+    <!--                android:maxLines="1"-->
+    <!--                android:textAppearance="?attr/textAppearanceHeadline1"-->
+    <!--                android:textSize="10sp"-->
+    <!--                tools:ignore="SmallSp" />-->
+    <!--        </RelativeLayout>-->
+
+
+    <!--                    <ImageView-->
+    <!--                        android:id="@+id/downloadButton"-->
+    <!--                        style="@style/DefaultCardImage"-->
+    <!--                        android:layout_alignParentEnd="true"-->
+    <!--                        android:layout_centerVertical="true"-->
+    <!--                        android:src="@drawable/ic_file_download" />-->
+
+    <!--    </LinearLayout>-->
+
+
+</com.google.android.material.card.MaterialCardView>

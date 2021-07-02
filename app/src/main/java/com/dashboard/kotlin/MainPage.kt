@@ -1,6 +1,7 @@
 package com.dashboard.kotlin
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.dashboard.kotlin.clashhelper.clashStatus
 import com.dashboard.kotlin.clashhelper.commandhelper
+import com.dashboard.kotlin.suihelper.suihelper
 import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.*
@@ -88,11 +90,6 @@ class MainPage : Fragment() {
 
         }
 
-
-
-
-
-
         menu_ip_check.setOnClickListener {
 
             val navController = it.findNavController()
@@ -110,6 +107,16 @@ class MainPage : Fragment() {
             val bundle = Bundle()
             bundle.putString("URL", "http://127.0.0.1:9090/ui")
             navController.navigate(R.id.webViewPage, bundle)
+        }
+
+
+        menu_web_dashboard_download.setOnClickListener {
+
+            val bundle = Bundle()
+            bundle.putString("TYPE","DASHBOARD")
+            val navController = it.findNavController()
+            navController.navigate(R.id.downloadPage,bundle)
+
         }
 
     }

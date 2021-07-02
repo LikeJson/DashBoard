@@ -2,6 +2,7 @@
     <string name="app_name">DashBoard</string>
     <string name="title_ip_check">IP 检查</string>
     <string name="title_web_dashboard">网页面板</string>
+    <string name="title_web_dashboard_download">Clash 面板下载</string>
     <string name="clash_enable">Clash 运行正常</string>
     <string name="clash_disable">Clash 运行异常</string>
     <string name="netspeed_status_text">上传 %s 下载 %s</string>
