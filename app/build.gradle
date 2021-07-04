@@ -22,10 +22,10 @@ android {
         release {
             def properties = new Properties()
             def inputStream = project.rootProject.file('local.properties').newDataInputStream()
-            properties.load( inputStream )
+            properties.load(inputStream)
 
-            File strFile = new File (properties.getProperty('fileDir'))
-            storeFile file ( strFile )
+            File strFile = new File(properties.getProperty('fileDir'))
+            storeFile file(strFile)
             storePassword properties.getProperty('storePassword')
             keyAlias properties.getProperty('keyAlias')
             keyPassword properties.getProperty('keyPassword')
@@ -57,6 +57,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    externalNativeBuild {
+        cmake {
+            path file('./src/cpp/CMakeLists.txt')
+        }
     }
 }
 

@@ -1,35 +1,39 @@
 package com.dashboard.kotlin.clashhelper
 
 import android.util.Log
+import com.dashboard.kotlin.GExternalCacheDir
 import java.net.HttpURLConnection
 import java.net.URL
+import com.dashboard.kotlin.suihelper.suihelper
+import java.io.File
 import kotlin.concurrent.thread
 
 class clashStatus {
     var trafficThreadFlag: Boolean = true
     var trafficRawText: String = "{\"up\":\"0\",\"down\":\"0\"}"
-    private var isRunning = false
 
     fun runStatus(): Boolean {
-        thread {
-            try {
-                isRunning = URL(clashConfig().baseURL).readText() == "{\"hello\":\"clash\"}\n"
+        var isRunning = false
+         thread(start = true){
+            isRunning = try {
+                URL(clashConfig().baseURL).readText() == "{\"hello\":\"clash\"}\n"
             } catch (ex: Exception) {
-                isRunning = false
+                false
             }
         }.join()
-
         return isRunning
     }
 
     fun getTraffic() {
         trafficThreadFlag = true
+        val secret = clashConfig().clashSecret
+        val baseURL = clashConfig().baseURL
         Thread {
             try {
                 val conn =
-                    URL("${clashConfig().baseURL}/traffic").openConnection() as HttpURLConnection
+                    URL("${baseURL}/traffic").openConnection() as HttpURLConnection
                 conn.requestMethod = "GET"
-                conn.setRequestProperty("Authorization", "Bearer ${clashConfig().clashSecret}")
+                conn.setRequestProperty("Authorization", "Bearer $secret")
                 conn.inputStream.use {
                     while (trafficThreadFlag) {
                         trafficRawText = it.bufferedReader().readLine()
@@ -46,16 +50,19 @@ class clashStatus {
         trafficThreadFlag = false
     }
 
-    fun getConfigPath(): String{
-        return "/data/clash/"
-    }
+
 }
 
-private class clashConfig {
+class clashConfig {
+
+    val clashPath: String
+        get() {
+            return getConfigPath()
+        }
 
     val baseURL: String
         get() {
-            return "${getUrl()}:${getPort()}"
+            return "http://${getExternalController()}"
         }
     val clashSecret: String
         get() {
@@ -64,18 +71,43 @@ private class clashConfig {
 
 
     private fun getSecret(): String {
-        return ""
+        suihelper().suCmd("cp /data/clash/template ${GExternalCacheDir}/template")
+
+        var tempStr: String = ""
+        try {
+            tempStr = getFromFile("${GExternalCacheDir}/template", "secret")
+            File("${GExternalCacheDir}/template").delete()
+        } catch (ex: Exception) {
+            Log.w("readFromFile", ex.toString())
+        }
+
+
+        return tempStr
     }
 
-    private fun getUrl(): String {
-        return "http://127.0.0.1"
+    private fun getConfigPath(): String {
+        return "/data/clash/"
     }
 
-    private fun getPort(): String {
-        return "9090"
+    private fun getExternalController(): String {
+        suihelper().suCmd("cp /data/clash/template ${GExternalCacheDir}/template")
+
+        var tempStr: String = ""
+        try {
+            tempStr = getFromFile("${GExternalCacheDir}/template", "external-controller")
+            File("${GExternalCacheDir}/template").delete()
+        } catch (ex: Exception) {
+            Log.w("readFromFile", ex.toString())
+        }
+
+        return tempStr
     }
 
+    private external fun getFromFile(path: String, node: String): String
 
-
-
+    companion object {
+        init {
+            System.loadLibrary("yaml-reader")
+        }
+    }
 }

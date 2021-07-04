@@ -27,7 +27,7 @@ class commandhelper {
     fun installZip(filePath: String, type: String){
         when(type){
 //            "SUB" ->
-            "DashBoard" ->suihelper().suCmd("unzip -o $filePath -d ${clashStatus().getConfigPath()}")
+            "DashBoard" ->suihelper().suCmd("unzip -o $filePath -d ${clashConfig().clashPath}")
         }
 
     }

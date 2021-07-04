@@ -1,5 +1,6 @@
 package com.dashboard.kotlin
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,8 @@ import java.io.DataInputStream
 import java.io.DataOutputStream
 
 
+lateinit var GExternalCacheDir: String
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,5 +23,7 @@ class MainActivity : AppCompatActivity() {
         //sui
         suihelper().init(packageName)
 
+        //verbal
+        GExternalCacheDir = applicationContext.externalCacheDir.toString()
     }
 }

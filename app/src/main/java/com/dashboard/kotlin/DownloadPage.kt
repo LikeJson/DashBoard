@@ -135,6 +135,7 @@ class DownloadPage : Fragment() {
 
                         //getLength
                         val totalLength: Long = downLoadConn.contentLengthLong
+                        //TODO: 处理 等于 -1 的情况
 
                         downLoadConn.getInputStream().let { input ->
                             var count: Long = 0
@@ -150,8 +151,8 @@ class DownloadPage : Fragment() {
                                     val temp: Int = input.read()
                                     if (temp != -1) {
                                         output.write(temp)
-                                        count -= -1
-
+                                        count -=-1
+                                        if (count % 1000 == 0L)
                                         async(Dispatchers.Main) {
                                             holder.progressBar.progress =
                                                 (count * 100 / totalLength).toInt()
@@ -207,14 +208,6 @@ class DownloadPage : Fragment() {
         val description: TextView = itemView.findViewById(R.id.download_card_desc)
         val downloadButton: ImageView = itemView.findViewById(R.id.downloadButton)
         val progressBar: NumberProgressBar = itemView.findViewById(R.id.downloadProgressBar)
-    }
-
-
-    private fun doDownload(url: String, path: String) {
-        GlobalScope.launch(Dispatchers.IO) {
-
-        }
-
     }
 
 

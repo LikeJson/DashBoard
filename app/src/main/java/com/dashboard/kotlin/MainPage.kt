@@ -1,7 +1,6 @@
 package com.dashboard.kotlin
 
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.dashboard.kotlin.clashhelper.clashStatus
 import com.dashboard.kotlin.clashhelper.commandhelper
-import com.dashboard.kotlin.suihelper.suihelper
 import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.*
