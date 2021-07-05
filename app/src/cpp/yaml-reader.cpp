@@ -1,6 +1,6 @@
 #include <jni.h>
 #include <string>
-#include <yaml-cpp/yaml.h>
+#include "yaml-cpp/yaml.h"
 #include "include/androidLogCommand.h"
 
 
