@@ -53,9 +53,9 @@ class MainPage : Fragment() {
                 while (clashStatusClass.trafficThreadFlag) {
                     try {
                         val jsonObject = JSONObject(clashStatusClass.trafficRawText)
-                        val upText: String = commandhelper().autoUnit(jsonObject.optString("up"))
+                        val upText: String = commandhelper.autoUnit(jsonObject.optString("up"))
                         val downText: String =
-                            commandhelper().autoUnit(jsonObject.optString("down"))
+                            commandhelper.autoUnit(jsonObject.optString("down"))
 
                         withContext(Dispatchers.Main) {
                             netspeed_status_text.text =
@@ -111,9 +111,9 @@ class MainPage : Fragment() {
         menu_web_dashboard_download.setOnClickListener {
 
             val bundle = Bundle()
-            bundle.putString("TYPE","DASHBOARD")
+            bundle.putString("TYPE", "DASHBOARD")
             val navController = it.findNavController()
-            navController.navigate(R.id.downloadPage,bundle)
+            navController.navigate(R.id.downloadPage, bundle)
 
         }
 

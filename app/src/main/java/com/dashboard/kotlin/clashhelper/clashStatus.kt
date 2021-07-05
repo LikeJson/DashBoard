@@ -14,9 +14,9 @@ class clashStatus {
 
     fun runStatus(): Boolean {
         var isRunning = false
-         thread(start = true){
+        thread(start = true) {
             isRunning = try {
-                URL(clashConfig().baseURL).readText() == "{\"hello\":\"clash\"}\n"
+                URL(clashConfig.baseURL).readText() == "{\"hello\":\"clash\"}\n"
             } catch (ex: Exception) {
                 false
             }
@@ -26,8 +26,8 @@ class clashStatus {
 
     fun getTraffic() {
         trafficThreadFlag = true
-        val secret = clashConfig().clashSecret
-        val baseURL = clashConfig().baseURL
+        val secret = clashConfig.clashSecret
+        val baseURL = clashConfig.baseURL
         Thread {
             try {
                 val conn =
@@ -53,7 +53,7 @@ class clashStatus {
 
 }
 
-class clashConfig {
+object clashConfig {
 
     val clashPath: String
         get() {
@@ -69,20 +69,24 @@ class clashConfig {
             return getSecret()
         }
 
-
-    private fun getSecret(): String {
-        suihelper().suCmd("cp /data/clash/template ${GExternalCacheDir}/template")
-
-        var tempStr: String = ""
-        try {
-            tempStr = getFromFile("${GExternalCacheDir}/template", "secret")
-            File("${GExternalCacheDir}/template").delete()
-        } catch (ex: Exception) {
-            Log.w("readFromFile", ex.toString())
+    var clashDashBoard: String
+        get() {
+            return setFile(
+                "/data/clash", "template"
+            ) { getFromFile("${GExternalCacheDir}/template", "external-ui") }
+        }
+        set(value) {
+            setFileNR(
+                "/data/clash", "template"
+            ) { modifyFile("${GExternalCacheDir}/template", "external-ui", value) }
+            return
         }
 
 
-        return tempStr
+    private fun getSecret(): String {
+        return setFile(
+            "/data/clash", "template"
+        ) { getFromFile("${GExternalCacheDir}/template", "secret") }
     }
 
     private fun getConfigPath(): String {
@@ -90,24 +94,44 @@ class clashConfig {
     }
 
     private fun getExternalController(): String {
-        suihelper().suCmd("cp /data/clash/template ${GExternalCacheDir}/template")
+        return setFile(
+            "/data/clash", "template"
+        ) { getFromFile("${GExternalCacheDir}/template", "external-controller") }
+    }
 
-        var tempStr: String = ""
+    private fun setFile(dirPath: String, fileName: String, func: () -> String): String {
+        copyFile(dirPath, fileName)
+        val temp = func()
+        deleteFile(GExternalCacheDir, fileName)
+        return temp
+    }
+
+    private fun setFileNR(dirPath: String, fileName: String, func: () -> Unit) {
+        copyFile(dirPath, fileName)
+        func()
+        suihelper().suCmd("cp ${GExternalCacheDir}/${fileName} ${dirPath}/${fileName} ")
+        deleteFile(GExternalCacheDir, fileName)
+    }
+
+    private fun copyFile(dirPath: String, fileName: String) {
+        suihelper().suCmd("cp ${dirPath}/${fileName} ${GExternalCacheDir}/${fileName}")
+        return
+    }
+
+    private fun deleteFile(dirPath: String, fileName: String) {
         try {
-            tempStr = getFromFile("${GExternalCacheDir}/template", "external-controller")
-            File("${GExternalCacheDir}/template").delete()
+            File(dirPath, fileName).delete()
         } catch (ex: Exception) {
-            Log.w("readFromFile", ex.toString())
+            null
         }
-
-        return tempStr
     }
 
     private external fun getFromFile(path: String, node: String): String
+    private external fun modifyFile(path: String, node: String, value: String)
 
-    companion object {
-        init {
-            System.loadLibrary("yaml-reader")
-        }
+
+    init {
+        System.loadLibrary("yaml-reader")
     }
+    
 }

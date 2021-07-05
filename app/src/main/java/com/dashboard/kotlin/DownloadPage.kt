@@ -65,11 +65,11 @@ class DownloadPage : Fragment() {
 
 
     data class DownLoadDataClass(
-        val title: String?,
-        val description: String?,
-        val URL: String?,
-        val type: String?,
-        val pathName: String? = ""
+        val title: String,
+        val description: String,
+        val URL: String,
+        val type: String,
+        val pathName: String = ""
     )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -170,10 +170,13 @@ class DownloadPage : Fragment() {
                         // install
 
                         Log.d("Install", "StartInstall")
-                        commandhelper().installZip(
+                        commandhelper.installZip(
                             "${this@DownloadPage.context?.externalCacheDir}/${downloadItem.title}.zip",
-                            "DashBoard"
+                            "DashBoard",
+                            downloadItem.pathName
                         )
+                        Log.d("Install", "ExitInstall")
+
 
 
                     } catch (ex: Exception) {
