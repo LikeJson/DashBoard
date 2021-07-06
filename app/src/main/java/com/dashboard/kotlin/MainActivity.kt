@@ -1,16 +1,11 @@
 package com.dashboard.kotlin
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.dashboard.kotlin.suihelper.suihelper
 import com.tencent.mmkv.MMKV
 import kotlinx.android.synthetic.main.toolbar.*
-import rikka.shizuku.Shizuku
-import rikka.sui.Sui
-import java.io.DataInputStream
-import java.io.DataOutputStream
 
 
 lateinit var GExternalCacheDir: String
@@ -21,6 +16,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        this.window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        this.window.statusBarColor = resources.getColor(android.R.color.transparent)
+        this.window.navigationBarColor = resources.getColor(android.R.color.transparent)
 
         //sui
         suihelper().init(packageName)
