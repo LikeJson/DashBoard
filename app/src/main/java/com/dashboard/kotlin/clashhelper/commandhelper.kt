@@ -2,6 +2,7 @@ package com.dashboard.kotlin.clashhelper
 
 import android.util.Log
 import com.dashboard.kotlin.suihelper.suihelper
+import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -37,7 +38,7 @@ object commandhelper {
                 clashConfig.clashDashBoard = name
             }
         }
-
+        File(filePath).delete()
     }
 
 }
