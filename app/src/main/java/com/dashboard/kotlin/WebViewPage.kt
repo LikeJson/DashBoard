@@ -42,6 +42,8 @@ class WebViewPage : Fragment() {
         arguments?.getString("URL")?.let {
             webView.settings.javaScriptEnabled = true
             webView.settings.cacheMode = WebSettings.LOAD_NO_CACHE
+            webView.settings.domStorageEnabled = true
+            webView.settings.databaseEnabled = true
             webView.webViewClient = WebViewClient()
             webView.loadUrl(it)}
     }
