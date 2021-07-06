@@ -2,7 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/menu_web_dashboard"
+    android:id="@+id/download_card_single"
     style="@style/DefaultCard"
     android:layout_height="wrap_content"
     app:cardElevation="0dp"
@@ -38,7 +38,6 @@
                     android:layout_marginTop="-3dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:text="默认文本1"
                     android:textAppearance="?attr/textAppearanceHeadline6"
                     android:textSize="18sp" />
 
@@ -50,7 +49,6 @@
                     android:layout_alignParentBottom="true"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="默认文本2"
                     android:textAppearance="?attr/textAppearanceHeadline1"
                     android:textSize="10sp"
                     tools:ignore="SmallSp" />

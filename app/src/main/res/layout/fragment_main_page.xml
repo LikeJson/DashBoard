@@ -106,6 +106,28 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/menu_sub_download"
+                style="@style/DefaultCard"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    style="@style/Default"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/DefaultCardImage"
+                        android:layout_width="wrap_content"
+                        android:src="@drawable/ic_file_download" />
+
+                    <TextView
+                        style="@style/DefaultCardText"
+                        android:text="@string/title_sub_download"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/menu_web_dashboard_download"
                 style="@style/DefaultCard"
                 app:cardElevation="0dp">

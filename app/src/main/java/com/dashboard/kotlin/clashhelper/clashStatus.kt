@@ -72,12 +72,12 @@ object clashConfig {
     var clashDashBoard: String
         get() {
             return setFile(
-                "/data/clash", "template"
+                getConfigPath(), "template"
             ) { getFromFile("${GExternalCacheDir}/template", "external-ui") }
         }
         set(value) {
             setFileNR(
-                "/data/clash", "template"
+                getConfigPath(), "template"
             ) { modifyFile("${GExternalCacheDir}/template", "external-ui", value) }
             return
         }
@@ -85,12 +85,12 @@ object clashConfig {
 
     private fun getSecret(): String {
         return setFile(
-            "/data/clash", "template"
+            getConfigPath(), "template"
         ) { getFromFile("${GExternalCacheDir}/template", "secret") }
     }
 
     private fun getConfigPath(): String {
-        return "/data/clash/"
+        return "/data/clash"
     }
 
     private fun getExternalController(): String {

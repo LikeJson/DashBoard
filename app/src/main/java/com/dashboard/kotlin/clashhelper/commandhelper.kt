@@ -24,11 +24,16 @@ object commandhelper {
 
     }
 
-    fun installZip(filePath: String, type: String, name: String = "") {
+    fun doInstall(filePath: String, type: String, name: String = "") {
         when (type) {
-//            "SUB" ->
-            "DashBoard" -> {
+            "SUB" -> {
+                suihelper().suCmd("mv -f $filePath ${clashConfig.clashPath}/config.yaml")
+                suihelper().suCmd("chmod 700 ${clashConfig.clashPath}/config.yaml")
+                suihelper().suCmd("chown system:system ${clashConfig.clashPath}/config.yaml")
+            }
+            "DASHBOARD" -> {
                 suihelper().suCmd("unzip -o $filePath -d ${clashConfig.clashPath}")
+                suihelper().suCmd("chmod 000 ${clashConfig.clashPath}/${name}/ -R")
                 clashConfig.clashDashBoard = name
             }
         }

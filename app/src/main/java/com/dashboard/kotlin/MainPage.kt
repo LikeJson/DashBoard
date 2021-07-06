@@ -117,6 +117,13 @@ class MainPage : Fragment() {
 
         }
 
+        menu_sub_download.setOnClickListener{
+            val bundle = Bundle()
+            bundle.putString("TYPE", "SUB")
+            val navController = it.findNavController()
+            navController.navigate(R.id.downloadPage, bundle)
+        }
+
     }
 
 
