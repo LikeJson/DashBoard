@@ -5,6 +5,10 @@ import com.dashboard.kotlin.GExternalCacheDir
 import java.net.HttpURLConnection
 import java.net.URL
 import com.dashboard.kotlin.suihelper.suihelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.io.File
 import kotlin.concurrent.thread
 
@@ -82,6 +86,69 @@ object clashConfig {
             return
         }
 
+    fun updateConfig(type: String) {
+        when (type) {
+            "CFM" -> {
+                mergeConfig("${getConfigPath()}/run/config.yaml")
+                updateConfigNet("${getConfigPath()}/run/config.yaml")
+            }
+        }
+    }
+
+
+    private fun updateConfigNet(configPath: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val conn =
+                    URL("${baseURL}/configs").openConnection() as HttpURLConnection
+                conn.requestMethod = "PUT"
+                conn.setRequestProperty("Authorization", "Bearer $clashSecret")
+                conn.setRequestProperty("Content-Type", "application/json")
+                conn.doOutput = true
+
+                conn.outputStream.use { os ->
+                    os.write(
+                        JSONObject(
+                            mapOf(
+                                "force" to "false",
+                                "path" to configPath
+                            )
+                        ).toString().toByteArray()
+                    )
+                }
+
+                conn.connect()
+                Log.i("NET", "HTTP CODE : ${conn.responseCode}")
+                conn.inputStream.use {
+                    val data = it.bufferedReader().readText()
+                    Log.i("NET", data)
+                }
+
+
+            } catch (ex: Exception) {
+                Log.w("NET", ex.toString())
+            }
+        }
+
+
+    }
+
+    private fun mergeConfig(outputFilePath: String) {
+        setFileNR(getConfigPath(), "config.yaml") {
+            setFileNR(getConfigPath(), "template") {
+                mergeFile(
+                    "${GExternalCacheDir}/config.yaml",
+                    "${GExternalCacheDir}/template",
+                    "${GExternalCacheDir}/config_output.yaml"
+                )
+                suihelper().suCmd("mv ${GExternalCacheDir}/config_output.yaml $outputFilePath")
+            }
+        }
+    }
+
+    fun getClashType(): String {
+        return "CFM"
+    }
 
     private fun getSecret(): String {
         return setFile(
@@ -90,7 +157,10 @@ object clashConfig {
     }
 
     private fun getConfigPath(): String {
-        return "/data/clash"
+        when (getClashType()) {
+            "CFM" -> return "/data/clash"
+        }
+        return ""
     }
 
     private fun getExternalController(): String {
@@ -128,10 +198,15 @@ object clashConfig {
 
     private external fun getFromFile(path: String, node: String): String
     private external fun modifyFile(path: String, node: String, value: String)
+    private external fun mergeFile(
+        mainFilePath: String,
+        templatePath: String,
+        outputFilePath: String
+    )
 
 
     init {
         System.loadLibrary("yaml-reader")
     }
-    
+
 }

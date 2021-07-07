@@ -5,6 +5,8 @@
 #include "include/androidLogCommand.h"
 
 
+YAML::Node merge_nodes(YAML::Node a, YAML::Node b);
+
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_dashboard_kotlin_clashhelper_clashConfig_getFromFile(JNIEnv *env, jobject thiz,
@@ -55,3 +57,72 @@ Java_com_dashboard_kotlin_clashhelper_clashConfig_modifyFile(JNIEnv *env, jobjec
         LOGE("%s", e.what())
     }
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_dashboard_kotlin_clashhelper_clashConfig_mergeFile(JNIEnv *env, jobject thiz,
+                                                            jstring jmainFilePath,
+                                                            jstring jtemplatePath,
+                                                            jstring joutputFilePath) {
+    jboolean isCopy;
+    const char *mainFilePath = env->GetStringUTFChars(jmainFilePath, &isCopy);
+    LOGV("isCopy jpath:%d", isCopy)
+    LOGV("mainFilePath: %s", mainFilePath)
+    const char *templatePath = env->GetStringUTFChars(jtemplatePath, &isCopy);
+    LOGV("isCopy jpath:%d", isCopy)
+    LOGV("templatePath: %s", templatePath)
+    const char *outputFilePath = env->GetStringUTFChars(joutputFilePath, &isCopy);
+    LOGV("isCopy jpath:%d", isCopy)
+    LOGV("outputFilePath: %s", outputFilePath)
+
+    YAML::Node mainFileObj = YAML::LoadFile(mainFilePath);
+    YAML::Node templateObj = YAML::LoadFile(templatePath);
+
+    YAML::Node outputObj = merge_nodes(mainFileObj, templateObj);
+
+    std::ofstream fileOut(outputFilePath);
+    fileOut << outputObj;
+
+}
+
+inline const YAML::Node & cnode(const YAML::Node &n) {
+    return n;
+}
+
+YAML::Node merge_nodes(YAML::Node a, YAML::Node b) {
+    if (!b.IsMap()) {
+        // If b is not a map, merge result is b, unless b is null
+        return b.IsNull() ? a : b;
+    }
+    if (!a.IsMap()) {
+        // If a is not a map, merge result is b
+        return b;
+    }
+    if (!b.size()) {
+        // If a is a map, and b is an empty map, return a
+        return a;
+    }
+    // Create a new map 'c' with the same mappings as a, merged with b
+    auto c = YAML::Node(YAML::NodeType::Map);
+    for (auto n : a) {
+        if (n.first.IsScalar()) {
+            const std::string & key = n.first.Scalar();
+            auto t = YAML::Node(cnode(b)[key]);
+            if (t) {
+                c[n.first] = merge_nodes(n.second, t);
+                continue;
+            }
+        }
+        c[n.first] = n.second;
+    }
+    // Add the mappings from 'b' not already in 'c'
+    for (auto n : b) {
+        if (!n.first.IsScalar() || !cnode(c)[n.first.Scalar()]) {
+            c[n.first] = n.second;
+        }
+    }
+    return c;
+}
+
+
+

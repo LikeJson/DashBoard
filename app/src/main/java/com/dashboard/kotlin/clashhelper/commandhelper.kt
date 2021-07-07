@@ -31,6 +31,7 @@ object commandhelper {
                 suihelper().suCmd("mv -f $filePath ${clashConfig.clashPath}/config.yaml")
                 suihelper().suCmd("chmod 700 ${clashConfig.clashPath}/config.yaml")
                 suihelper().suCmd("chown system:system ${clashConfig.clashPath}/config.yaml")
+                clashConfig.updateConfig(clashConfig.getClashType())
             }
             "DASHBOARD" -> {
                 suihelper().suCmd("unzip -o $filePath -d ${clashConfig.clashPath}")
