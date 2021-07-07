@@ -20,7 +20,11 @@ class clashStatus {
         var isRunning = false
         thread(start = true) {
             isRunning = try {
-                URL(clashConfig.baseURL).readText() == "{\"hello\":\"clash\"}\n"
+                val conn =
+                    URL(clashConfig.baseURL).openConnection() as HttpURLConnection
+                conn.requestMethod = "GET"
+                conn.setRequestProperty("Authorization", "Bearer ${clashConfig.clashSecret}")
+                conn.inputStream.bufferedReader().readText() == "{\"hello\":\"clash\"}\n"
             } catch (ex: Exception) {
                 false
             }
@@ -120,7 +124,7 @@ object clashConfig {
                 conn.connect()
                 Log.i("NET", "HTTP CODE : ${conn.responseCode}")
                 conn.inputStream.use {
-                    val data = it.bufferedReader().readText()
+                    val data = it.readBytes().toString()
                     Log.i("NET", data)
                 }
 
@@ -192,7 +196,6 @@ object clashConfig {
         try {
             File(dirPath, fileName).delete()
         } catch (ex: Exception) {
-            null
         }
     }
 
