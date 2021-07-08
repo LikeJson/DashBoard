@@ -81,12 +81,12 @@ object clashConfig {
     var clashDashBoard: String
         get() {
             return setFile(
-                getConfigPath(), "template"
+                clashPath, "template"
             ) { getFromFile("${GExternalCacheDir}/template", "external-ui") }
         }
         set(value) {
             setFileNR(
-                getConfigPath(), "template"
+                clashPath, "template"
             ) { modifyFile("${GExternalCacheDir}/template", "external-ui", value) }
             return
         }
@@ -94,8 +94,12 @@ object clashConfig {
     fun updateConfig(type: String) {
         when (type) {
             "CFM" -> {
-                mergeConfig("${getConfigPath()}/run/config.yaml")
-                updateConfigNet("${getConfigPath()}/run/config.yaml")
+                mergeConfig("${clashPath}/run/config.yaml")
+                updateConfigNet("${clashPath}/run/config.yaml")
+            }
+            "CPFM" ->{
+                mergeConfig("${clashPath}/config.yaml")
+                updateConfigNet("${clashPath}/config.yaml")
             }
         }
     }
@@ -139,8 +143,8 @@ object clashConfig {
     }
 
     private fun mergeConfig(outputFilePath: String) {
-        setFileNR(getConfigPath(), "config.yaml") {
-            setFileNR(getConfigPath(), "template") {
+        setFileNR(clashPath, "config.yaml") {
+            setFileNR(clashPath, "template") {
                 mergeFile(
                     "${GExternalCacheDir}/config.yaml",
                     "${GExternalCacheDir}/template",
@@ -157,7 +161,7 @@ object clashConfig {
 
     private fun getSecret(): String {
         return setFile(
-            getConfigPath(), "template"
+            clashPath, "template"
         ) { getFromFile("${GExternalCacheDir}/template", "secret") }
     }
 
@@ -173,12 +177,12 @@ object clashConfig {
         return when (getClashType()) {
             "CFM" -> {
                 setFile(
-                    getConfigPath(), "template"
+                    clashPath, "template"
                 ) { getFromFile("${GExternalCacheDir}/template", "external-controller") }
             }
             "CPFM" -> {
                 val temp = setFile(
-                    getConfigPath(), "config.yaml"
+                    clashPath, "config.yaml"
                 ) { getFromFile("${GExternalCacheDir}/config.yaml", "external-controller") }
 
                 if (temp.startsWith(":")) {
