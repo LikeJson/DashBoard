@@ -163,6 +163,10 @@ class DownloadPage : Fragment() {
 //                        true
 //                        TODO: 长按删除订阅
 //                    }
+
+                    when (downloadItem.type) {
+                        "SUB" -> holder.description.visibility = View.INVISIBLE
+                    }
                     holder.downloadButton.setOnClickListener {
                         doDownLoad(downloadItem, holder)
                     }
@@ -263,6 +267,7 @@ class DownloadPage : Fragment() {
                     val totalLength: Long = downLoadConn.contentLengthLong
                     if (totalLength == -1L) {
                         withContext(Dispatchers.Main) {
+                            holder.description.visibility = View.VISIBLE
                             holder.description.text = "无法获取文件长度(-1)，进度条失效"
                         }
                     }
@@ -308,13 +313,20 @@ class DownloadPage : Fragment() {
                     )
                     Log.d("Install", "ExitInstall")
 
+                    withContext(Dispatchers.Main) {
+                        holder.description.visibility = View.VISIBLE
+                        holder.description.text = "下载完成"
+                    }
 
                 } catch (ex: Exception) {
-
+                    withContext(Dispatchers.Main) {
+                        holder.description.visibility = View.VISIBLE
+                        holder.description.text = "下载发生错误"
+                    }
                 } finally {
                     Log.d("NetWork", "DownLoadEnd")
 
-                    async(Dispatchers.Main) {
+                    withContext(Dispatchers.Main) {
                         //disable button
                         holder.downloadButton.isClickable = true
                         holder.progressBar.visibility = View.GONE
