@@ -1,5 +1,6 @@
 package com.dashboard.kotlin
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.dashboard.kotlin.clashhelper.clashStatus
 import com.dashboard.kotlin.clashhelper.commandhelper
+import com.dashboard.kotlin.suihelper.suihelper
 import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.*
@@ -35,44 +37,9 @@ class MainPage : Fragment() {
         toolbar.title = getString(R.string.app_name)
         //TODO 添加 app 图标
 
-        if (clashStatus().runStatus()) {
-            clash_status.setCardBackgroundColor(
-                ResourcesCompat.getColor(resources, R.color.colorPrimary, context?.theme)
-            )
-            clash_status_icon.setImageDrawable(
-                ResourcesCompat.getDrawable(resources, R.drawable.ic_activited, context?.theme)
-            )
-            clash_status_text.text = getString(R.string.clash_enable)
-
-            netspeed_status_text.visibility = View.VISIBLE
+        if (!suihelper.checkPermission()) {
 
 
-            clashStatusClass.getTraffic()
-
-            GlobalScope.launch(Dispatchers.IO) {
-                while (clashStatusClass.trafficThreadFlag) {
-                    try {
-                        val jsonObject = JSONObject(clashStatusClass.trafficRawText)
-                        val upText: String = commandhelper.autoUnit(jsonObject.optString("up"))
-                        val downText: String =
-                            commandhelper.autoUnit(jsonObject.optString("down"))
-
-                        withContext(Dispatchers.Main) {
-                            netspeed_status_text.text =
-                                getString(R.string.netspeed_status_text).format(
-                                    upText,
-                                    downText
-                                )
-                        }
-                    } catch (ex: Exception) {
-                        Log.w("trafficText", ex.toString())
-                    }
-                    delay(1000)
-                }
-            }
-
-
-        } else {
             clash_status.setCardBackgroundColor(
                 ResourcesCompat.getColor(resources, R.color.error, context?.theme)
             )
@@ -83,11 +50,81 @@ class MainPage : Fragment() {
                     context?.theme
                 )
             )
-            clash_status_text.text = getString(R.string.clash_disable)
+            clash_status_text.text = getString(R.string.sui_disable)
             netspeed_status_text.visibility = View.GONE
 
-        }
 
+            GlobalScope.async {
+                while (true) {
+                    if (suihelper.checkPermission(request = false)) {
+                        val intent: Intent? = activity?.baseContext?.packageManager
+                            ?.getLaunchIntentForPackage(activity?.baseContext!!.packageName)
+                        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        intent?.putExtra("REBOOT", "reboot")
+                        startActivity(intent)
+                        break
+                    }
+                    delay(1 * 1000)
+                }
+            }
+
+        } else {
+
+
+            if (clashStatus().runStatus()) {
+                clash_status.setCardBackgroundColor(
+                    ResourcesCompat.getColor(resources, R.color.colorPrimary, context?.theme)
+                )
+                clash_status_icon.setImageDrawable(
+                    ResourcesCompat.getDrawable(resources, R.drawable.ic_activited, context?.theme)
+                )
+                clash_status_text.text = getString(R.string.clash_enable)
+
+                netspeed_status_text.visibility = View.VISIBLE
+
+
+                clashStatusClass.getTraffic()
+
+                GlobalScope.launch(Dispatchers.IO) {
+                    while (clashStatusClass.trafficThreadFlag) {
+                        try {
+                            val jsonObject = JSONObject(clashStatusClass.trafficRawText)
+                            val upText: String = commandhelper.autoUnit(jsonObject.optString("up"))
+                            val downText: String =
+                                commandhelper.autoUnit(jsonObject.optString("down"))
+
+                            withContext(Dispatchers.Main) {
+                                netspeed_status_text.text =
+                                    getString(R.string.netspeed_status_text).format(
+                                        upText,
+                                        downText
+                                    )
+                            }
+                        } catch (ex: Exception) {
+                            Log.w("trafficText", ex.toString())
+                        }
+                        delay(1000)
+                    }
+                }
+
+
+            } else {
+                clash_status.setCardBackgroundColor(
+                    ResourcesCompat.getColor(resources, R.color.error, context?.theme)
+                )
+                clash_status_icon.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        R.drawable.ic_service_not_running,
+                        context?.theme
+                    )
+                )
+                clash_status_text.text = getString(R.string.clash_disable)
+                netspeed_status_text.visibility = View.GONE
+
+            }
+
+        }
         menu_ip_check.setOnClickListener {
 
             val navController = it.findNavController()
@@ -117,7 +154,7 @@ class MainPage : Fragment() {
 
         }
 
-        menu_sub_download.setOnClickListener{
+        menu_sub_download.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("TYPE", "SUB")
             val navController = it.findNavController()

@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         this.window.navigationBarColor = resources.getColor(android.R.color.transparent)
 
         //sui
-        suihelper().init(packageName)
+        suihelper.init(packageName)
 
         //verbal
         GExternalCacheDir = applicationContext.externalCacheDir.toString()

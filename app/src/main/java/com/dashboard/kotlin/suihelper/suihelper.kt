@@ -8,22 +8,20 @@ import rikka.sui.Sui
 import java.io.DataInputStream
 import java.io.DataOutputStream
 
-class suihelper {
+object suihelper {
     fun init(packageName: String) {
         Sui.init(packageName)
-        GlobalScope.async(Dispatchers.Main){
-            delay(1000L * 2)
-            checkPermission()
-        }
     }
 
-    fun checkPermission(): Boolean {
+    fun checkPermission(request: Boolean = true): Boolean {
         try {
             if (Shizuku.getVersion() >= 11) {
                 if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
                     return true
                 } else {
-                    Shizuku.requestPermission(114514)
+                    if (request) {
+                        Shizuku.requestPermission(114514)
+                    }
                     return false
                 }
             } else {
