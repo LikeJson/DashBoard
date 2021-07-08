@@ -2,6 +2,7 @@ package com.dashboard.kotlin.clashhelper
 
 import android.util.Log
 import com.dashboard.kotlin.GExternalCacheDir
+import com.dashboard.kotlin.KV
 import java.net.HttpURLConnection
 import java.net.URL
 import com.dashboard.kotlin.suihelper.suihelper
@@ -151,7 +152,7 @@ object clashConfig {
     }
 
     fun getClashType(): String {
-        return "CFM"
+        return KV.decodeString("ClashType") ?: "CFM"
     }
 
     private fun getSecret(): String {
@@ -163,14 +164,31 @@ object clashConfig {
     private fun getConfigPath(): String {
         when (getClashType()) {
             "CFM" -> return "/data/clash"
+            "CPFM" -> return "/sdcard/Documents/Clash"
         }
         return ""
     }
 
     private fun getExternalController(): String {
-        return setFile(
-            "/data/clash", "template"
-        ) { getFromFile("${GExternalCacheDir}/template", "external-controller") }
+        return when (getClashType()) {
+            "CFM" -> {
+                setFile(
+                    getConfigPath(), "template"
+                ) { getFromFile("${GExternalCacheDir}/template", "external-controller") }
+            }
+            "CPFM" -> {
+                val temp = setFile(
+                    getConfigPath(), "config.yaml"
+                ) { getFromFile("${GExternalCacheDir}/config.yaml", "external-controller") }
+
+                if (temp.startsWith(":")) {
+                    "127.0.0.1$temp"
+                } else {
+                    temp
+                }
+            }
+            else -> ""
+        }
     }
 
     private fun setFile(dirPath: String, fileName: String, func: () -> String): String {

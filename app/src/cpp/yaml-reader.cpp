@@ -64,28 +64,34 @@ Java_com_dashboard_kotlin_clashhelper_clashConfig_mergeFile(JNIEnv *env, jobject
                                                             jstring jmainFilePath,
                                                             jstring jtemplatePath,
                                                             jstring joutputFilePath) {
-    jboolean isCopy;
-    const char *mainFilePath = env->GetStringUTFChars(jmainFilePath, &isCopy);
-    LOGV("isCopy jpath:%d", isCopy)
-    LOGV("mainFilePath: %s", mainFilePath)
-    const char *templatePath = env->GetStringUTFChars(jtemplatePath, &isCopy);
-    LOGV("isCopy jpath:%d", isCopy)
-    LOGV("templatePath: %s", templatePath)
-    const char *outputFilePath = env->GetStringUTFChars(joutputFilePath, &isCopy);
-    LOGV("isCopy jpath:%d", isCopy)
-    LOGV("outputFilePath: %s", outputFilePath)
+    try {
 
-    YAML::Node mainFileObj = YAML::LoadFile(mainFilePath);
-    YAML::Node templateObj = YAML::LoadFile(templatePath);
+        jboolean isCopy;
+        const char *mainFilePath = env->GetStringUTFChars(jmainFilePath, &isCopy);
+        LOGV("isCopy jpath:%d", isCopy)
+        LOGV("mainFilePath: %s", mainFilePath)
+        const char *templatePath = env->GetStringUTFChars(jtemplatePath, &isCopy);
+        LOGV("isCopy jpath:%d", isCopy)
+        LOGV("templatePath: %s", templatePath)
+        const char *outputFilePath = env->GetStringUTFChars(joutputFilePath, &isCopy);
+        LOGV("isCopy jpath:%d", isCopy)
+        LOGV("outputFilePath: %s", outputFilePath)
 
-    YAML::Node outputObj = merge_nodes(mainFileObj, templateObj);
+        YAML::Node mainFileObj = YAML::LoadFile(mainFilePath);
+        YAML::Node templateObj = YAML::LoadFile(templatePath);
 
-    std::ofstream fileOut(outputFilePath);
-    fileOut << outputObj;
+        YAML::Node outputObj = merge_nodes(mainFileObj, templateObj);
+
+        std::ofstream fileOut(outputFilePath);
+        fileOut << outputObj;
+
+    } catch (const std::exception &e) {
+        LOGE("%s", e.what())
+    }
 
 }
 
-inline const YAML::Node & cnode(const YAML::Node &n) {
+inline const YAML::Node &cnode(const YAML::Node &n) {
     return n;
 }
 
@@ -106,7 +112,7 @@ YAML::Node merge_nodes(YAML::Node a, YAML::Node b) {
     auto c = YAML::Node(YAML::NodeType::Map);
     for (auto n : a) {
         if (n.first.IsScalar()) {
-            const std::string & key = n.first.Scalar();
+            const std::string &key = n.first.Scalar();
             auto t = YAML::Node(cnode(b)[key]);
             if (t) {
                 c[n.first] = merge_nodes(n.second, t);

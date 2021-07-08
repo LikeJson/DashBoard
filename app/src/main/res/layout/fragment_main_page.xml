@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     tools:context=".MainPage">
 
@@ -45,7 +45,6 @@
                     android:textAppearance="?attr/textAppearanceBody2"
                     android:textColor="@android:color/white"
                     android:visibility="gone" />
-
 
 
             </LinearLayout>
@@ -145,6 +144,28 @@
                     <TextView
                         style="@style/DefaultCardText"
                         android:text="@string/title_web_dashboard_download"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/menu_version_switch"
+                style="@style/DefaultCard"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    style="@style/Default"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/DefaultCardImage"
+                        android:layout_width="wrap_content"
+                        android:src="@drawable/ic_switch" />
+
+                    <TextView
+                        style="@style/DefaultCardText"
+                        android:text="@string/title_version_switch"
                         android:textAppearance="?attr/textAppearanceHeadline6" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
