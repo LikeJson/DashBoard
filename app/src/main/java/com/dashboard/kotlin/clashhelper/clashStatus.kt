@@ -211,6 +211,7 @@ object clashConfig {
 
     private fun copyFile(dirPath: String, fileName: String) {
         suihelper.suCmd("cp ${dirPath}/${fileName} ${GExternalCacheDir}/${fileName}")
+        suihelper.suCmd("chmod +rw ${GExternalCacheDir}/${fileName}")
         return
     }
 
