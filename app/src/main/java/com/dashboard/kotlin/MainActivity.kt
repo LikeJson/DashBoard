@@ -19,8 +19,16 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         this.window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        this.window.statusBarColor = resources.getColor(android.R.color.transparent)
-        this.window.navigationBarColor = resources.getColor(android.R.color.transparent)
+        this.window.statusBarColor = ResourcesCompat.getColor(
+            resources,
+            android.R.color.transparent,
+            applicationContext?.theme
+        )
+        this.window.navigationBarColor = ResourcesCompat.getColor(
+            resources,
+            android.R.color.transparent,
+            applicationContext?.theme
+        )
 
         //sui
         suihelper.init(packageName)
