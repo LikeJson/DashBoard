@@ -129,7 +129,7 @@ object clashConfig {
                 conn.connect()
                 Log.i("NET", "HTTP CODE : ${conn.responseCode}")
                 conn.inputStream.use {
-                    val data = it.readBytes().toString()
+                    val data = it.bufferedReader().readText()
                     Log.i("NET", data)
                 }
 
