@@ -19,7 +19,7 @@ jobs:
           java-version: 1.8
 
       - name: Write key
-        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/master'
+        if: github.event_name != 'pull_request' && ( github.ref == 'refs/heads/master' || github.ref == 'refs/heads/dev' )
         run: |
           echo storePassword='${{ secrets.KEY_STORE_PASSWORD }}' >> local.properties
           echo keyAlias='${{ secrets.ALIAS }}' >> local.properties
@@ -78,7 +78,7 @@ jobs:
       - name: Upload debugAPK
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ steps.buildRelease.outputs.releaseName }}
+          name: ${{ steps.buildRelease.outputs.debugName }}
           path: "app/build/outputs/apk/debug/*.apk"
 
       - name: Post to release channel
