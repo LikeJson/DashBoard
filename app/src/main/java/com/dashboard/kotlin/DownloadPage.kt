@@ -291,7 +291,7 @@ class DownloadPage : Fragment() {
                     val downLoadConn = URL(downloadItem.URL).openConnection()
 
                     //set UA
-                    if (downloadItem.type == "sub") {
+                    if (downloadItem.type == "SUB") {
                         downLoadConn.setRequestProperty("User-Agent", "ClashForMagisk/1.2.5")
                     } else {
                         downLoadConn.setRequestProperty(
@@ -301,7 +301,7 @@ class DownloadPage : Fragment() {
                     }
 
 
-                    downLoadConn.getInputStream().let { input ->
+                    downLoadConn.getInputStream().use { input ->
                         val file = File(
                             this@DownloadPage.context?.externalCacheDir,
                             downloadItem.title
