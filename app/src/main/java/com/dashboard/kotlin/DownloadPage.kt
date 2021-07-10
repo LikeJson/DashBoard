@@ -275,7 +275,7 @@ class DownloadPage : Fragment() {
         ) {
             downLoadThread = GlobalScope.launch(Dispatchers.IO) {
                 try {
-                    Log.d("NetWork", "DownLoadStart URL:${downloadItem.URL}")
+                    Log.d("NetWork", "DownLoadStart")
 
                     withContext(Dispatchers.Main) {
                         //disable button
