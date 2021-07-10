@@ -78,7 +78,7 @@ jobs:
       - name: Upload debugAPK
         uses: actions/upload-artifact@v2
         with:
-          name: ${{ steps.buildRelease.outputs.releaseName }}
+          name: ${{ steps.buildRelease.outputs.debugName }}
           path: "app/build/outputs/apk/debug/*.apk"
 
       - name: Post to release channel
