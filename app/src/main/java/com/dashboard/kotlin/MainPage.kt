@@ -1,6 +1,5 @@
 package com.dashboard.kotlin
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -130,8 +129,6 @@ class MainPage : Fragment() {
         menu_ip_check.setOnClickListener {
 
             val navController = it.findNavController()
-//            val bundle = Bundle()
-//            bundle.putString("URL","https://ip.skk.moe/")
             navController.navigate(R.id.action_mainPage_to_ipCheckPage)
 
         }
@@ -168,10 +165,10 @@ class MainPage : Fragment() {
             val versionArray = arrayOf<CharSequence>("CFM", "CPFM")
             val diaLogObj: AlertDialog? = activity?.let { itD ->
                 AlertDialog.Builder(itD).let { it ->
-                    it.setItems(versionArray,
-                        DialogInterface.OnClickListener { dialog, which ->
-                            KV.encode("ClashType",versionArray[which].toString())
-                        })
+                    it.setItems(versionArray
+                    ) { _, which ->
+                        KV.encode("ClashType", versionArray[which].toString())
+                    }
                     it.create()
                 }
             }
