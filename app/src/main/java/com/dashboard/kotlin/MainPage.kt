@@ -1,6 +1,5 @@
 package com.dashboard.kotlin
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.dashboard.kotlin.clashhelper.clashConfig
 import com.dashboard.kotlin.clashhelper.clashStatus
 import com.dashboard.kotlin.clashhelper.commandhelper
 import com.dashboard.kotlin.suihelper.suihelper
@@ -59,11 +59,7 @@ class MainPage : Fragment() {
             GlobalScope.async {
                 while (true) {
                     if (suihelper.checkPermission(request = false)) {
-                        val intent: Intent? = activity?.baseContext?.packageManager
-                            ?.getLaunchIntentForPackage(activity?.baseContext!!.packageName)
-                        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        intent?.putExtra("REBOOT", "reboot")
-                        startActivity(intent)
+                        restartApp()
                         break
                     }
                     delay(1 * 1000)
@@ -80,7 +76,8 @@ class MainPage : Fragment() {
                 clash_status_icon.setImageDrawable(
                     ResourcesCompat.getDrawable(resources, R.drawable.ic_activited, context?.theme)
                 )
-                clash_status_text.text = getString(R.string.clash_enable)
+                clash_status_text.text =
+                    getString(R.string.clash_enable).format(clashConfig.getClashType())
 
                 netspeed_status_text.visibility = View.VISIBLE
 
@@ -130,8 +127,6 @@ class MainPage : Fragment() {
         menu_ip_check.setOnClickListener {
 
             val navController = it.findNavController()
-//            val bundle = Bundle()
-//            bundle.putString("URL","https://ip.skk.moe/")
             navController.navigate(R.id.action_mainPage_to_ipCheckPage)
 
         }
@@ -168,10 +163,12 @@ class MainPage : Fragment() {
             val versionArray = arrayOf<CharSequence>("CFM", "CPFM")
             val diaLogObj: AlertDialog? = activity?.let { itD ->
                 AlertDialog.Builder(itD).let { it ->
-                    it.setItems(versionArray,
-                        DialogInterface.OnClickListener { dialog, which ->
-                            KV.encode("ClashType",versionArray[which].toString())
-                        })
+                    it.setItems(
+                        versionArray
+                    ) { _, which ->
+                        KV.encode("ClashType", versionArray[which].toString())
+                        restartApp()
+                    }
                     it.create()
                 }
             }
@@ -184,5 +181,14 @@ class MainPage : Fragment() {
         clashStatusClass.stopGetTraffic()
         Log.d("DestroyView", "MainPageDestroyView")
         super.onDestroyView()
+    }
+
+
+    private fun restartApp() {
+        val intent: Intent? = activity?.baseContext?.packageManager
+            ?.getLaunchIntentForPackage(activity?.baseContext!!.packageName)
+        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent?.putExtra("REBOOT", "reboot")
+        startActivity(intent)
     }
 }
