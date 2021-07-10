@@ -150,7 +150,7 @@ object clashConfig {
                     "${GExternalCacheDir}/template",
                     "${GExternalCacheDir}/config_output.yaml"
                 )
-                suihelper.suCmd("mv ${GExternalCacheDir}/config_output.yaml $outputFilePath")
+                suihelper.suCmd("mv '${GExternalCacheDir}/config_output.yaml' '$outputFilePath'")
             }
         }
     }
@@ -205,13 +205,13 @@ object clashConfig {
     private fun setFileNR(dirPath: String, fileName: String, func: () -> Unit) {
         copyFile(dirPath, fileName)
         func()
-        suihelper.suCmd("cp ${GExternalCacheDir}/${fileName} ${dirPath}/${fileName} ")
+        suihelper.suCmd("cp '${GExternalCacheDir}/${fileName}' '${dirPath}/${fileName}'")
         deleteFile(GExternalCacheDir, fileName)
     }
 
     private fun copyFile(dirPath: String, fileName: String) {
-        suihelper.suCmd("cp ${dirPath}/${fileName} ${GExternalCacheDir}/${fileName}")
-        suihelper.suCmd("chmod +rw ${GExternalCacheDir}/${fileName}")
+        suihelper.suCmd("cp '${dirPath}/${fileName}' '${GExternalCacheDir}/${fileName}'")
+        suihelper.suCmd("chmod +rw '${GExternalCacheDir}/${fileName}'")
         return
     }
 

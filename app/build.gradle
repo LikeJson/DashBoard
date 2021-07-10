@@ -13,8 +13,8 @@ android {
         applicationId "com.dashboard.kotlin"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 23
-        versionName "2.06"
+        versionCode 24
+        versionName "2.07"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
