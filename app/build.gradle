@@ -5,8 +5,6 @@ plugins {
     id "org.jetbrains.kotlin.plugin.serialization" version "1.5.20-RC"
 }
 
-def gitCommitHash = 'git rev-parse --verify --short HEAD'.execute().text.trim()
-
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -15,8 +13,8 @@ android {
         applicationId "com.dashboard.kotlin"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 21
-        versionName "2.01"
+        versionCode 23
+        versionName "2.06"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

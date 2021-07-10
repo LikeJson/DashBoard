@@ -1,5 +1,6 @@
 package com.dashboard.kotlin
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -155,13 +156,51 @@ class DownloadPage : Fragment() {
                 }
 
                 else -> {
-//                    holder.download_card_single.setOnLongClickListener {
-//                        true
-//                        TODO: 长按删除订阅
-//                    }
-
                     when (downloadItem.type) {
-                        "SUB" -> holder.description.visibility = View.INVISIBLE
+                        "SUB" -> {
+                            holder.description.visibility = View.INVISIBLE
+
+                            holder.download_card_single.setOnLongClickListener {
+                                val diaLogView = LayoutInflater.from(this@DownloadPage.context)
+                                    .inflate(R.layout.dialog_confirm, null, false)
+                                val confirmDialogTitle: TextView =
+                                    diaLogView.findViewById(R.id.confirmDialog_title)
+                                val confirmDialogContext: TextView =
+                                    diaLogView.findViewById(R.id.confirmDialog_text)
+                                val confirmDialogSureBtn: TextView =
+                                    diaLogView.findViewById(R.id.confirmDialogBtnSure)
+                                val confirmDialogCancelBtn: TextView =
+                                    diaLogView.findViewById(R.id.confirmDialogBtnCancel)
+
+                                val diaLogObj: AlertDialog? = activity?.let {
+                                    AlertDialog.Builder(it).create()
+                                }
+                                diaLogObj?.show()
+                                diaLogObj?.window?.setContentView(diaLogView)
+                                diaLogObj?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                                diaLogObj?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
+
+                                confirmDialogTitle.text = "删除订阅"
+                                confirmDialogContext.text = "警告⚠️\n此操作不可撤销"
+                                confirmDialogCancelBtn.setOnClickListener { diaLogObj?.dismiss() }
+                                confirmDialogSureBtn.setOnClickListener {
+                                    KV.encode(
+                                        "SUB_INDEX", (
+                                                (KV.decodeBytes("SUB_INDEX") ?: byteArrayOf())
+                                                    .toMutableSet() - holder.description.text.toString()
+                                                    .toByte()
+                                                )
+                                            .toByteArray()
+                                    )
+
+                                    FlashView()
+
+                                    diaLogObj?.dismiss()
+                                }
+
+                                true
+                            }
+                        }
                     }
                     holder.downloadButton.setOnClickListener {
                         doDownLoad(downloadItem, holder)

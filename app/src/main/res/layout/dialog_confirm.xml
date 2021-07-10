@@ -19,57 +19,23 @@
         android:paddingBottom="15dp">
 
         <TextView
+            android:id="@+id/confirmDialog_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="添加订阅"
+            android:paddingStart="10dp"
             android:textAppearance="?attr/textAppearanceHeadline6"
             android:textSize="25sp" />
 
         <TextView
+            android:id="@+id/confirmDialog_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="10dp"
             android:paddingTop="16dp"
             android:paddingEnd="10dp"
             android:paddingBottom="2dp"
-            android:text="名称"
             android:textAppearance="?attr/textAppearanceHeadline1"
             android:textSize="15sp" />
-
-        <EditText
-            android:id="@+id/addSubDialogTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="XXX"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:singleLine="true"
-            android:textAppearance="?attr/textAppearanceHeadline1"
-            android:textSize="15sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="2dp"
-            android:text="链接"
-            android:textAppearance="?attr/textAppearanceHeadline1"
-            android:textSize="15sp" />
-
-        <EditText
-            android:id="@+id/addSubDialogURL"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="https://example.com"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:singleLine="true"
-            android:textAppearance="?attr/textAppearanceHeadline1"
-            android:textSize="15sp" />
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -87,7 +53,7 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/addSubDialogBtnCancel"
+                android:id="@+id/confirmDialogBtnCancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/text_cancel"
@@ -99,11 +65,11 @@
                 android:layout_height="0dp" />
 
             <TextView
-                android:id="@+id/addSubDialogBtnSure"
+                android:id="@+id/confirmDialogBtnSure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:text="@string/text_add"
+                android:text="@string/text_confirm"
                 android:textColor="#008080"
                 android:textSize="16sp" />
         </LinearLayout>
