@@ -12,7 +12,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_gravity="center"
         android:paddingStart="10dp"
         android:paddingTop="10dp"
         android:paddingEnd="10dp"
@@ -43,12 +43,12 @@
 
                 <TextView
                     android:id="@+id/download_card_desc"
-                    android:paddingTop="10dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:paddingTop="10dp"
                     android:textAppearance="?attr/textAppearanceHeadline1"
                     android:textSize="10sp"
                     tools:ignore="SmallSp" />
@@ -61,70 +61,24 @@
                 style="@style/DefaultCardImage"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_file_download" />
+                android:src="@drawable/ic_file_download"
+                tools:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/downloadProgressBar"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="16dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-        <com.daimajia.numberprogressbar.NumberProgressBar
-            android:id="@+id/downloadProgressBar"
-            style="@style/NumberProgressBar_Default"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:paddingTop="10dp"
-            android:paddingBottom="0dp"/>
-
     </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-    <!--    <LinearLayout-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--            android:paddingStart="10dp"-->
-    <!--            android:paddingEnd="10dp"-->
-    <!--            android:paddingTop="10dp"-->
-    <!--            android:paddingBottom="10dp">-->
-
-    <!--        <RelativeLayout-->
-    <!--            android:layout_width="0dp"-->
-    <!--            android:layout_height="match_parent"-->
-    <!--            android:layout_weight="2">-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/download_card_title"-->
-    <!--                android:text="默认文本1"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_alignParentTop="true"-->
-    <!--                android:layout_marginTop="-3dp"-->
-    <!--                android:ellipsize="end"-->
-    <!--                android:maxLines="2"-->
-    <!--                android:textAppearance="?attr/textAppearanceHeadline6"-->
-    <!--                android:textSize="18sp" />-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/download_card_desc"-->
-    <!--                android:text="默认文本2"-->
-    <!--                android:layout_width="wrap_content"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_alignParentBottom="true"-->
-    <!--                android:ellipsize="end"-->
-    <!--                android:maxLines="1"-->
-    <!--                android:textAppearance="?attr/textAppearanceHeadline1"-->
-    <!--                android:textSize="10sp"-->
-    <!--                tools:ignore="SmallSp" />-->
-    <!--        </RelativeLayout>-->
-
-
-    <!--                    <ImageView-->
-    <!--                        android:id="@+id/downloadButton"-->
-    <!--                        style="@style/DefaultCardImage"-->
-    <!--                        android:layout_alignParentEnd="true"-->
-    <!--                        android:layout_centerVertical="true"-->
-    <!--                        android:src="@drawable/ic_file_download" />-->
-
-    <!--    </LinearLayout>-->
-
-
 </com.google.android.material.card.MaterialCardView>

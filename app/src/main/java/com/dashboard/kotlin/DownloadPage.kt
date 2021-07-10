@@ -6,10 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView
 import androidx.core.content.res.ResourcesCompat
@@ -17,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.daimajia.numberprogressbar.NumberProgressBar
 import com.dashboard.kotlin.clashhelper.commandhelper
 import kotlinx.android.synthetic.main.fragment_download_page.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -235,8 +231,8 @@ class DownloadPage : Fragment() {
 
 
         fun doDownLoad(
-            downloadItem: DownloadPage.DownLoadDataClass,
-            holder: DownloadPage.DownLoadPageViewHolder
+            downloadItem: DownLoadDataClass,
+            holder: DownLoadPageViewHolder
         ) {
             downLoadThread = GlobalScope.launch(Dispatchers.IO) {
                 try {
@@ -244,11 +240,13 @@ class DownloadPage : Fragment() {
 
                     withContext(Dispatchers.Main) {
                         //disable button
-                        holder.downloadButton.isClickable = false
+                        holder.downloadButton.visibility = View.GONE
 
                         //init progressBar
-                        holder.progressBar.progress = 0
                         holder.progressBar.visibility = View.VISIBLE
+
+                        holder.description.text = "开始下载"
+
                     }
 
                     val downLoadConn = URL(downloadItem.URL).openConnection()
@@ -263,48 +261,22 @@ class DownloadPage : Fragment() {
                         )
                     }
 
-                    //getLength
-                    val totalLength: Long = downLoadConn.contentLengthLong
-                    if (totalLength == -1L) {
-                        withContext(Dispatchers.Main) {
-                            holder.description.visibility = View.VISIBLE
-                            holder.description.text = "无法获取文件长度(-1)，进度条失效"
-                        }
-                    }
 
                     downLoadConn.getInputStream().let { input ->
-                        var count: Long = 0
                         val file = File(
                             this@DownloadPage.context?.externalCacheDir,
-                            "${downloadItem.title}"
+                            downloadItem.title
                         )
                         if (file.exists()) {
                             file.delete()
                         }
                         FileOutputStream(file).use { output ->
-                            while (true) {
-                                val temp: Int = input.read()
-                                if (temp != -1) {
-                                    output.write(temp)
-                                    count -= -1
-                                    if (count % 1000 == 0L)
-                                        async(Dispatchers.Main) {
-                                            holder.progressBar.progress =
-                                                (count * 100 / totalLength).toInt()
-                                        }
-                                } else {
-                                    holder.progressBar.progress = 100
-                                    break
-                                }
-                            }
+                            input.copyTo(output)
                         }
-
-
                     }
 
 
                     // install
-
                     Log.d("Install", "StartInstall")
                     commandhelper.doInstall(
                         "${this@DownloadPage.context?.externalCacheDir}/${downloadItem.title}",
@@ -327,8 +299,7 @@ class DownloadPage : Fragment() {
                     Log.d("NetWork", "DownLoadEnd")
 
                     withContext(Dispatchers.Main) {
-                        //disable button
-                        holder.downloadButton.isClickable = true
+                        holder.downloadButton.visibility = View.VISIBLE
                         holder.progressBar.visibility = View.GONE
                     }
                 }
@@ -342,7 +313,7 @@ class DownloadPage : Fragment() {
         val title: TextView = itemView.findViewById(R.id.download_card_title)
         val description: TextView = itemView.findViewById(R.id.download_card_desc)
         val downloadButton: ImageView = itemView.findViewById(R.id.downloadButton)
-        val progressBar: NumberProgressBar = itemView.findViewById(R.id.downloadProgressBar)
+        val progressBar: ProgressBar = itemView.findViewById(R.id.downloadProgressBar)
         val download_card_single: CardView = itemView.findViewById(R.id.download_card_single)
     }
 
