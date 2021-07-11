@@ -80,13 +80,26 @@ object clashConfig {
 
     var clashDashBoard: String
         get() {
+            val fileName: String = when(getClashType()){
+                "CFM" -> "template"
+                "CPFM" -> "config.yaml"
+                else -> return ""
+            }
+
             return setFile(
-                clashPath, "template"
+                clashPath, fileName
             ) { getFromFile("${GExternalCacheDir}/template", "external-ui") }
         }
         set(value) {
+
+            val fileName: String = when(getClashType()){
+                "CFM" -> "template"
+                "CPFM" -> "config.yaml"
+                else -> return
+            }
+
             setFileNR(
-                clashPath, "template"
+                clashPath, fileName
             ) { modifyFile("${GExternalCacheDir}/template", "external-ui", value) }
             return
         }
@@ -160,8 +173,14 @@ object clashConfig {
     }
 
     private fun getSecret(): String {
+        val fileName: String = when(getClashType()){
+            "CFM" -> "template"
+            "CPFM" -> "config.yaml"
+            else -> return ""
+        }
+
         return setFile(
-            clashPath, "template"
+            clashPath, fileName
         ) { getFromFile("${GExternalCacheDir}/template", "secret") }
     }
 
