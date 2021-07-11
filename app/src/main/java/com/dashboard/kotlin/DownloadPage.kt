@@ -187,7 +187,7 @@ class DownloadPage : Fragment() {
                                     KV.encode(
                                         "SUB_INDEX", (
                                                 (KV.decodeBytes("SUB_INDEX") ?: byteArrayOf())
-                                                    .toMutableSet() - holder.description.text.toString()
+                                                    .toMutableSet() - holder.originalDescription
                                                     .toByte()
                                                 )
                                             .toByteArray()
@@ -276,7 +276,6 @@ class DownloadPage : Fragment() {
             downLoadThread = GlobalScope.launch(Dispatchers.IO) {
                 try {
                     Log.d("NetWork", "DownLoadStart")
-
                     withContext(Dispatchers.Main) {
                         //disable button
                         holder.downloadButton.visibility = View.GONE
@@ -354,6 +353,7 @@ class DownloadPage : Fragment() {
         val downloadButton: ImageView = itemView.findViewById(R.id.downloadButton)
         val progressBar: ProgressBar = itemView.findViewById(R.id.downloadProgressBar)
         val download_card_single: CardView = itemView.findViewById(R.id.download_card_single)
+        val originalDescription: String = description.text.toString()
     }
 
 
