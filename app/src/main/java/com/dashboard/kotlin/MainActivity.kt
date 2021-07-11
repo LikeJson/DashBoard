@@ -7,6 +7,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.dashboard.kotlin.suihelper.suihelper
 import com.tencent.mmkv.MMKV
 import kotlinx.android.synthetic.main.toolbar.*
+import java.io.File
 
 
 lateinit var GExternalCacheDir: String
@@ -36,6 +37,13 @@ class MainActivity : AppCompatActivity() {
         //debug version print logs
         if (BuildConfig.DEBUG) {
             suihelper.suCmd("su -c logcat | grep \$(su -c ps -A | grep  com.dashboard.kotlin | awk '{print \$2}') > \"${externalCacheDir}/log\$(date +\"%Y-%m-%d_%H-%M-%S\").txt\" &")
+        } else {
+            File(externalCacheDir.toString()).walk()
+                .maxDepth(1)
+                .filter { it.isFile }
+                .filter { it.name.startsWith("log") }
+                .filter { it.extension == "txt" }
+                .forEach { it.delete() }
         }
 
         //verbal
