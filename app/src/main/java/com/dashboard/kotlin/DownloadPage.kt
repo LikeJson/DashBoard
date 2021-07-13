@@ -279,8 +279,8 @@ class DownloadPage : Fragment() {
                 try {
                     Log.d("NetWork", "DownLoadStart")
 
+                    val randomName: String = (1..1000).random().toString()
                     originalDescription = holder.description.text.toString()
-
                     withContext(Dispatchers.Main) {
                         //disable button
                         holder.downloadButton.visibility = View.GONE
@@ -309,7 +309,7 @@ class DownloadPage : Fragment() {
                     downLoadConn.getInputStream().use { input ->
                         val file = File(
                             this@DownloadPage.context?.externalCacheDir,
-                            downloadItem.title
+                            randomName
                         )
                         if (file.exists()) {
                             file.delete()
@@ -323,7 +323,7 @@ class DownloadPage : Fragment() {
                     // install
                     Log.d("Install", "StartInstall")
                     commandhelper.doInstall(
-                        "${this@DownloadPage.context?.externalCacheDir}/${downloadItem.title}",
+                        "${this@DownloadPage.context?.externalCacheDir}/${randomName}",
                         downloadItem.type,
                         downloadItem.pathName
                     )
