@@ -137,7 +137,7 @@ class MainPage : Fragment() {
 
             val navController = it.findNavController()
             val bundle = Bundle()
-            bundle.putString("URL", "http://127.0.0.1:9090/ui")
+            bundle.putString("URL", "http://127.0.0.1:9090/ui/?theme=light")
             navController.navigate(R.id.action_mainPage_to_webViewPage, bundle)
         }
 
