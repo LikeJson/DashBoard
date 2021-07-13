@@ -5,6 +5,9 @@ plugins {
     id "org.jetbrains.kotlin.plugin.serialization" version "1.5.20-RC"
 }
 
+def gitCommitCount = "git rev-list HEAD --count".execute().text.trim()
+def gitCommitHash = "git rev-parse --verify --short HEAD".execute().text.trim()
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -13,8 +16,9 @@ android {
         applicationId "com.dashboard.kotlin"
         minSdkVersion 26
         targetSdkVersion 30
-        versionCode 24
+        versionCode  gitCommitCount.toInteger()
         versionName "2.07"
+        versionNameSuffix = ".r${gitCommitCount}.${gitCommitHash}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -35,7 +39,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "$rootProject.name-v${variant.versionName}(${variant.versionCode})-${variant.buildType.name}.apk"
+            outputFileName = "$rootProject.name-v${variant.versionName}-${variant.buildType.name}.apk"
         }
     }
 
