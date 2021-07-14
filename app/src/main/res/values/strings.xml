@@ -12,4 +12,5 @@
     <string name="text_confirm">确认</string>
     <string name="text_cancel">取消</string>
     <string name="text_add">添加</string>
+    <string name="title_mmdb_download">MMDB 下载</string>
 </resources>

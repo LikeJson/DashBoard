@@ -27,10 +27,10 @@ object commandhelper {
 
     fun doInstall(filePath: String, type: String, name: String = "") {
         when (type) {
-            "SUB" -> {
-                suihelper.suCmd("mv -f '$filePath' '${clashConfig.clashPath}/config.yaml'")
-                suihelper.suCmd("chmod 700 '${clashConfig.clashPath}/config.yaml'")
-                suihelper.suCmd("chown system:system '${clashConfig.clashPath}/config.yaml'")
+            "SUB", "MMDB" -> {
+                suihelper.suCmd("mv -f '$filePath' '${clashConfig.clashPath}/${name}'")
+                suihelper.suCmd("chmod 700 '${clashConfig.clashPath}/${name}'")
+                suihelper.suCmd("chown system:system '${clashConfig.clashPath}/${name}'")
                 clashConfig.updateConfig(clashConfig.getClashType())
             }
             "DASHBOARD" -> {

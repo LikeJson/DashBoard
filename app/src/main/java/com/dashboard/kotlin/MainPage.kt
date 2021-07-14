@@ -158,6 +158,13 @@ class MainPage : Fragment() {
             navController.navigate(R.id.action_mainPage_to_downloadPage, bundle)
         }
 
+        menu_mmdb_download.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("TYPE", "MMDB")
+            val navController = it.findNavController()
+            navController.navigate(R.id.action_mainPage_to_downloadPage, bundle)
+        }
+
 
         menu_version_switch.setOnClickListener {
             val versionArray = arrayOf<CharSequence>("CFM", "CPFM")

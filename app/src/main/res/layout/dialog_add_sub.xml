@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="添加订阅"
+            android:text="添加链接"
             android:textAppearance="?attr/textAppearanceHeadline6"
             android:textSize="25sp" />
 
