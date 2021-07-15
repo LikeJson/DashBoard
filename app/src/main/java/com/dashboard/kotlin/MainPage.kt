@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
+import java.io.File
 
 
 class MainPage : Fragment() {
@@ -109,7 +110,7 @@ class MainPage : Fragment() {
 
             } else {
                 clash_status.setCardBackgroundColor(
-                    ResourcesCompat.getColor(resources, R.color.error, context?.theme)
+                    ResourcesCompat.getColor(resources, R.color.gray, context?.theme)
                 )
                 clash_status_icon.setImageDrawable(
                     ResourcesCompat.getDrawable(
@@ -124,6 +125,38 @@ class MainPage : Fragment() {
             }
 
         }
+
+        clash_status.setOnClickListener {
+            it.isClickable = false
+            GlobalScope.async {
+                if (clashStatus().runStatus()) {
+                    when (clashConfig.getClashType()) {
+                        "CFM" -> {
+                            doAssestsShellFile("CFM_Stop.sh")
+                        }
+                        "CPFM" -> {
+
+                        }
+                    }
+                } else {
+                    when (clashConfig.getClashType()) {
+                        "CFM" -> {
+                            doAssestsShellFile("CFM_Start.sh", true)
+                        }
+                        "CPFM" -> {
+                        }
+                    }
+                }
+                restartApp()
+                true
+
+            }
+        }
+
+
+
+
+
         menu_ip_check.setOnClickListener {
 
             val navController = it.findNavController()
@@ -197,5 +230,40 @@ class MainPage : Fragment() {
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent?.putExtra("REBOOT", "reboot")
         startActivity(intent)
+    }
+
+    private suspend fun doAssestsShellFile(fileName: String, isStart: Boolean = false) {
+        context?.assets?.open(fileName)?.let { op ->
+            File(context?.externalCacheDir, fileName).let { fo ->
+                fo.outputStream().let { ip ->
+                    op.copyTo(ip)
+                }
+
+                if (isStart) {
+                    withContext(Dispatchers.Main) {
+                        clash_status.setCardBackgroundColor(
+                            ResourcesCompat.getColor(
+                                resources,
+                                R.color.colorPrimary,
+                                context?.theme
+                            )
+                        )
+                        clash_status_icon.setImageDrawable(
+                            ResourcesCompat.getDrawable(
+                                resources,
+                                R.drawable.ic_refresh,
+                                context?.theme
+                            )
+                        )
+                        clash_status_text.text =
+                            getString(R.string.clash_staring).format(clashConfig.getClashType())
+                    }
+                }
+
+                suihelper.suCmd("sh '${context?.externalCacheDir}/${fileName}'")
+
+                fo.delete()
+            }
+        }
     }
 }

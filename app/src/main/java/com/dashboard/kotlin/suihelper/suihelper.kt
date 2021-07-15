@@ -2,7 +2,6 @@ package com.dashboard.kotlin.suihelper
 
 import android.content.pm.PackageManager
 import android.util.Log
-import kotlinx.coroutines.*
 import rikka.shizuku.Shizuku
 import rikka.sui.Sui
 import java.io.DataInputStream
