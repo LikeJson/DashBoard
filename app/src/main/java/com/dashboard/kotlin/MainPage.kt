@@ -119,7 +119,8 @@ class MainPage : Fragment() {
                         context?.theme
                     )
                 )
-                clash_status_text.text = getString(R.string.clash_disable)
+                clash_status_text.text =
+                    getString(R.string.clash_disable).format(clashConfig.getClashType())
                 netspeed_status_text.visibility = View.GONE
 
             }
