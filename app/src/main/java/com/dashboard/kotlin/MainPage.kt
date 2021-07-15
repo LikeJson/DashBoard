@@ -130,27 +130,19 @@ class MainPage : Fragment() {
         clash_status.setOnClickListener {
             it.isClickable = false
             GlobalScope.async {
-                if (clashStatus().runStatus()) {
-                    when (clashConfig.getClashType()) {
-                        "CFM" -> {
-                            doAssestsShellFile("CFM_Stop.sh")
-                        }
-                        "CPFM" -> {
 
-                        }
-                    }
-                } else {
-                    when (clashConfig.getClashType()) {
-                        "CFM" -> {
-                            doAssestsShellFile("CFM_Start.sh", true)
-                        }
-                        "CPFM" -> {
-                        }
-                    }
-                }
+                doAssestsShellFile(
+                    "${clashConfig.getClashType()}_" +
+                            (if (clashStatus().runStatus()) {
+                                "Stop"
+                            } else {
+                                "Start"
+                            }) +
+                            ".sh", !clashStatus().runStatus()
+                )
+
                 restartApp()
                 true
-
             }
         }
 
