@@ -122,7 +122,7 @@ object clashConfig {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val conn =
-                    URL("${baseURL}/configs").openConnection() as HttpURLConnection
+                    URL("${baseURL}/configs?force=false").openConnection() as HttpURLConnection
                 conn.requestMethod = "PUT"
                 conn.setRequestProperty("Authorization", "Bearer $clashSecret")
                 conn.setRequestProperty("Content-Type", "application/json")
@@ -132,7 +132,6 @@ object clashConfig {
                     os.write(
                         JSONObject(
                             mapOf(
-                                "force" to "false",
                                 "path" to configPath
                             )
                         ).toString().toByteArray()
