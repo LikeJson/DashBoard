@@ -6,10 +6,12 @@
     <string name="title_sub_download">订阅下载</string>
     <string name="title_version_switch">模式切换</string>
     <string name="clash_enable">Clash 运行正常 (%s)</string>
-    <string name="clash_disable">Clash 运行异常</string>
+    <string name="clash_disable">Clash 已停止 (%s)</string>
+    <string name="clash_charging">命令执行中 (%s)</string>
     <string name="sui_disable">Sui 未安装 或 未授权 \n请在 magisk 中安装 riru 和 riru-sui</string>
     <string name="netspeed_status_text">上传 %s 下载 %s</string>
     <string name="text_confirm">确认</string>
     <string name="text_cancel">取消</string>
     <string name="text_add">添加</string>
+    <string name="title_mmdb_download">MMDB 下载</string>
 </resources>

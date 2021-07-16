@@ -1,5 +1,6 @@
 package com.dashboard.kotlin
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 
 
 class WebViewPage : Fragment() {
+    var isDark = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,7 +28,7 @@ class WebViewPage : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("ViewCreated","WebViewPageViewCreated")
+        Log.d("ViewCreated", "WebViewPageViewCreated")
 
         toolbar.navigationIcon = ResourcesCompat.getDrawable(
             resources,
@@ -45,13 +47,20 @@ class WebViewPage : Fragment() {
             webView.settings.domStorageEnabled = true
             webView.settings.databaseEnabled = true
             webView.webViewClient = WebViewClient()
-            webView.loadUrl(it)}
+            webView.loadUrl(it + run {
+                if ((context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
+                    "?theme=dark"
+                }else{
+                    "?theme=light"
+                }
+            })
+        }
     }
 
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("Destroy","WebViewPageDestroyView")
+        Log.d("Destroy", "WebViewPageDestroyView")
 
     }
 }

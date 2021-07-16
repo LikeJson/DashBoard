@@ -1,6 +1,5 @@
 package com.dashboard.kotlin
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,17 +26,21 @@ import java.net.URL
 class getConfig {
     fun getConfig(type: String): List<DownloadPage.DownLoadDataClass> {
         when (type) {
-            "SUB" -> {
+            "MMDB", "SUB" -> {
                 val list = mutableListOf<DownloadPage.DownLoadDataClass>()
-                val indexArray = KV.decodeBytes("SUB_INDEX") ?: byteArrayOf()
+                val indexArray = KV.decodeBytes("${type}_INDEX") ?: byteArrayOf()
                 for (index in indexArray) {
                     list.add(
                         DownloadPage.DownLoadDataClass(
-                            KV.decodeString("SUB_${index}_TITLE") ?: "第${index}个订阅",
+                            KV.decodeString("${type}_${index}_TITLE") ?: "第${index}个订阅",
                             "$index",
-                            KV.decodeString("SUB_${index}_URL") ?: "",
-                            "SUB",
-                            "config.yaml"
+                            KV.decodeString("${type}_${index}_URL") ?: "",
+                            type,
+                            when (type) {
+                                "MMDB" -> "Country.mmdb"
+                                "SUB" -> "config.yaml"
+                                else -> ""
+                            }
                         )
                     )
                 }
@@ -45,10 +48,10 @@ class getConfig {
 
                 list.add(
                     DownloadPage.DownLoadDataClass(
-                        "添加订阅",
+                        "添加链接",
                         "",
                         "",
-                        "addSub",
+                        "add${type}",
                         ""
                     )
                 )
@@ -88,6 +91,9 @@ class getConfig {
 }
 
 class DownloadPage : Fragment() {
+    var originalDescription: String? = null
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -147,17 +153,18 @@ class DownloadPage : Fragment() {
             holder.description.text = downloadItem.description
 
             when (downloadItem.type) {
-                "addSub" -> {
+                "addMMDB", "addSUB" -> {
                     holder.downloadButton.visibility = View.GONE
                     holder.description.visibility = View.GONE
                     holder.download_card_single.setOnClickListener {
-                        showAddSubDialog()
+                        //delete "add"
+                        showAddLinkDialog(downloadItem.type.replaceFirst("add",""))
                     }
                 }
 
                 else -> {
                     when (downloadItem.type) {
-                        "SUB" -> {
+                        "MMDB", "SUB" -> {
                             holder.description.visibility = View.INVISIBLE
 
                             holder.download_card_single.setOnLongClickListener {
@@ -180,14 +187,15 @@ class DownloadPage : Fragment() {
                                 diaLogObj?.window?.setBackgroundDrawableResource(android.R.color.transparent)
                                 diaLogObj?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
 
-                                confirmDialogTitle.text = "删除订阅"
+                                confirmDialogTitle.text = "删除链接"
                                 confirmDialogContext.text = "警告⚠️\n此操作不可撤销"
                                 confirmDialogCancelBtn.setOnClickListener { diaLogObj?.dismiss() }
                                 confirmDialogSureBtn.setOnClickListener {
                                     KV.encode(
-                                        "SUB_INDEX", (
-                                                (KV.decodeBytes("SUB_INDEX") ?: byteArrayOf())
-                                                    .toMutableSet() - holder.description.text.toString()
+                                        "${downloadItem.type}_INDEX", (
+                                                (KV.decodeBytes("${downloadItem.type}_INDEX") ?: byteArrayOf())
+                                                    .toMutableSet() - (originalDescription
+                                                    ?: holder.description.text.toString())
                                                     .toByte()
                                                 )
                                             .toByteArray()
@@ -214,7 +222,7 @@ class DownloadPage : Fragment() {
             return downloadItemList.size
         }
 
-        fun showAddSubDialog() {
+        private fun showAddLinkDialog(type: String) {
             val diaLogView = LayoutInflater.from(this@DownloadPage.context)
                 .inflate(R.layout.dialog_add_sub, null, false)
             val addSubDialogTitle: EditText = diaLogView.findViewById(R.id.addSubDialogTitle)
@@ -241,7 +249,7 @@ class DownloadPage : Fragment() {
                 addSubDialogURL.setHintTextColor(resources.getColor(R.color.error))
                 if (addSubDialogTitle.text.toString() != "" && addSubDialogURL.text.toString() != "") {
 
-                    val indexArray = KV.decodeBytes("SUB_INDEX") ?: byteArrayOf()
+                    val indexArray = KV.decodeBytes("${type}_INDEX") ?: byteArrayOf()
                     for (index in 0..127) {
                         if (index.toByte() in indexArray) {
                             if (index == 127) {
@@ -249,9 +257,9 @@ class DownloadPage : Fragment() {
                             }
                             continue
                         }
-                        KV.encode("SUB_INDEX", indexArray + byteArrayOf(index.toByte()))
-                        KV.encode("SUB_${index}_TITLE", addSubDialogTitle.text.toString())
-                        KV.encode("SUB_${index}_URL", addSubDialogURL.text.toString())
+                        KV.encode("${type}_INDEX", indexArray + byteArrayOf(index.toByte()))
+                        KV.encode("${type}_${index}_TITLE", addSubDialogTitle.text.toString())
+                        KV.encode("${type}_${index}_URL", addSubDialogURL.text.toString())
 
                         diaLogObj?.dismiss()
 
@@ -275,8 +283,10 @@ class DownloadPage : Fragment() {
         ) {
             downLoadThread = GlobalScope.launch(Dispatchers.IO) {
                 try {
-                    Log.d("NetWork", "DownLoadStart URL:${downloadItem.URL}")
+                    Log.d("NetWork", "DownLoadStart")
 
+                    val randomName: String = (1..1000).random().toString()
+                    originalDescription = holder.description.text.toString()
                     withContext(Dispatchers.Main) {
                         //disable button
                         holder.downloadButton.visibility = View.GONE
@@ -284,6 +294,7 @@ class DownloadPage : Fragment() {
                         //init progressBar
                         holder.progressBar.visibility = View.VISIBLE
 
+                        holder.description.visibility = View.VISIBLE
                         holder.description.text = "开始下载"
 
                     }
@@ -304,7 +315,7 @@ class DownloadPage : Fragment() {
                     downLoadConn.getInputStream().use { input ->
                         val file = File(
                             this@DownloadPage.context?.externalCacheDir,
-                            downloadItem.title
+                            randomName
                         )
                         if (file.exists()) {
                             file.delete()
@@ -318,7 +329,7 @@ class DownloadPage : Fragment() {
                     // install
                     Log.d("Install", "StartInstall")
                     commandhelper.doInstall(
-                        "${this@DownloadPage.context?.externalCacheDir}/${downloadItem.title}",
+                        "${this@DownloadPage.context?.externalCacheDir}/${randomName}",
                         downloadItem.type,
                         downloadItem.pathName
                     )

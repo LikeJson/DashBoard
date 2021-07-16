@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
+import java.io.File
 
 
 class MainPage : Fragment() {
@@ -109,7 +110,7 @@ class MainPage : Fragment() {
 
             } else {
                 clash_status.setCardBackgroundColor(
-                    ResourcesCompat.getColor(resources, R.color.error, context?.theme)
+                    ResourcesCompat.getColor(resources, R.color.gray, context?.theme)
                 )
                 clash_status_icon.setImageDrawable(
                     ResourcesCompat.getDrawable(
@@ -118,12 +119,37 @@ class MainPage : Fragment() {
                         context?.theme
                     )
                 )
-                clash_status_text.text = getString(R.string.clash_disable)
+                clash_status_text.text =
+                    getString(R.string.clash_disable).format(clashConfig.getClashType())
                 netspeed_status_text.visibility = View.GONE
 
             }
 
         }
+
+        clash_status.setOnClickListener {
+            it.isClickable = false
+            GlobalScope.async {
+
+                doAssestsShellFile(
+                    "${clashConfig.getClashType()}_" +
+                            (if (clashStatus().runStatus()) {
+                                "Stop"
+                            } else {
+                                "Start"
+                            }) +
+                            ".sh", !clashStatus().runStatus()
+                )
+
+                restartApp()
+                true
+            }
+        }
+
+
+
+
+
         menu_ip_check.setOnClickListener {
 
             val navController = it.findNavController()
@@ -137,7 +163,7 @@ class MainPage : Fragment() {
 
             val navController = it.findNavController()
             val bundle = Bundle()
-            bundle.putString("URL", "http://127.0.0.1:9090/ui")
+            bundle.putString("URL", "http://127.0.0.1:9090/ui/")
             navController.navigate(R.id.action_mainPage_to_webViewPage, bundle)
         }
 
@@ -154,6 +180,13 @@ class MainPage : Fragment() {
         menu_sub_download.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("TYPE", "SUB")
+            val navController = it.findNavController()
+            navController.navigate(R.id.action_mainPage_to_downloadPage, bundle)
+        }
+
+        menu_mmdb_download.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("TYPE", "MMDB")
             val navController = it.findNavController()
             navController.navigate(R.id.action_mainPage_to_downloadPage, bundle)
         }
@@ -190,5 +223,40 @@ class MainPage : Fragment() {
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent?.putExtra("REBOOT", "reboot")
         startActivity(intent)
+    }
+
+    private suspend fun doAssestsShellFile(fileName: String, isStart: Boolean = false) {
+        context?.assets?.open(fileName)?.let { op ->
+            File(context?.externalCacheDir, fileName).let { fo ->
+                fo.outputStream().let { ip ->
+                    op.copyTo(ip)
+                }
+
+                withContext(Dispatchers.Main) {
+                    clash_status.setCardBackgroundColor(
+                        ResourcesCompat.getColor(
+                            resources,
+                            R.color.colorPrimary,
+                            context?.theme
+                        )
+                    )
+                    clash_status_icon.setImageDrawable(
+                        ResourcesCompat.getDrawable(
+                            resources,
+                            R.drawable.ic_refresh,
+                            context?.theme
+                        )
+                    )
+                    clash_status_text.text =
+                        getString(R.string.clash_charging).format(clashConfig.getClashType())
+                    netspeed_status_text.visibility = View.GONE
+                }
+
+                suihelper.suCmd("sh '${context?.externalCacheDir}/${fileName}'")
+
+                fo.delete()
+                delay(3000)
+            }
+        }
     }
 }

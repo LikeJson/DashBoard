@@ -80,13 +80,26 @@ object clashConfig {
 
     var clashDashBoard: String
         get() {
+            val fileName: String = when(getClashType()){
+                "CFM" -> "template"
+                "CPFM" -> "config.yaml"
+                else -> return ""
+            }
+
             return setFile(
-                clashPath, "template"
+                clashPath, fileName
             ) { getFromFile("${GExternalCacheDir}/template", "external-ui") }
         }
         set(value) {
+
+            val fileName: String = when(getClashType()){
+                "CFM" -> "template"
+                "CPFM" -> "config.yaml"
+                else -> return
+            }
+
             setFileNR(
-                clashPath, "template"
+                clashPath, fileName
             ) { modifyFile("${GExternalCacheDir}/template", "external-ui", value) }
             return
         }
@@ -109,7 +122,7 @@ object clashConfig {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val conn =
-                    URL("${baseURL}/configs").openConnection() as HttpURLConnection
+                    URL("${baseURL}/configs?force=false").openConnection() as HttpURLConnection
                 conn.requestMethod = "PUT"
                 conn.setRequestProperty("Authorization", "Bearer $clashSecret")
                 conn.setRequestProperty("Content-Type", "application/json")
@@ -119,7 +132,6 @@ object clashConfig {
                     os.write(
                         JSONObject(
                             mapOf(
-                                "force" to "false",
                                 "path" to configPath
                             )
                         ).toString().toByteArray()
@@ -160,8 +172,14 @@ object clashConfig {
     }
 
     private fun getSecret(): String {
+        val fileName: String = when(getClashType()){
+            "CFM" -> "template"
+            "CPFM" -> "config.yaml"
+            else -> return ""
+        }
+
         return setFile(
-            clashPath, "template"
+            clashPath, fileName
         ) { getFromFile("${GExternalCacheDir}/template", "secret") }
     }
 
