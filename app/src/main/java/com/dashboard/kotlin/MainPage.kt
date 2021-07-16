@@ -232,30 +232,30 @@ class MainPage : Fragment() {
                     op.copyTo(ip)
                 }
 
-                if (isStart) {
-                    withContext(Dispatchers.Main) {
-                        clash_status.setCardBackgroundColor(
-                            ResourcesCompat.getColor(
-                                resources,
-                                R.color.colorPrimary,
-                                context?.theme
-                            )
+                withContext(Dispatchers.Main) {
+                    clash_status.setCardBackgroundColor(
+                        ResourcesCompat.getColor(
+                            resources,
+                            R.color.colorPrimary,
+                            context?.theme
                         )
-                        clash_status_icon.setImageDrawable(
-                            ResourcesCompat.getDrawable(
-                                resources,
-                                R.drawable.ic_refresh,
-                                context?.theme
-                            )
+                    )
+                    clash_status_icon.setImageDrawable(
+                        ResourcesCompat.getDrawable(
+                            resources,
+                            R.drawable.ic_refresh,
+                            context?.theme
                         )
-                        clash_status_text.text =
-                            getString(R.string.clash_staring).format(clashConfig.getClashType())
-                    }
+                    )
+                    clash_status_text.text =
+                        getString(R.string.clash_charging).format(clashConfig.getClashType())
+                    netspeed_status_text.visibility = View.GONE
                 }
 
                 suihelper.suCmd("sh '${context?.externalCacheDir}/${fileName}'")
 
                 fo.delete()
+                delay(3000)
             }
         }
     }
