@@ -80,26 +80,13 @@ object clashConfig {
 
     var clashDashBoard: String
         get() {
-            val fileName: String = when(getClashType()){
-                "CFM" -> "template"
-                "CPFM" -> "config.yaml"
-                else -> return ""
-            }
-
             return setFile(
-                clashPath, fileName
+                clashPath, "template"
             ) { getFromFile("${GExternalCacheDir}/template", "external-ui") }
         }
         set(value) {
-
-            val fileName: String = when(getClashType()){
-                "CFM" -> "template"
-                "CPFM" -> "config.yaml"
-                else -> return
-            }
-
             setFileNR(
-                clashPath, fileName
+                clashPath, "template"
             ) { modifyFile("${GExternalCacheDir}/template", "external-ui", value) }
             return
         }
@@ -110,8 +97,9 @@ object clashConfig {
                 mergeConfig("${clashPath}/run/config.yaml")
                 updateConfigNet("${clashPath}/run/config.yaml")
             }
-            "CPFM" ->{
-                mergeConfig("${clashPath}/config.yaml")
+            "CPFM" -> {
+                mergeConfig("${clashPath}/config_new.yaml")
+                suihelper.suCmd("mv '${clashPath}/config_new.yaml' '${clashPath}/config.yaml'")
                 updateConfigNet("${clashPath}/config.yaml")
             }
         }
@@ -172,14 +160,8 @@ object clashConfig {
     }
 
     private fun getSecret(): String {
-        val fileName: String = when(getClashType()){
-            "CFM" -> "template"
-            "CPFM" -> "config.yaml"
-            else -> return ""
-        }
-
         return setFile(
-            clashPath, fileName
+            clashPath, "template"
         ) { getFromFile("${GExternalCacheDir}/template", "secret") }
     }
 
@@ -193,15 +175,10 @@ object clashConfig {
 
     private fun getExternalController(): String {
         return when (getClashType()) {
-            "CFM" -> {
-                setFile(
+            "CFM", "CPFM" -> {
+                val temp = setFile(
                     clashPath, "template"
                 ) { getFromFile("${GExternalCacheDir}/template", "external-controller") }
-            }
-            "CPFM" -> {
-                val temp = setFile(
-                    clashPath, "config.yaml"
-                ) { getFromFile("${GExternalCacheDir}/config.yaml", "external-controller") }
 
                 if (temp.startsWith(":")) {
                     "127.0.0.1$temp"
