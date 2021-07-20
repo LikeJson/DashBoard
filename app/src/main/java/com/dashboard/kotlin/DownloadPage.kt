@@ -56,13 +56,27 @@ class getConfig {
                     )
                 )
 
-//                if (KV.decodeString("ModuleType") == "CFM") {
-//                    list.add(
-//                        0, DownloadPage.DownLoadDataClass(
-//                            "ClashForMagisk", "来自 CFM 自动订阅中的值", "", "", ""
+//                if (type == "SUB") {
+//                    if (KV.decodeString("ModuleType") == "CFM") {
+//                        list.add(
+//                            0, DownloadPage.DownLoadDataClass(
+//                                "ClashForMagisk", "来自 CFM 自动订阅中的值", "", type, "config.yaml"
+//                            )
 //                        )
-//                    )
+//                    }
 //                }
+
+                if (type == "MMDB") {
+                    list.add(
+                        0, DownloadPage.DownLoadDataClass(
+                            "GeoIP2 · CN",
+                            "最小巧、最准确、最实用的 中国大陆 IP 段 + GeoIP2 数据库",
+                            "https://github.com/Hackl0us/GeoIP2-CN/raw/release/Country.mmdb",
+                            type,
+                            "Country.mmdb"
+                        )
+                    )
+                }
 
                 return list
 
@@ -165,49 +179,64 @@ class DownloadPage : Fragment() {
                 else -> {
                     when (downloadItem.type) {
                         "MMDB", "SUB" -> {
-                            holder.description.visibility = View.INVISIBLE
+                            holder.description.let {
+                                it.visibility = it.text.toString().let { str ->
+                                    try {
+                                        str.toInt()
+                                        holder.download_card_single.setOnLongClickListener {
+                                            val diaLogView = LayoutInflater.from(this@DownloadPage.context)
+                                                .inflate(R.layout.dialog_confirm, null, false)
+                                            val confirmDialogTitle: TextView =
+                                                diaLogView.findViewById(R.id.confirmDialog_title)
+                                            val confirmDialogContext: TextView =
+                                                diaLogView.findViewById(R.id.confirmDialog_text)
+                                            val confirmDialogSureBtn: TextView =
+                                                diaLogView.findViewById(R.id.confirmDialogBtnSure)
+                                            val confirmDialogCancelBtn: TextView =
+                                                diaLogView.findViewById(R.id.confirmDialogBtnCancel)
 
-                            holder.download_card_single.setOnLongClickListener {
-                                val diaLogView = LayoutInflater.from(this@DownloadPage.context)
-                                    .inflate(R.layout.dialog_confirm, null, false)
-                                val confirmDialogTitle: TextView =
-                                    diaLogView.findViewById(R.id.confirmDialog_title)
-                                val confirmDialogContext: TextView =
-                                    diaLogView.findViewById(R.id.confirmDialog_text)
-                                val confirmDialogSureBtn: TextView =
-                                    diaLogView.findViewById(R.id.confirmDialogBtnSure)
-                                val confirmDialogCancelBtn: TextView =
-                                    diaLogView.findViewById(R.id.confirmDialogBtnCancel)
+                                            val diaLogObj: AlertDialog? = activity?.let {
+                                                AlertDialog.Builder(it).create()
+                                            }
+                                            diaLogObj?.show()
+                                            diaLogObj?.window?.setContentView(diaLogView)
+                                            diaLogObj?.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                                            diaLogObj?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
 
-                                val diaLogObj: AlertDialog? = activity?.let {
-                                    AlertDialog.Builder(it).create()
+                                            confirmDialogTitle.text = "删除链接"
+                                            confirmDialogContext.text = "警告⚠️\n此操作不可撤销"
+                                            confirmDialogCancelBtn.setOnClickListener { diaLogObj?.dismiss() }
+                                            confirmDialogSureBtn.setOnClickListener {
+                                                try {
+                                                    KV.encode(
+                                                        "${downloadItem.type}_INDEX", (
+                                                                (KV.decodeBytes("${downloadItem.type}_INDEX")
+                                                                    ?: byteArrayOf())
+                                                                    .toMutableSet() - (originalDescription
+                                                                    ?: holder.description.text.toString())
+                                                                    .toByte()
+                                                                )
+                                                            .toByteArray()
+                                                    )
+                                                } catch (ex: Exception) {
+                                                }
+
+
+                                                FlashView()
+
+                                                diaLogObj?.dismiss()
+                                            }
+
+                                            true
+                                        }
+
+                                        View.GONE
+                                    }catch (ex: Exception){
+                                        View.VISIBLE
+                                    }
                                 }
-                                diaLogObj?.show()
-                                diaLogObj?.window?.setContentView(diaLogView)
-                                diaLogObj?.window?.setBackgroundDrawableResource(android.R.color.transparent)
-                                diaLogObj?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
-
-                                confirmDialogTitle.text = "删除链接"
-                                confirmDialogContext.text = "警告⚠️\n此操作不可撤销"
-                                confirmDialogCancelBtn.setOnClickListener { diaLogObj?.dismiss() }
-                                confirmDialogSureBtn.setOnClickListener {
-                                    KV.encode(
-                                        "${downloadItem.type}_INDEX", (
-                                                (KV.decodeBytes("${downloadItem.type}_INDEX") ?: byteArrayOf())
-                                                    .toMutableSet() - (originalDescription
-                                                    ?: holder.description.text.toString())
-                                                    .toByte()
-                                                )
-                                            .toByteArray()
-                                    )
-
-                                    FlashView()
-
-                                    diaLogObj?.dismiss()
-                                }
-
-                                true
                             }
+
                         }
                     }
                     holder.downloadButton.setOnClickListener {
