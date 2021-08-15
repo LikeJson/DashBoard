@@ -7,7 +7,9 @@
     android:orientation="vertical"
     tools:context=".MainPage">
 
-    <include layout="@layout/toolbar" />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/clash_status"

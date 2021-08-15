@@ -13,21 +13,26 @@ import androidx.navigation.findNavController
 import com.dashboard.kotlin.clashhelper.clashConfig
 import com.dashboard.kotlin.clashhelper.clashStatus
 import com.dashboard.kotlin.clashhelper.commandhelper
+import com.dashboard.kotlin.databinding.FragmentMainPageBinding
 import com.dashboard.kotlin.suihelper.suihelper
-import kotlinx.android.synthetic.main.fragment_main_page.*
-import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.File
 
 
 class MainPage : Fragment() {
+    private var _binding: FragmentMainPageBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main_page, container, false)
+        _binding = FragmentMainPageBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
@@ -37,24 +42,24 @@ class MainPage : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "MainPageViewCreated")
 
-        toolbar.title = getString(R.string.app_name)
+        binding.toolbar.toolbarIn.title = getString(R.string.app_name)
         //TODO 添加 app 图标
 
         if (!suihelper.checkPermission()) {
 
 
-            clash_status.setCardBackgroundColor(
+            binding.clashStatus.setCardBackgroundColor(
                 ResourcesCompat.getColor(resources, R.color.error, context?.theme)
             )
-            clash_status_icon.setImageDrawable(
+            binding.clashStatusIcon.setImageDrawable(
                 ResourcesCompat.getDrawable(
                     resources,
                     R.drawable.ic_service_not_running,
                     context?.theme
                 )
             )
-            clash_status_text.text = getString(R.string.sui_disable)
-            netspeed_status_text.visibility = View.GONE
+            binding.clashStatusText.text = getString(R.string.sui_disable)
+            binding.clashStatusText.visibility = View.GONE
 
 
             GlobalScope.async {
@@ -71,16 +76,16 @@ class MainPage : Fragment() {
 
 
             if (clashStatus().runStatus()) {
-                clash_status.setCardBackgroundColor(
+                binding.clashStatus.setCardBackgroundColor(
                     ResourcesCompat.getColor(resources, R.color.colorPrimary, context?.theme)
                 )
-                clash_status_icon.setImageDrawable(
+                binding.clashStatusIcon.setImageDrawable(
                     ResourcesCompat.getDrawable(resources, R.drawable.ic_activited, context?.theme)
                 )
-                clash_status_text.text =
+                binding.clashStatusText.text =
                     getString(R.string.clash_enable).format(clashConfig.getClashType())
 
-                netspeed_status_text.visibility = View.VISIBLE
+                binding.clashStatusText.visibility = View.VISIBLE
 
 
                 clashStatusClass.getTraffic()
@@ -94,7 +99,7 @@ class MainPage : Fragment() {
                                 commandhelper.autoUnit(jsonObject.optString("down"))
 
                             withContext(Dispatchers.Main) {
-                                netspeed_status_text.text =
+                                binding.netspeedStatusText.text =
                                     getString(R.string.netspeed_status_text).format(
                                         upText,
                                         downText
@@ -109,25 +114,25 @@ class MainPage : Fragment() {
 
 
             } else {
-                clash_status.setCardBackgroundColor(
+                binding.clashStatus.setCardBackgroundColor(
                     ResourcesCompat.getColor(resources, R.color.gray, context?.theme)
                 )
-                clash_status_icon.setImageDrawable(
+                binding.clashStatusIcon.setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
                         R.drawable.ic_service_not_running,
                         context?.theme
                     )
                 )
-                clash_status_text.text =
+                binding.clashStatusText.text =
                     getString(R.string.clash_disable).format(clashConfig.getClashType())
-                netspeed_status_text.visibility = View.GONE
+                binding.netspeedStatusText.visibility = View.GONE
 
             }
 
         }
 
-        clash_status.setOnClickListener {
+        binding.clashStatus.setOnClickListener {
             it.isClickable = false
             GlobalScope.async {
 
@@ -150,7 +155,7 @@ class MainPage : Fragment() {
 
 
 
-        menu_ip_check.setOnClickListener {
+        binding.menuIpCheck.setOnClickListener {
 
             val navController = it.findNavController()
             navController.navigate(R.id.action_mainPage_to_ipCheckPage)
@@ -158,7 +163,7 @@ class MainPage : Fragment() {
         }
 
 
-        menu_web_dashboard.setOnClickListener {
+        binding.menuWebDashboard.setOnClickListener {
 
 
             val navController = it.findNavController()
@@ -168,7 +173,7 @@ class MainPage : Fragment() {
         }
 
 
-        menu_web_dashboard_download.setOnClickListener {
+        binding.menuWebDashboardDownload.setOnClickListener {
 
             val bundle = Bundle()
             bundle.putString("TYPE", "DASHBOARD")
@@ -177,14 +182,14 @@ class MainPage : Fragment() {
 
         }
 
-        menu_sub_download.setOnClickListener {
+        binding.menuSubDownload.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("TYPE", "SUB")
             val navController = it.findNavController()
             navController.navigate(R.id.action_mainPage_to_downloadPage, bundle)
         }
 
-        menu_mmdb_download.setOnClickListener {
+        binding.menuMmdbDownload.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("TYPE", "MMDB")
             val navController = it.findNavController()
@@ -192,7 +197,7 @@ class MainPage : Fragment() {
         }
 
 
-        menu_version_switch.setOnClickListener {
+        binding.menuVersionSwitch.setOnClickListener {
             val versionArray = arrayOf<CharSequence>("CFM", "CPFM")
             val diaLogObj: AlertDialog? = activity?.let { itD ->
                 AlertDialog.Builder(itD).let { it ->
@@ -212,6 +217,7 @@ class MainPage : Fragment() {
 
     override fun onDestroyView() {
         clashStatusClass.stopGetTraffic()
+        _binding = null
         Log.d("DestroyView", "MainPageDestroyView")
         super.onDestroyView()
     }
@@ -233,23 +239,23 @@ class MainPage : Fragment() {
                 }
 
                 withContext(Dispatchers.Main) {
-                    clash_status.setCardBackgroundColor(
+                    binding.clashStatus.setCardBackgroundColor(
                         ResourcesCompat.getColor(
                             resources,
                             R.color.colorPrimary,
                             context?.theme
                         )
                     )
-                    clash_status_icon.setImageDrawable(
+                    binding.clashStatusIcon.setImageDrawable(
                         ResourcesCompat.getDrawable(
                             resources,
                             R.drawable.ic_refresh,
                             context?.theme
                         )
                     )
-                    clash_status_text.text =
+                    binding.clashStatusText.text =
                         getString(R.string.clash_charging).format(clashConfig.getClashType())
-                    netspeed_status_text.visibility = View.GONE
+                    binding.netspeedStatusText.visibility = View.GONE
                 }
 
                 suihelper.suCmd("sh '${context?.externalCacheDir}/${fileName}'")

@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
     id "org.jetbrains.kotlin.plugin.serialization" version "1.5.20-RC"
 }
 
@@ -74,6 +73,9 @@ android {
             version = "3.18.1"
             path file('./src/cpp/CMakeLists.txt')
         }
+    }
+    viewBinding {
+        enabled = true
     }
 }
 

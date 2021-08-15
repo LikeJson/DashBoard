@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
 import com.dashboard.kotlin.suihelper.suihelper
 import com.tencent.mmkv.MMKV
-import kotlinx.android.synthetic.main.toolbar.*
 import java.io.DataInputStream
 import java.io.File
 import java.text.SimpleDateFormat
@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val toolbar = findViewById<Toolbar>(R.id.toolbarIn)
         setSupportActionBar(toolbar)
 
         this.window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)

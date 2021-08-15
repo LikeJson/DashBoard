@@ -8,11 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.findNavController
-import kotlinx.android.synthetic.main.fragment_ip_check_page.*
-import kotlinx.android.synthetic.main.toolbar.*
+import com.dashboard.kotlin.databinding.FragmentIpCheckPageBinding
 import kotlinx.coroutines.*
 import org.json.JSONObject
-import java.net.HttpURLConnection
 import java.net.URL
 
 class ipCheckPage : Fragment() {
@@ -27,12 +25,19 @@ class ipCheckPage : Fragment() {
     private lateinit var githubCheckThreadContext: ExecutorCoroutineDispatcher
     private lateinit var youtubeCheckThreadContext: ExecutorCoroutineDispatcher
 
+    private var _binding: FragmentIpCheckPageBinding? = null
+
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ip_check_page, container, false)
+        _binding = FragmentIpCheckPageBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
@@ -66,7 +71,7 @@ class ipCheckPage : Fragment() {
 
                 withContext(Dispatchers.Main) {
                     try {
-                        sukka_api_result.text = tempStr
+                        binding.sukkaApiResult.text = tempStr
                     } catch (ex: Exception) {
 
                     }
@@ -89,7 +94,7 @@ class ipCheckPage : Fragment() {
                 }
                 withContext(Dispatchers.Main) {
                     try {
-                        ipip_net_result.text = tempStr
+                        binding.ipipNetResult.text = tempStr
                     } catch (ex: Exception) {
 
                     }
@@ -113,7 +118,7 @@ class ipCheckPage : Fragment() {
                 }
                 withContext(Dispatchers.Main) {
                     try {
-                        ip_sb_result.text = tempStr
+                        binding.ipSbResult.text = tempStr
                     } catch (ex: Exception) {
 
                     }
@@ -148,7 +153,7 @@ class ipCheckPage : Fragment() {
                 }
                 withContext(Dispatchers.Main) {
                     try {
-                        sukka_api_global_result.text = tempStr
+                        binding.sukkaApiGlobalResult.text = tempStr
                     } catch (ex: Exception) {
 
                     }
@@ -177,8 +182,8 @@ class ipCheckPage : Fragment() {
                             context?.theme
                         ) else color =
                             ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
-                        baiduCheck.text = tempStr
-                        baiduCheck.setTextColor(color)
+                        binding.baiduCheck.text = tempStr
+                        binding.baiduCheck.setTextColor(color)
                     } catch (ex: Exception) {
 
                     }
@@ -206,8 +211,8 @@ class ipCheckPage : Fragment() {
                             context?.theme
                         ) else color =
                             ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
-                        neteaseMusicCheck.text = tempStr
-                        neteaseMusicCheck.setTextColor(color)
+                        binding.neteaseMusicCheck.text = tempStr
+                        binding.neteaseMusicCheck.setTextColor(color)
                     } catch (ex: Exception) {
 
                     }
@@ -235,8 +240,8 @@ class ipCheckPage : Fragment() {
                             context?.theme
                         ) else color =
                             ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
-                        githubCheck.text = tempStr
-                        githubCheck.setTextColor(color)
+                        binding.githubCheck.text = tempStr
+                        binding.githubCheck.setTextColor(color)
                     } catch (ex: Exception) {
 
                     }
@@ -264,8 +269,8 @@ class ipCheckPage : Fragment() {
                             context?.theme
                         ) else color =
                             ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
-                        youtubeCheck.text = tempStr
-                        youtubeCheck.setTextColor(color)
+                        binding.youtubeCheck.text = tempStr
+                        binding.youtubeCheck.setTextColor(color)
                     } catch (ex: Exception) {
 
                     }
@@ -278,12 +283,12 @@ class ipCheckPage : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "ipCheckPageViewCreated")
 
-        toolbar.navigationIcon = ResourcesCompat.getDrawable(
+        binding.toolbar.toolbarIn.navigationIcon = ResourcesCompat.getDrawable(
             resources,
             R.drawable.ic_back,
             context?.theme
         )
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.toolbarIn.setNavigationOnClickListener {
             val controller = it.findNavController()
             controller.popBackStack()
         }
@@ -305,13 +310,14 @@ class ipCheckPage : Fragment() {
 
             coroutineScope.cancel()
 
-            sukka_api_result.text = ""
-            ipip_net_result.text = ""
-            ip_sb_result.text = ""
-            sukka_api_global_result.text = ""
+            binding.sukkaApiResult.text = ""
+            binding.ipipNetResult.text = ""
+            binding.ipSbResult.text = ""
+            binding.sukkaApiGlobalResult.text = ""
         } finally {
             Log.d("ViewDestroy", "ipCheckPageDestroyView")
         }
+        _binding = null
         super.onDestroyView()
 
     }

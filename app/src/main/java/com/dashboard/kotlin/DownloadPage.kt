@@ -15,8 +15,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dashboard.kotlin.clashhelper.commandhelper
-import kotlinx.android.synthetic.main.fragment_download_page.*
-import kotlinx.android.synthetic.main.toolbar.*
+import com.dashboard.kotlin.databinding.FragmentDownloadPageBinding
 import kotlinx.coroutines.*
 import java.io.File
 import java.io.FileOutputStream
@@ -106,14 +105,18 @@ class getConfig {
 
 class DownloadPage : Fragment() {
     var originalDescription: String? = null
-
+    private var _binding: FragmentDownloadPageBinding? = null
+    // This property is only valid between onCreateView and
+    // onDestroyView.
+    private val binding get() = _binding!!
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_download_page, container, false)
+        _binding = FragmentDownloadPageBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
 
@@ -131,12 +134,12 @@ class DownloadPage : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "DownLoadPageViewCreated")
 
-        toolbar.navigationIcon = ResourcesCompat.getDrawable(
+        binding.toolbar.toolbarIn.navigationIcon = ResourcesCompat.getDrawable(
             resources,
             R.drawable.ic_back,
             context?.theme
         )
-        toolbar.setNavigationOnClickListener {
+        binding.toolbar.toolbarIn.setNavigationOnClickListener {
             val controller = it.findNavController()
             controller.popBackStack()
         }
@@ -149,8 +152,8 @@ class DownloadPage : Fragment() {
         val downloadType: String = arguments?.getString("TYPE").let {
             it ?: "DASHBOARD"
         }
-        download_recycler_view.layoutManager = LinearLayoutManager(context)
-        download_recycler_view.adapter = DownLoadPageAdapter(getConfig().getConfig(downloadType))
+        binding.downloadRecyclerView.layoutManager = LinearLayoutManager(context)
+        binding.downloadRecyclerView.adapter = DownLoadPageAdapter(getConfig().getConfig(downloadType))
     }
 
     inner class DownLoadPageAdapter(private val downloadItemList: List<DownLoadDataClass>) :
@@ -400,6 +403,7 @@ class DownloadPage : Fragment() {
     override fun onDestroyView() {
         Log.d("ViewDestroy", "DownLoadPageDestroyView")
         downLoadThread?.cancel()
+        _binding = null
         super.onDestroyView()
     }
 }
