@@ -11,6 +11,7 @@ def gitCommitHash = "git rev-parse --verify --short HEAD".execute().text.trim()
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
+    ndkVersion "22.1.7171670"
 
     defaultConfig {
         applicationId "com.dashboard.kotlin"
@@ -21,6 +22,12 @@ android {
         versionNameSuffix = ".r${gitCommitCount}.${gitCommitHash}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild{
+            cmake{
+                cppFlags "-std=c++20"
+            }
+        }
     }
     signingConfigs {
         release {
@@ -64,6 +71,7 @@ android {
     }
     externalNativeBuild {
         cmake {
+            version = "3.18.1"
             path file('./src/cpp/CMakeLists.txt')
         }
     }
