@@ -13,24 +13,7 @@ object suihelper {
     }
 
     fun checkPermission(request: Boolean = true): Boolean {
-        try {
-            if (Shizuku.getVersion() >= 11) {
-                if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
-                    return true
-                } else {
-                    if (request) {
-                        Shizuku.requestPermission(114514)
-                    }
-                    return false
-                }
-            } else {
-                return false
-            }
-        } catch (ex: Exception) {
-            return false
-        }
-
-
+        return true
     }
 
 
@@ -42,8 +25,8 @@ object suihelper {
         try {
             Log.i("suCmd", "suCmd: $cmd")
 
-//            process = Runtime.getRuntime().exec("su")
-            process = Shizuku.newProcess(arrayOf("sh"), null, null)
+            process = Runtime.getRuntime().exec("su")
+//            process = Shizuku.newProcess(arrayOf("sh"), null, null)
             os = DataOutputStream(process.outputStream)
             ls = DataInputStream(process.inputStream)
             os.writeBytes("$cmd 2>&1 \n")
