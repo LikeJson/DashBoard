@@ -5,5 +5,4 @@ else
   MAGISK_PATH="/data/adb/modules"
 fi
 
-disABpath=${MAGISK_PATH}/Clash_For_Magisk/disable
-rm -f ${disABpath}
+/data/adb/modules/Clash_For_Magisk/scripts/clash.service -s && /data/adb/modules/Clash_For_Magisk/scripts/clash.tproxy -
