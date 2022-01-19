@@ -1,1 +1,0 @@
-clash_control enable

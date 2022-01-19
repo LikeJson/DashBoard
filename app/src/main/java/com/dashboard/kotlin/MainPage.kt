@@ -41,8 +41,6 @@ class MainPage : Fragment() {
         //TODO 添加 app 图标
 
         if (!suihelper.checkPermission()) {
-
-
             clash_status.setCardBackgroundColor(
                 ResourcesCompat.getColor(resources, R.color.error, context?.theme)
             )
@@ -69,6 +67,7 @@ class MainPage : Fragment() {
 
         } else {
 
+            cmd_result.text = suihelper.suCmd("clash -v")
 
             if (clashStatus().runStatus()) {
                 clash_status.setCardBackgroundColor(
@@ -77,8 +76,7 @@ class MainPage : Fragment() {
                 clash_status_icon.setImageDrawable(
                     ResourcesCompat.getDrawable(resources, R.drawable.ic_activited, context?.theme)
                 )
-                clash_status_text.text =
-                    getString(R.string.clash_enable).format(clashConfig.getClashType())
+                clash_status_text.text = getString(R.string.clash_enable)
 
                 netspeed_status_text.visibility = View.VISIBLE
 
@@ -120,7 +118,7 @@ class MainPage : Fragment() {
                     )
                 )
                 clash_status_text.text =
-                    getString(R.string.clash_disable).format(clashConfig.getClashType())
+                    getString(R.string.clash_disable)
                 netspeed_status_text.visibility = View.GONE
 
             }
@@ -167,7 +165,7 @@ class MainPage : Fragment() {
             navController.navigate(R.id.action_mainPage_to_webViewPage, bundle)
         }
 
-
+/*
         menu_web_dashboard_download.setOnClickListener {
 
             val bundle = Bundle()
@@ -207,6 +205,7 @@ class MainPage : Fragment() {
             }
             diaLogObj?.show()
         }
+        */
     }
 
 
@@ -248,14 +247,17 @@ class MainPage : Fragment() {
                         )
                     )
                     clash_status_text.text =
-                        getString(R.string.clash_charging).format(clashConfig.getClashType())
+                        getString(R.string.clash_charging)
                     netspeed_status_text.visibility = View.GONE
                 }
 
-                suihelper.suCmd("sh '${context?.externalCacheDir}/${fileName}'")
+                val result = suihelper.suCmd("sh '${context?.externalCacheDir}/${fileName}'")
+
+                withContext(Dispatchers.Main){
+                    cmd_result.text = "$result\n"
+                }
 
                 fo.delete()
-                delay(3000)
             }
         }
     }

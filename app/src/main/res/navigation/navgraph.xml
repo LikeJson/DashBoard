@@ -17,13 +17,7 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_mainPage_to_downloadPage"
-            app:destination="@id/downloadPage"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
         <action
             android:id="@+id/action_mainPage_to_ipCheckPage"
             app:destination="@id/ipCheckPage"
@@ -42,9 +36,4 @@
         android:name="com.dashboard.kotlin.ipCheckPage"
         android:label="fragment_ip_check_page"
         tools:layout="@layout/fragment_ip_check_page" />
-    <fragment
-        android:id="@+id/downloadPage"
-        android:name="com.dashboard.kotlin.DownloadPage"
-        android:label="fragment_download_page"
-        tools:layout="@layout/fragment_download_page" />
 </navigation>

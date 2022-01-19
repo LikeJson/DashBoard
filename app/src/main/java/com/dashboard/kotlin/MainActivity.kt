@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         //debug version print logs
         if (BuildConfig.DEBUG) {
-            thread { saveLogs() }
+            //thread { saveLogs() }
         } else {
             File(externalCacheDir.toString()).walk()
                 .maxDepth(1)

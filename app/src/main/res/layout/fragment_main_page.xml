@@ -55,11 +55,13 @@
 
     <ScrollView
         style="@style/Default"
-        android:scrollbars="none">
+        android:scrollbars="none"
+        android:layout_height="match_parent">
 
         <LinearLayout
             style="@style/Default"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/menu_web_dashboard"
@@ -103,95 +105,20 @@
                         android:textAppearance="?attr/textAppearanceHeadline6" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/menu_sub_download"
                 style="@style/DefaultCard"
-                app:cardElevation="0dp">
+                android:clickable="false"
+                app:cardElevation="0dp"
+                android:layout_height="match_parent">
 
-                <LinearLayout
-                    style="@style/Default"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
+                <TextView
+                    style="@style/DefaultCardText"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:id="@+id/cmd_result"
+                    android:layout_width="match_parent"
+                    android:text="a\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\n"/>
 
-                    <ImageView
-                        style="@style/DefaultCardImage"
-                        android:layout_width="wrap_content"
-                        android:src="@drawable/ic_file_download" />
-
-                    <TextView
-                        style="@style/DefaultCardText"
-                        android:text="@string/title_sub_download"
-                        android:textAppearance="?attr/textAppearanceHeadline6" />
-                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/menu_web_dashboard_download"
-                style="@style/DefaultCard"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    style="@style/Default"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        style="@style/DefaultCardImage"
-                        android:layout_width="wrap_content"
-                        android:src="@drawable/ic_file_download" />
-
-                    <TextView
-                        style="@style/DefaultCardText"
-                        android:text="@string/title_web_dashboard_download"
-                        android:textAppearance="?attr/textAppearanceHeadline6" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/menu_mmdb_download"
-                style="@style/DefaultCard"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    style="@style/Default"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        style="@style/DefaultCardImage"
-                        android:layout_width="wrap_content"
-                        android:src="@drawable/ic_file_download" />
-
-                    <TextView
-                        style="@style/DefaultCardText"
-                        android:text="@string/title_mmdb_download"
-                        android:textAppearance="?attr/textAppearanceHeadline6" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/menu_version_switch"
-                style="@style/DefaultCard"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    style="@style/Default"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        style="@style/DefaultCardImage"
-                        android:layout_width="wrap_content"
-                        android:src="@drawable/ic_switch" />
-
-                    <TextView
-                        style="@style/DefaultCardText"
-                        android:text="@string/title_version_switch"
-                        android:textAppearance="?attr/textAppearanceHeadline6" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
