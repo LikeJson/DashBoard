@@ -6,6 +6,7 @@ import com.dashboard.kotlin.KV
 import java.net.HttpURLConnection
 import java.net.URL
 import com.dashboard.kotlin.suihelper.suihelper
+import kotlinx.android.synthetic.main.fragment_setting_page.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -64,6 +65,17 @@ class clashStatus {
 
 object clashConfig {
 
+    var corePath: String
+        get() = KV.decodeString("core_path")?:"/data/adb/modules/Clash_For_Magisk/system/bin/clash"
+        set(value) {
+            KV.encode("core_path", value)
+        }
+
+    var scriptsPath: String
+        get() = KV.decodeString("scripts_path")?:"/data/adb/modules/Clash_For_Magisk/scripts"
+        set(value) {
+            KV.encode("scripts_path", value)
+        }
     val clashPath: String
         get() {
             return getConfigPath()

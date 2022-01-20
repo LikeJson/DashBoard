@@ -106,6 +106,27 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/menu_setting"
+                style="@style/DefaultCard"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    style="@style/Default"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        style="@style/DefaultCardImage"
+                        android:layout_width="wrap_content"
+                        android:src="@drawable/ic_settings" />
+
+                    <TextView
+                        style="@style/DefaultCardText"
+                        android:text="@string/title_setting"
+                        android:textAppearance="?attr/textAppearanceHeadline6" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
                 style="@style/DefaultCard"
                 android:clickable="false"
                 app:cardElevation="0dp"

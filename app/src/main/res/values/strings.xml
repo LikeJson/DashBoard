@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">DashBoard</string>
+    <string name="title_setting">配置</string>
     <string name="title_ip_check">IP 检查</string>
     <string name="title_web_dashboard">网页面板</string>
     <string name="title_web_dashboard_download">Clash 面板下载</string>
@@ -14,4 +15,6 @@
     <string name="text_cancel">取消</string>
     <string name="text_add">添加</string>
     <string name="title_mmdb_download">MMDB 下载</string>
+    <string name="hint_core_path">内核路径</string>
+    <string name="hint_scripts_path">脚本路径</string>
 </resources>

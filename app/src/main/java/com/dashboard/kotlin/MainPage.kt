@@ -67,8 +67,6 @@ class MainPage : Fragment() {
 
         } else {
 
-            cmd_result.text = suihelper.suCmd("clash -v")
-
             if (clashStatus().runStatus()) {
                 clash_status.setCardBackgroundColor(
                     ResourcesCompat.getColor(resources, R.color.colorPrimary, context?.theme)
@@ -127,9 +125,26 @@ class MainPage : Fragment() {
 
         clash_status.setOnClickListener {
             it.isClickable = false
-            GlobalScope.async {
+            clash_status.setCardBackgroundColor(
+                ResourcesCompat.getColor(
+                    resources,
+                    R.color.colorPrimary,
+                    context?.theme
+                )
+            )
+            clash_status_icon.setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.ic_refresh,
+                    context?.theme
+                )
+            )
+            clash_status_text.text =
+                getString(R.string.clash_charging)
+            netspeed_status_text.visibility = View.GONE
 
-                doAssestsShellFile(
+            GlobalScope.async {
+                val result = doAssestsShellFile(
                     "${clashConfig.getClashType()}_" +
                             (if (clashStatus().runStatus()) {
                                 "Stop"
@@ -138,8 +153,12 @@ class MainPage : Fragment() {
                             }) +
                             ".sh", !clashStatus().runStatus()
                 )
-
-                restartApp()
+                if (result == "")
+                    restartApp()
+                else
+                    withContext(Dispatchers.Main){
+                        cmd_result.text = "指令出错：\n$result\n"
+                    }
                 true
             }
         }
@@ -157,14 +176,16 @@ class MainPage : Fragment() {
 
 
         menu_web_dashboard.setOnClickListener {
-
-
             val navController = it.findNavController()
             val bundle = Bundle()
             bundle.putString("URL", "http://127.0.0.1:9090/ui/")
             navController.navigate(R.id.action_mainPage_to_webViewPage, bundle)
         }
 
+        menu_setting.setOnClickListener {
+            it.findNavController().navigate(R.id.action_manPage_to_settingPage)
+        }
+        1
 /*
         menu_web_dashboard_download.setOnClickListener {
 
@@ -208,6 +229,11 @@ class MainPage : Fragment() {
         */
     }
 
+    override fun onStart() {
+        super.onStart()
+        cmd_result.text = suihelper.suCmd("${clashConfig.corePath} -v")
+    }
+
 
     override fun onDestroyView() {
         clashStatusClass.stopGetTraffic()
@@ -224,41 +250,23 @@ class MainPage : Fragment() {
         startActivity(intent)
     }
 
-    private suspend fun doAssestsShellFile(fileName: String, isStart: Boolean = false) {
+    private suspend fun doAssestsShellFile(fileName: String, isStart: Boolean = false): String {
         context?.assets?.open(fileName)?.let { op ->
             File(context?.externalCacheDir, fileName).let { fo ->
                 fo.outputStream().let { ip ->
                     op.copyTo(ip)
                 }
 
-                withContext(Dispatchers.Main) {
-                    clash_status.setCardBackgroundColor(
-                        ResourcesCompat.getColor(
-                            resources,
-                            R.color.colorPrimary,
-                            context?.theme
-                        )
-                    )
-                    clash_status_icon.setImageDrawable(
-                        ResourcesCompat.getDrawable(
-                            resources,
-                            R.drawable.ic_refresh,
-                            context?.theme
-                        )
-                    )
-                    clash_status_text.text =
-                        getString(R.string.clash_charging)
-                    netspeed_status_text.visibility = View.GONE
-                }
+
 
                 val result = suihelper.suCmd("sh '${context?.externalCacheDir}/${fileName}'")
 
-                withContext(Dispatchers.Main){
-                    cmd_result.text = "$result\n"
-                }
-
                 fo.delete()
+
+                return result
+
             }
         }
+        return ""
     }
 }
