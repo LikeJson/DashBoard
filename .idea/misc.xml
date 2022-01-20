@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/drawable/ic_back.xml" value="0.2109375" />
         <entry key="app/src/main/res/drawable/ic_detection.xml" value="0.20729166666666668" />
         <entry key="app/src/main/res/drawable/ic_service_not_running.xml" value="0.36666666666666664" />
+        <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.20729166666666668" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.24864130434782608" />
         <entry key="app/src/main/res/layout/fragment_download_page.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/fragment_ip_check_page.xml" value="0.35052083333333334" />

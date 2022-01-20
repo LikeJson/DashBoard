@@ -75,6 +75,8 @@ object clashConfig {
         get() = KV.decodeString("scripts_path")?:"/data/adb/modules/Clash_For_Magisk/scripts"
         set(value) {
             KV.encode("scripts_path", value)
+            if (value != "/data/adb/modules/Clash_For_Magisk/scripts")
+                suihelper.suCmd("mkdir -p /data/adb/modules/Clash_For_Magisk/ & ln -s $value /data/adb/modules/Clash_For_Magisk/scripts")
         }
     val clashPath: String
         get() {
