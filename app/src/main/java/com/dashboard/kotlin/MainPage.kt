@@ -157,7 +157,7 @@ class MainPage : Fragment() {
                     restartApp()
                 else
                     withContext(Dispatchers.Main){
-                        cmd_result.text = "指令出错：\n$result\n"
+                        cmd_result.text = "指令输出：\n$result\n"
                     }
                 true
             }
@@ -231,7 +231,7 @@ class MainPage : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        cmd_result.text = suihelper.suCmd("${clashConfig.corePath} -v")
+        cmd_result.text = suihelper.suCmd("${clashConfig.corePath} -v") + suihelper.suCmd("cat ${clashConfig.clashPath}/run/run.logs")
     }
 
 
