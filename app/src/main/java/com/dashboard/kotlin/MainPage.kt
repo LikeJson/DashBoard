@@ -173,13 +173,13 @@ class MainPage : Fragment() {
 
         menu_web_dashboard.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString("URL", "http://127.0.0.1:9090/ui/"+
-                    if ((context?.resources?.configuration?.uiMode
-                            ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
-                        "?theme=dark"
-                    }else{
-                        "?theme=light"
-                    })
+            bundle.putString("URL", "http://127.0.0.1:9090/ui/")
+                    //if ((context?.resources?.configuration?.uiMode
+                    //        ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
+                    //    "?theme=dark"
+                    //}else{
+                    //    "?theme=light"
+                    //})
             it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
         }
 

@@ -1,6 +1,7 @@
 package com.dashboard.kotlin
 
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,7 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebSettings
+import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.annotation.RequiresApi
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.fragment_webview_page.*
@@ -50,6 +53,16 @@ class WebViewPage : Fragment() {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    override fun onResume() {
+        super.onResume()
+        if ((context?.resources?.configuration?.uiMode
+                ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
+            webView.settings.forceDark = WebSettings.FORCE_DARK_ON
+        }else{
+            webView.settings.forceDark = WebSettings.FORCE_DARK_OFF
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
