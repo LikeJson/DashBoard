@@ -2,7 +2,7 @@
     <string name="app_name">DashBoard</string>
     <string name="title_setting">配置</string>
     <string name="title_ip_check">IP 检查</string>
-    <string name="title_fast_test">网络测速</string>
+    <string name="title_speed_test">网络测速</string>
     <string name="title_web_dashboard">网页面板</string>
     <string name="title_web_dashboard_download">Clash 面板下载</string>
     <string name="title_sub_download">订阅下载</string>

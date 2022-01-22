@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -184,7 +183,7 @@ class MainPage : Fragment() {
             it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
         }
 
-        menu_fast_test.setOnClickListener {
+        menu_speed_test.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("URL", "https://fast.com/zh/cn/")
             it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)

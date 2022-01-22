@@ -107,7 +107,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/menu_fast_test"
+                android:id="@+id/menu_speed_test"
                 style="@style/DefaultCard"
                 app:cardElevation="0dp">
 
@@ -119,11 +119,11 @@
                     <ImageView
                         style="@style/DefaultCardImage"
                         android:layout_width="wrap_content"
-                        android:src="@drawable/ic_fast" />
+                        android:src="@drawable/ic_speed" />
 
                     <TextView
                         style="@style/DefaultCardText"
-                        android:text="@string/title_fast_test"
+                        android:text="@string/title_speed_test"
                         android:textAppearance="?attr/textAppearanceHeadline6" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
