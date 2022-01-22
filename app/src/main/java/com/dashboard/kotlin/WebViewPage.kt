@@ -46,13 +46,7 @@ class WebViewPage : Fragment() {
             webView.settings.domStorageEnabled = true
             webView.settings.databaseEnabled = true
             webView.webViewClient = WebViewClient()
-            webView.loadUrl(it + run {
-                if ((context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
-                    "?theme=dark"
-                }else{
-                    "?theme=light"
-                }
-            })
+            webView.loadUrl(it)
         }
     }
 

@@ -1,6 +1,7 @@
 package com.dashboard.kotlin
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -139,8 +140,7 @@ class MainPage : Fragment() {
                     context?.theme
                 )
             )
-            clash_status_text.text =
-                getString(R.string.clash_charging)
+            clash_status_text.text = getString(R.string.clash_charging)
             netspeed_status_text.visibility = View.GONE
 
             GlobalScope.async {
@@ -168,24 +168,31 @@ class MainPage : Fragment() {
 
 
         menu_ip_check.setOnClickListener {
-
-            val navController = it.findNavController()
-            navController.navigate(R.id.action_mainPage_to_ipCheckPage)
-
+            it.findNavController().navigate(R.id.action_mainPage_to_ipCheckPage)
         }
 
 
         menu_web_dashboard.setOnClickListener {
-            val navController = it.findNavController()
             val bundle = Bundle()
-            bundle.putString("URL", "http://127.0.0.1:9090/ui/")
-            navController.navigate(R.id.action_mainPage_to_webViewPage, bundle)
+            bundle.putString("URL", "http://127.0.0.1:9090/ui/"+
+                    if ((context?.resources?.configuration?.uiMode
+                            ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
+                        "?theme=dark"
+                    }else{
+                        "?theme=light"
+                    })
+            it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
+        }
+
+        menu_fast_test.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("URL", "https://fast.com/zh/cn/")
+            it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
         }
 
         menu_setting.setOnClickListener {
             it.findNavController().navigate(R.id.action_manPage_to_settingPage)
         }
-        1
 /*
         menu_web_dashboard_download.setOnClickListener {
 
