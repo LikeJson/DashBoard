@@ -6,7 +6,6 @@ import com.dashboard.kotlin.KV
 import java.net.HttpURLConnection
 import java.net.URL
 import com.dashboard.kotlin.suihelper.suihelper
-import kotlinx.android.synthetic.main.fragment_setting_page.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -14,7 +13,7 @@ import org.json.JSONObject
 import java.io.File
 import kotlin.concurrent.thread
 
-class clashStatus {
+class ClashStatus {
     var trafficThreadFlag: Boolean = true
     var trafficRawText: String = "{\"up\":\"0\",\"down\":\"0\"}"
 
@@ -23,9 +22,9 @@ class clashStatus {
         thread(start = true) {
             isRunning = try {
                 val conn =
-                    URL(clashConfig.baseURL).openConnection() as HttpURLConnection
+                    URL(ClashConfig.baseURL).openConnection() as HttpURLConnection
                 conn.requestMethod = "GET"
-                conn.setRequestProperty("Authorization", "Bearer ${clashConfig.clashSecret}")
+                conn.setRequestProperty("Authorization", "Bearer ${ClashConfig.clashSecret}")
                 conn.inputStream.bufferedReader().readText() == "{\"hello\":\"clash\"}\n"
             } catch (ex: Exception) {
                 false
@@ -36,8 +35,8 @@ class clashStatus {
 
     fun getTraffic() {
         trafficThreadFlag = true
-        val secret = clashConfig.clashSecret
-        val baseURL = clashConfig.baseURL
+        val secret = ClashConfig.clashSecret
+        val baseURL = ClashConfig.baseURL
         Thread {
             try {
                 val conn =
@@ -63,25 +62,25 @@ class clashStatus {
 
 }
 
-object clashConfig {
+object ClashConfig {
 
     var corePath: String
-        get() = KV.decodeString("core_path")?:"/data/adb/modules/Clash_For_Magisk/system/bin/clash"
+        get() = KV.decodeString("core_path")?:"/system/bin/clash"
         set(value) {
             KV.encode("core_path", value)
         }
 
     var scriptsPath: String
-        get() = KV.decodeString("scripts_path")?:"/data/adb/modules/Clash_For_Magisk/scripts"
+        get() = KV.decodeString("scripts_path")?:"/data/clash/scripts"
         set(value) {
-            KV.encode("scripts_path", value)
-            if (value != "/data/adb/modules/Clash_For_Magisk/scripts")
-                suihelper.suCmd("mkdir -p /data/adb/modules/Clash_For_Magisk/ & ln -s $value /data/adb/modules/Clash_For_Magisk/scripts")
+            if (value.last() == '/')
+                KV.encode("scripts_path",value.substring(0, value.length-1))
+            else
+                KV.encode("scripts_path", value)
         }
+
     val clashPath: String
-        get() {
-            return getConfigPath()
-        }
+        get() = "/data/clash"
 
     val baseURL: String
         get() {
@@ -169,39 +168,25 @@ object clashConfig {
         }
     }
 
-    fun getClashType(): String {
-        return KV.decodeString("ClashType") ?: "CFM"
-    }
-
     private fun getSecret(): String {
         return setFile(
             clashPath, "template"
         ) { getFromFile("${GExternalCacheDir}/template", "secret") }
     }
 
-    private fun getConfigPath(): String {
-        when (getClashType()) {
-            "CFM" -> return "/data/clash"
-            "CPFM" -> return "/sdcard/Documents/Clash"
-        }
-        return ""
-    }
 
     private fun getExternalController(): String {
-        return when (getClashType()) {
-            "CFM", "CPFM" -> {
-                val temp = setFile(
-                    clashPath, "template"
-                ) { getFromFile("${GExternalCacheDir}/template", "external-controller") }
 
-                if (temp.startsWith(":")) {
-                    "127.0.0.1$temp"
-                } else {
-                    temp
-                }
-            }
-            else -> ""
+        val temp = setFile(
+            clashPath, "template"
+        ) { getFromFile("${GExternalCacheDir}/template", "external-controller") }
+
+        if (temp.startsWith(":")) {
+            return "127.0.0.1$temp"
+        } else {
+            return temp
         }
+
     }
 
     private fun setFile(dirPath: String, fileName: String, func: () -> String): String {

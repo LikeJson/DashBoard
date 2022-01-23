@@ -14,17 +14,17 @@ object suihelper {
 
     fun checkPermission(request: Boolean = true): Boolean {
         try {
-            if (Shizuku.getVersion() >= 11) {
+            return if (Shizuku.getVersion() >= 11) {
                 if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
-                    return true
+                    true
                 } else {
                     if (request) {
                         Shizuku.requestPermission(114514)
                     }
-                    return false
+                    false
                 }
             } else {
-                return false
+                false
             }
         } catch (ex: Exception) {
             return false
@@ -63,7 +63,7 @@ object suihelper {
                 Log.e("suCmd", "close stream exception: $e")
             }
         }
-        Log.d("suCmd", "result: $result")
+        //Log.d("suCmd", "result: $result")
         return result
     }
 }

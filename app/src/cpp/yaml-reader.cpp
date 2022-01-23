@@ -9,7 +9,7 @@ YAML::Node merge_nodes(YAML::Node a, YAML::Node b);
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_dashboard_kotlin_clashhelper_clashConfig_getFromFile(JNIEnv *env, jobject thiz,
+Java_com_dashboard_kotlin_clashhelper_ClashConfig_getFromFile(JNIEnv *env, jobject thiz,
                                                               jstring jpath, jstring jnode) {
     try {
         jboolean isCopy;
@@ -33,7 +33,7 @@ Java_com_dashboard_kotlin_clashhelper_clashConfig_getFromFile(JNIEnv *env, jobje
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_dashboard_kotlin_clashhelper_clashConfig_modifyFile(JNIEnv *env, jobject thiz,
+Java_com_dashboard_kotlin_clashhelper_ClashConfig_modifyFile(JNIEnv *env, jobject thiz,
                                                              jstring jpath, jstring jnode,
                                                              jstring jvalue) {
     try {
@@ -60,7 +60,7 @@ Java_com_dashboard_kotlin_clashhelper_clashConfig_modifyFile(JNIEnv *env, jobjec
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_dashboard_kotlin_clashhelper_clashConfig_mergeFile(JNIEnv *env, jobject thiz,
+Java_com_dashboard_kotlin_clashhelper_ClashConfig_mergeFile(JNIEnv *env, jobject thiz,
                                                             jstring jmainFilePath,
                                                             jstring jtemplatePath,
                                                             jstring joutputFilePath) {

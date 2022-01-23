@@ -28,15 +28,15 @@ object commandhelper {
     fun doInstall(filePath: String, type: String, name: String = "") {
         when (type) {
             "SUB", "MMDB" -> {
-                suihelper.suCmd("mv -f '$filePath' '${clashConfig.clashPath}/${name}'")
-                suihelper.suCmd("chmod 700 '${clashConfig.clashPath}/${name}'")
-                suihelper.suCmd("chown system:system '${clashConfig.clashPath}/${name}'")
-                clashConfig.updateConfig(clashConfig.getClashType())
+                suihelper.suCmd("mv -f '$filePath' '${ClashConfig.clashPath}/${name}'")
+                suihelper.suCmd("chmod 700 '${ClashConfig.clashPath}/${name}'")
+                suihelper.suCmd("chown system:system '${ClashConfig.clashPath}/${name}'")
+                ClashConfig.updateConfig("CFM")
             }
             "DASHBOARD" -> {
-                suihelper.suCmd("unzip -o '$filePath' -d '${clashConfig.clashPath}'")
-                suihelper.suCmd("chmod 000 '${clashConfig.clashPath}/${name}/' -R")
-                clashConfig.clashDashBoard = name
+                suihelper.suCmd("unzip -o '$filePath' -d '${ClashConfig.clashPath}'")
+                suihelper.suCmd("chmod 000 '${ClashConfig.clashPath}/${name}/' -R")
+                ClashConfig.clashDashBoard = name
             }
         }
         File(filePath).delete()
