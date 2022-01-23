@@ -40,13 +40,13 @@ object suihelper {
         var ls: DataInputStream? = null
         var result: String = ""
         try {
-            Log.i("suCmd", "suCmd: $cmd")
+            //Log.i("suCmd", "suCmd: $cmd")
 
 //            process = Runtime.getRuntime().exec("su")
             process = Shizuku.newProcess(arrayOf("sh"), null, null)
             os = DataOutputStream(process.outputStream)
             ls = DataInputStream(process.inputStream)
-            os.writeBytes("$cmd 2>&1 \n")
+            os.writeBytes("$cmd\n")
             os.writeBytes("exit\n")
             os.flush()
             result = ls.bufferedReader().readText()

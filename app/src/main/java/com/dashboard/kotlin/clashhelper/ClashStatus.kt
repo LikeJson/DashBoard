@@ -46,7 +46,7 @@ class ClashStatus {
                 conn.inputStream.use {
                     while (trafficThreadFlag) {
                         trafficRawText = it.bufferedReader().readLine()
-                        Log.d("TRAFFIC", trafficRawText)
+                        //Log.d("TRAFFIC", trafficRawText)
                     }
                 }
             } catch (ex: Exception) {

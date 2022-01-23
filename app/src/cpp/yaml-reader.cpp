@@ -14,16 +14,16 @@ Java_com_dashboard_kotlin_clashhelper_ClashConfig_getFromFile(JNIEnv *env, jobje
     try {
         jboolean isCopy;
         const char *filePath = env->GetStringUTFChars(jpath, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("path: %s", filePath)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("path: %s", filePath)
         const char *node = env->GetStringUTFChars(jnode, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("node: %s", node)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("node: %s", node)
 
 
         YAML::Node config = YAML::LoadFile(filePath);
         const std::string secret = config[node].as<std::string>();
-        LOGV("result: %s", secret.c_str())
+        //LOGV("result: %s", secret.c_str())
 
         return env->NewStringUTF(secret.c_str());
     } catch (const std::exception &e) {
@@ -39,14 +39,14 @@ Java_com_dashboard_kotlin_clashhelper_ClashConfig_modifyFile(JNIEnv *env, jobjec
     try {
         jboolean isCopy;
         const char *filePath = env->GetStringUTFChars(jpath, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("path: %s", filePath)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("path: %s", filePath)
         const char *node = env->GetStringUTFChars(jnode, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("node: %s", node)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("node: %s", node)
         const char *value = env->GetStringUTFChars(jvalue, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("value: %s", value)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("value: %s", value)
 
         YAML::Node config = YAML::LoadFile(filePath);
         config[node] = value;
@@ -68,14 +68,14 @@ Java_com_dashboard_kotlin_clashhelper_ClashConfig_mergeFile(JNIEnv *env, jobject
 
         jboolean isCopy;
         const char *mainFilePath = env->GetStringUTFChars(jmainFilePath, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("mainFilePath: %s", mainFilePath)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("mainFilePath: %s", mainFilePath)
         const char *templatePath = env->GetStringUTFChars(jtemplatePath, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("templatePath: %s", templatePath)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("templatePath: %s", templatePath)
         const char *outputFilePath = env->GetStringUTFChars(joutputFilePath, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("outputFilePath: %s", outputFilePath)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("outputFilePath: %s", outputFilePath)
 
         YAML::Node mainFileObj = YAML::LoadFile(mainFilePath);
         YAML::Node templateObj = YAML::LoadFile(templatePath);

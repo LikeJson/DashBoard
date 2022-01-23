@@ -132,24 +132,27 @@ class MainPage : Fragment() {
         timer.schedule(object : TimerTask() {
             override fun run() {
                 val log = suihelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
-                val cmdRunning = suihelper.suCmd("cat ${ClashConfig.clashPath}/run/cmdRunning")
+                val cmdRunning = suihelper.suCmd("cat ${ClashConfig.clashPath}/run/cmdRunning 2>&1")
                 handler.post{
-                    cmd_result.let {
 
-                        if (clash_status_text.text == getString(R.string.clash_charging))
+                    cmd_result.let {
+                        if (clash_status_text?.text == getString(R.string.clash_charging))
                             it.text = "$clashV$log"
 
-                        when {
-                             cmdRunning == "" -> {
-                                setStatusCmdRunning()
-                                scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+                        kotlin.runCatching {
+                            when {
+                                cmdRunning == "" -> {
+                                    setStatusCmdRunning()
+                                    scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+                                }
+                                ClashStatus().runStatus() ->
+                                    setStatusRunning()
+                                else ->
+                                    setStatusStopped()
                             }
-                            ClashStatus().runStatus() ->
-                                setStatusRunning()
-                            else ->
-                                setStatusStopped()
                         }
                     }
+
                 }
             }
         },0, 300)
