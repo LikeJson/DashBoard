@@ -18,7 +18,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 32
         versionCode  gitCommitCount.toInteger()
-        versionName "3.4"
+        versionName "3.5"
         versionNameSuffix = ".r${gitCommitCount}.${gitCommitHash}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
