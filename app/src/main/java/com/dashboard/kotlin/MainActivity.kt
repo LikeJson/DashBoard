@@ -5,14 +5,13 @@ import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import com.dashboard.kotlin.suihelper.suihelper
+import com.dashboard.kotlin.suihelper.SuiHelper
 import com.tencent.mmkv.MMKV
 import kotlinx.android.synthetic.main.toolbar.*
 import java.io.DataInputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.concurrent.thread
 
 
 lateinit var GExternalCacheDir: String
@@ -37,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         //sui
-        suihelper.init(packageName)
+        SuiHelper.init(packageName)
 
         //debug version print logs
         if (BuildConfig.DEBUG) {

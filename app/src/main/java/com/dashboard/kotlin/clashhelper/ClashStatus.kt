@@ -5,7 +5,7 @@ import com.dashboard.kotlin.GExternalCacheDir
 import com.dashboard.kotlin.KV
 import java.net.HttpURLConnection
 import java.net.URL
-import com.dashboard.kotlin.suihelper.suihelper
+import com.dashboard.kotlin.suihelper.SuiHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -112,7 +112,7 @@ object ClashConfig {
             }
             "CPFM" -> {
                 mergeConfig("${clashPath}/config_new.yaml")
-                suihelper.suCmd("mv '${clashPath}/config_new.yaml' '${clashPath}/config.yaml'")
+                SuiHelper.suCmd("mv '${clashPath}/config_new.yaml' '${clashPath}/config.yaml'")
                 updateConfigNet("${clashPath}/config.yaml")
             }
         }
@@ -163,7 +163,7 @@ object ClashConfig {
                     "${GExternalCacheDir}/template",
                     "${GExternalCacheDir}/config_output.yaml"
                 )
-                suihelper.suCmd("mv '${GExternalCacheDir}/config_output.yaml' '$outputFilePath'")
+                SuiHelper.suCmd("mv '${GExternalCacheDir}/config_output.yaml' '$outputFilePath'")
             }
         }
     }
@@ -199,13 +199,13 @@ object ClashConfig {
     private fun setFileNR(dirPath: String, fileName: String, func: () -> Unit) {
         copyFile(dirPath, fileName)
         func()
-        suihelper.suCmd("cp '${GExternalCacheDir}/${fileName}' '${dirPath}/${fileName}'")
+        SuiHelper.suCmd("cp '${GExternalCacheDir}/${fileName}' '${dirPath}/${fileName}'")
         deleteFile(GExternalCacheDir, fileName)
     }
 
     private fun copyFile(dirPath: String, fileName: String) {
-        suihelper.suCmd("cp '${dirPath}/${fileName}' '${GExternalCacheDir}/${fileName}'")
-        suihelper.suCmd("chmod +rw '${GExternalCacheDir}/${fileName}'")
+        SuiHelper.suCmd("cp '${dirPath}/${fileName}' '${GExternalCacheDir}/${fileName}'")
+        SuiHelper.suCmd("chmod +rw '${GExternalCacheDir}/${fileName}'")
         return
     }
 

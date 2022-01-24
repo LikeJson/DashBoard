@@ -5,8 +5,8 @@ else
   MAGISK_PATH="/data/adb/modules"
 fi
 
-if [ "$1" == "" ] ; then
+if [ "$1" == "false" ] ; then
   touch ${MAGISK_PATH}/Clash_For_Magisk/disable
 else
-  "$1"/clash.service -k && "$1"/clash.tproxy -k
+  "$2"/clash.service -k && "$2"/clash.tproxy -k
 fi

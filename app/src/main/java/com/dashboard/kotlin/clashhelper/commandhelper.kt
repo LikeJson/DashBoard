@@ -1,7 +1,7 @@
 package com.dashboard.kotlin.clashhelper
 
 import android.util.Log
-import com.dashboard.kotlin.suihelper.suihelper
+import com.dashboard.kotlin.suihelper.SuiHelper
 import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -28,14 +28,14 @@ object commandhelper {
     fun doInstall(filePath: String, type: String, name: String = "") {
         when (type) {
             "SUB", "MMDB" -> {
-                suihelper.suCmd("mv -f '$filePath' '${ClashConfig.clashPath}/${name}'")
-                suihelper.suCmd("chmod 700 '${ClashConfig.clashPath}/${name}'")
-                suihelper.suCmd("chown system:system '${ClashConfig.clashPath}/${name}'")
+                SuiHelper.suCmd("mv -f '$filePath' '${ClashConfig.clashPath}/${name}'")
+                SuiHelper.suCmd("chmod 700 '${ClashConfig.clashPath}/${name}'")
+                SuiHelper.suCmd("chown system:system '${ClashConfig.clashPath}/${name}'")
                 ClashConfig.updateConfig("CFM")
             }
             "DASHBOARD" -> {
-                suihelper.suCmd("unzip -o '$filePath' -d '${ClashConfig.clashPath}'")
-                suihelper.suCmd("chmod 000 '${ClashConfig.clashPath}/${name}/' -R")
+                SuiHelper.suCmd("unzip -o '$filePath' -d '${ClashConfig.clashPath}'")
+                SuiHelper.suCmd("chmod 000 '${ClashConfig.clashPath}/${name}/' -R")
                 ClashConfig.clashDashBoard = name
             }
         }

@@ -7,7 +7,14 @@
     android:orientation="vertical"
     tools:context=".MainPage">
 
-    <include layout="@layout/toolbar" />
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="@string/app_name"
+        app:menu="@menu/menu_restart"/>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/clash_status"

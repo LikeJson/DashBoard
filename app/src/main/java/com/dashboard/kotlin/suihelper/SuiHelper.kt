@@ -7,7 +7,7 @@ import rikka.sui.Sui
 import java.io.DataInputStream
 import java.io.DataOutputStream
 
-object suihelper {
+object SuiHelper {
     fun init(packageName: String) {
         Sui.init(packageName)
     }

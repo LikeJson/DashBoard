@@ -37,8 +37,7 @@ class WebViewPage : Fragment() {
             context?.theme
         )
         toolbar.setNavigationOnClickListener {
-            val controller = it.findNavController()
-            controller.popBackStack()
+            it.findNavController().popBackStack()
         }
 
 
@@ -55,8 +54,6 @@ class WebViewPage : Fragment() {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     override fun onResume() {
         super.onResume()
-        Log.e("www1", if ((context?.resources?.configuration?.uiMode
-            ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) "true" else "false" )
         if ((context?.resources?.configuration?.uiMode
                 ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
             webView.settings.forceDark = WebSettings.FORCE_DARK_ON

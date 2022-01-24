@@ -7,9 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ScrollView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
@@ -17,9 +15,8 @@ import androidx.navigation.findNavController
 import com.dashboard.kotlin.clashhelper.ClashConfig
 import com.dashboard.kotlin.clashhelper.ClashStatus
 import com.dashboard.kotlin.clashhelper.commandhelper
-import com.dashboard.kotlin.suihelper.suihelper
+import com.dashboard.kotlin.suihelper.SuiHelper
 import kotlinx.android.synthetic.main.fragment_main_page.*
-import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.File
@@ -42,14 +39,40 @@ class MainPage : Fragment() {
 
     private val clashStatusClass = ClashStatus()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        Log.e("www1", "onCreateOptionsMenu: ", )
+        inflater.inflate(R.menu.menu_restart, menu)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "MainPageViewCreated")
 
-        toolbar.title = getString(R.string.app_name)
+        mToolbar.setOnMenuItemClickListener {
+            when(it.itemId){
+                R.id.menu_restart -> {
+                    if ((clash_status_text.text == getText(R.string.clash_charging))
+                        || (clash_status_text.text == getText(R.string.sui_disable)))
+                        return@setOnMenuItemClickListener true
+
+                    setStatusCmdRunning()
+                    GlobalScope.async {
+                        doAssestsShellFile("CFM_Restart.sh")
+                    }
+                }
+                else -> return@setOnMenuItemClickListener false
+            }
+            true
+        }
+
         //TODO 添加 app 图标
 
-        if (!suihelper.checkPermission()) {
+        if (!SuiHelper.checkPermission()) {
             clash_status.setCardBackgroundColor(
                 ResourcesCompat.getColor(resources, R.color.error, context?.theme)
             )
@@ -65,7 +88,7 @@ class MainPage : Fragment() {
 
             GlobalScope.async {
                 while (true) {
-                    if (suihelper.checkPermission(request = false)) {
+                    if (SuiHelper.checkPermission(request = false)) {
                         restartApp()
                         break
                     }
@@ -74,11 +97,40 @@ class MainPage : Fragment() {
             }
 
         } else {
-            if (ClashStatus().runStatus()) {
-                setStatusRunning()
-            } else {
-                setStatusStopped()
-            }
+
+            //这是一段屎一样的代码
+            clashV = SuiHelper.suCmd("${ClashConfig.corePath} -v")
+            cmd_result.text = "$clashV${SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")}"
+            timer = Timer()
+            timer.schedule(object : TimerTask() {
+                override fun run() {
+                    val log = SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
+                    val cmdRunning = SuiHelper.suCmd(
+                        "if [ -f ${ClashConfig.clashPath}/run/cmdRunning ];then\necho 'true'\nelse\necho 'false'\nfi")
+                    //"cat ${ClashConfig.clashPath}/run/cmdRunning 2>&1")
+                    handler.post{
+
+                        cmd_result.let {
+                            if (clash_status_text?.text == getString(R.string.clash_charging))
+                                it.text = "$clashV$log"
+
+                            kotlin.runCatching {
+                                when {
+                                    cmdRunning == "true\n" -> {
+                                        setStatusCmdRunning()
+                                    }
+                                    ClashStatus().runStatus() -> {
+                                        setStatusRunning()
+                                    }
+                                    else ->
+                                        setStatusStopped()
+                                }
+                            }
+                        }
+
+                    }
+                }
+            },0, 300)
         }
 
         clash_status.setOnClickListener {
@@ -125,38 +177,6 @@ class MainPage : Fragment() {
             it.findNavController().navigate(R.id.action_manPage_to_settingPage)
         }
 
-        //这是一段屎一样的代码
-        clashV = suihelper.suCmd("${ClashConfig.corePath} -v")
-        cmd_result.text = "$clashV${suihelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")}"
-        timer = Timer()
-        timer.schedule(object : TimerTask() {
-            override fun run() {
-                val log = suihelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
-                val cmdRunning = suihelper.suCmd("cat ${ClashConfig.clashPath}/run/cmdRunning 2>&1")
-                handler.post{
-
-                    cmd_result.let {
-                        if (clash_status_text?.text == getString(R.string.clash_charging))
-                            it.text = "$clashV$log"
-
-                        kotlin.runCatching {
-                            when {
-                                cmdRunning == "" -> {
-                                    setStatusCmdRunning()
-                                    scrollView.fullScroll(ScrollView.FOCUS_DOWN)
-                                }
-                                ClashStatus().runStatus() ->
-                                    setStatusRunning()
-                                else ->
-                                    setStatusStopped()
-                            }
-                        }
-                    }
-
-                }
-            }
-        },0, 300)
-
     }
 
     override fun onDestroyView() {
@@ -181,12 +201,11 @@ class MainPage : Fragment() {
                 fo.outputStream().let { ip ->
                     op.copyTo(ip)
                 }
-
                 if ((Build.VERSION.SDK_INT == Build.VERSION_CODES.R) and (ClashConfig.scriptsPath == "/data/adb/modules/Clash_For_Magisk/scripts")) {
-                    suihelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' ${ClashConfig.scriptsPath}")
+                    SuiHelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' true ${ClashConfig.scriptsPath}")
                 }
                 else {
-                    suihelper.suCmd("sh '${context?.externalCacheDir}/${fileName}'")
+                    SuiHelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' false ${ClashConfig.scriptsPath}")
                 }
 
                 fo.delete()
@@ -209,6 +228,8 @@ class MainPage : Fragment() {
         netspeed_status_text.visibility = View.VISIBLE
 
         clashStatusClass.getTraffic()
+
+        scrollView.fullScroll(ScrollView.FOCUS_DOWN)
 
         GlobalScope.launch(Dispatchers.IO) {
             while (clashStatusClass.trafficThreadFlag) {
@@ -234,6 +255,7 @@ class MainPage : Fragment() {
     }
 
     private fun setStatusCmdRunning(){
+        scrollView.fullScroll(ScrollView.FOCUS_DOWN)
         if (clash_status_text.text == getString(R.string.clash_charging))
             return
         clash_status.isClickable = false
