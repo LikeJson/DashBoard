@@ -21,16 +21,36 @@ object SuiHelper {
                     if (request) {
                         Shizuku.requestPermission(114514)
                     }
-                    false
+                    return checkPermission()
                 }
             } else {
-                false
+                return checkPermission()
             }
         } catch (ex: Exception) {
-            return false
+            Log.e("Permission", "Shizuku not found")
+            return checkPermission()
         }
+    }
 
-
+    private fun checkPermission(): Boolean{
+        var process: Process? = null
+        var os: DataOutputStream? = null
+        try {
+            process = Runtime.getRuntime().exec("su"); //切换到root帐号
+            os = DataOutputStream(process.outputStream)
+            os.writeBytes("exit\n")
+            os.flush()
+            process.waitFor()
+        }catch (e: Exception){
+            Log.e("Permission", "Exception: $e", )
+        }finally {
+            val res = process?.waitFor() == 0
+            kotlin.runCatching {
+                os?.close()
+                process?.destroy()
+            }
+            return res
+        }
     }
 
 
@@ -42,16 +62,21 @@ object SuiHelper {
         try {
             //Log.i("suCmd", "suCmd: $cmd")
 
-//            process = Runtime.getRuntime().exec("su")
-            process = Shizuku.newProcess(arrayOf("sh"), null, null)
-            os = DataOutputStream(process.outputStream)
-            ls = DataInputStream(process.inputStream)
+            //process = Runtime.getRuntime().exec("su")
+            //process = Shizuku.newProcess(arrayOf("sh"), null, null)
+            process = try {
+                Shizuku.newProcess(arrayOf("sh"), null, null)
+            }catch (e: Exception){
+                Runtime.getRuntime().exec("su")
+            }
+            os = DataOutputStream(process?.outputStream)
+            ls = DataInputStream(process?.inputStream)
             os.writeBytes("$cmd\n")
             os.writeBytes("exit\n")
             os.flush()
             result = ls.bufferedReader().readText()
 
-            process.waitFor()
+            process?.waitFor()
         } catch (e: Exception) {
             Log.e("suCmd", "Exception: $e")
         } finally {
@@ -63,7 +88,7 @@ object SuiHelper {
                 Log.e("suCmd", "close stream exception: $e")
             }
         }
-        //Log.d("suCmd", "result: $result")
+        //Log.d("suCmd", ".\n~>\n$cmd\n\nres:\n$result")
         return result
     }
 }

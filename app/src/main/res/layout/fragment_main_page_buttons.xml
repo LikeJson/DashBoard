@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.circularreveal.CircularRevealFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainPage">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/clash_status"
+            style="@style/DefaultCard"
+            android:layout_marginTop="18dp">
+
+            <LinearLayout
+                style="@style/Default"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/clash_status_icon"
+                    style="@style/DefaultCardImage" />
+
+                <LinearLayout
+                    style="@style/Default"
+                    android:orientation="vertical"
+                    android:paddingTop="25dp"
+                    android:paddingBottom="25dp">
+
+                    <TextView
+                        android:id="@+id/clash_status_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/netspeed_status_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textAppearance="?attr/textAppearanceBody2"
+                        android:textColor="@android:color/white"
+                        android:visibility="gone" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/menu_web_dashboard"
+            style="@style/DefaultCard"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                style="@style/Default"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/DefaultCardImage"
+                    android:src="@drawable/ic_apps" />
+
+                <TextView
+                    style="@style/DefaultCardText"
+                    android:text="@string/title_web_dashboard"
+                    android:textAppearance="?attr/textAppearanceHeadline6" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/menu_ip_check"
+            style="@style/DefaultCard"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                style="@style/Default"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/DefaultCardImage"
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/ic_detection" />
+
+                <TextView
+                    style="@style/DefaultCardText"
+                    android:text="@string/title_ip_check"
+                    android:textAppearance="?attr/textAppearanceHeadline6" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/menu_speed_test"
+            style="@style/DefaultCard"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                style="@style/Default"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/DefaultCardImage"
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/ic_speed" />
+
+                <TextView
+                    style="@style/DefaultCardText"
+                    android:text="@string/title_speed_test"
+                    android:textAppearance="?attr/textAppearanceHeadline6" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/menu_setting"
+            style="@style/DefaultCard"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                style="@style/Default"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/DefaultCardImage"
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/ic_settings" />
+
+                <TextView
+                    style="@style/DefaultCardText"
+                    android:text="@string/title_setting"
+                    android:textAppearance="?attr/textAppearanceHeadline6" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</com.google.android.material.circularreveal.CircularRevealFrameLayout>

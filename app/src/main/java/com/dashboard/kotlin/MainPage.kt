@@ -17,6 +17,8 @@ import com.dashboard.kotlin.clashhelper.ClashStatus
 import com.dashboard.kotlin.clashhelper.commandhelper
 import com.dashboard.kotlin.suihelper.SuiHelper
 import kotlinx.android.synthetic.main.fragment_main_page.*
+import kotlinx.android.synthetic.main.fragment_main_page_buttons.*
+import kotlinx.android.synthetic.main.fragment_main_page_log.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.File
@@ -38,16 +40,6 @@ class MainPage : Fragment() {
     }
 
     private val clashStatusClass = ClashStatus()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        Log.e("www1", "onCreateOptionsMenu: ", )
-        inflater.inflate(R.menu.menu_restart, menu)
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -104,17 +96,16 @@ class MainPage : Fragment() {
             timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
-                    val log = SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
+                    //val log = SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
                     val cmdRunning = SuiHelper.suCmd(
                         "if [ -f ${ClashConfig.clashPath}/run/cmdRunning ];then\necho 'true'\nelse\necho 'false'\nfi")
                     //"cat ${ClashConfig.clashPath}/run/cmdRunning 2>&1")
                     handler.post{
 
                         cmd_result.let {
-                            if (clash_status_text?.text == getString(R.string.clash_charging))
-                                it.text = "$clashV$log"
-
                             kotlin.runCatching {
+                                if (clash_status_text?.text == getString(R.string.clash_charging))
+                                    it.text = "$clashV" + SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
                                 when {
                                     cmdRunning == "true\n" -> {
                                         setStatusCmdRunning()
@@ -202,10 +193,10 @@ class MainPage : Fragment() {
                     op.copyTo(ip)
                 }
                 if ((Build.VERSION.SDK_INT == Build.VERSION_CODES.R) and (ClashConfig.scriptsPath == "/data/adb/modules/Clash_For_Magisk/scripts")) {
-                    SuiHelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' true ${ClashConfig.scriptsPath}")
+                    SuiHelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' true ${ClashConfig.scriptsPath} 2>&1")
                 }
                 else {
-                    SuiHelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' false ${ClashConfig.scriptsPath}")
+                    SuiHelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' false ${ClashConfig.scriptsPath} 2>&1")
                 }
 
                 fo.delete()

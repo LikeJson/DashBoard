@@ -24,10 +24,14 @@
         <entry key="app/src/main/res/drawable/ic_stop.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/drawable/ic_switch.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/drawable/ic_template.xml" value="0.21041666666666667" />
+        <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.33603603603603605" />
+        <entry key="app/src/main/res/layout-land/fragment_main_page.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.24864130434782608" />
         <entry key="app/src/main/res/layout/fragment_download_page.xml" value="0.19427083333333334" />
         <entry key="app/src/main/res/layout/fragment_ip_check_page.xml" value="0.35052083333333334" />
         <entry key="app/src/main/res/layout/fragment_main_page.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/fragment_main_page_buttons.xml" value="0.16875" />
+        <entry key="app/src/main/res/layout/fragment_main_page_log.xml" value="0.16875" />
         <entry key="app/src/main/res/layout/fragment_setting_page.xml" value="0.19114583333333332" />
         <entry key="app/src/main/res/layout/fragment_webview_page.xml" value="0.35052083333333334" />
         <entry key="app/src/main/res/layout/toolbar.xml" value="0.19114583333333332" />

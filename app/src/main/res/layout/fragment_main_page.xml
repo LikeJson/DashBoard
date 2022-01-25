@@ -7,170 +7,29 @@
     android:orientation="vertical"
     tools:context=".MainPage">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/mToolbar"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="@string/app_name"
-        app:menu="@menu/menu_restart"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/clash_status"
-        style="@style/DefaultCard"
-        android:layout_marginTop="18dp">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/mToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="@string/app_name"
+            app:menu="@menu/menu_restart"/>
 
-        <LinearLayout
-            style="@style/Default"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
+        <include layout="@layout/fragment_main_page_buttons"/>
 
-            <ImageView
-                android:id="@+id/clash_status_icon"
-                style="@style/DefaultCardImage" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <LinearLayout
-                style="@style/Default"
-                android:orientation="vertical"
-                android:paddingTop="25dp"
-                android:paddingBottom="25dp">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <include layout="@layout/fragment_main_page_log"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <TextView
-                    android:id="@+id/clash_status_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/netspeed_status_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="@android:color/white"
-                    android:visibility="gone" />
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <LinearLayout
-        style="@style/Default"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/menu_web_dashboard"
-            style="@style/DefaultCard"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                style="@style/Default"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    style="@style/DefaultCardImage"
-                    android:src="@drawable/ic_apps" />
-
-                <TextView
-                    style="@style/DefaultCardText"
-                    android:text="@string/title_web_dashboard"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/menu_ip_check"
-            style="@style/DefaultCard"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                style="@style/Default"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    style="@style/DefaultCardImage"
-                    android:layout_width="wrap_content"
-                    android:src="@drawable/ic_detection" />
-
-                <TextView
-                    style="@style/DefaultCardText"
-                    android:text="@string/title_ip_check"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/menu_speed_test"
-            style="@style/DefaultCard"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                style="@style/Default"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    style="@style/DefaultCardImage"
-                    android:layout_width="wrap_content"
-                    android:src="@drawable/ic_speed" />
-
-                <TextView
-                    style="@style/DefaultCardText"
-                    android:text="@string/title_speed_test"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/menu_setting"
-            style="@style/DefaultCard"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                style="@style/Default"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    style="@style/DefaultCardImage"
-                    android:layout_width="wrap_content"
-                    android:src="@drawable/ic_settings" />
-
-                <TextView
-                    style="@style/DefaultCardText"
-                    android:text="@string/title_setting"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <ScrollView
-            style="@style/Default"
-            android:id="@+id/scrollView"
-            android:scrollbars="none"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="5dp">
-            <com.google.android.material.card.MaterialCardView
-                style="@style/DefaultCard"
-                android:clickable="false"
-                app:cardElevation="0dp"
-                android:layout_height="match_parent">
-
-                <TextView
-                    style="@style/DefaultCardText"
-                    android:textAppearance="?attr/textAppearanceHeadline6"
-                    android:id="@+id/cmd_result"
-                    android:layout_width="match_parent"
-                    android:text="a\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\na\n"/>
-
-            </com.google.android.material.card.MaterialCardView>
-        </ScrollView>
-    </LinearLayout>
 </LinearLayout>

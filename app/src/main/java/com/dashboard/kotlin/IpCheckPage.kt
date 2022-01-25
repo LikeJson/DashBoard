@@ -15,7 +15,7 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
-class ipCheckPage : Fragment() {
+class IpCheckPage : Fragment() {
 
     private lateinit var coroutineScope: Job
     private lateinit var sukkAPiThreadContext: ExecutorCoroutineDispatcher

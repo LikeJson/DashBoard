@@ -92,11 +92,7 @@ object ClashConfig {
         }
 
     var clashDashBoard: String
-        get() {
-            return setFile(
-                clashPath, "template"
-            ) { getFromFile("${GExternalCacheDir}/template", "external-ui") }
-        }
+        get() = getFromFile("${GExternalCacheDir}/template", "external-ui")
         set(value) {
             setFileNR(
                 clashPath, "template"
@@ -168,33 +164,23 @@ object ClashConfig {
         }
     }
 
-    private fun getSecret(): String {
-        return setFile(
-            clashPath, "template"
-        ) { getFromFile("${GExternalCacheDir}/template", "secret") }
-    }
+    private fun getSecret() = getFromFile("${GExternalCacheDir}/template", "secret")
+
 
 
     private fun getExternalController(): String {
 
-        val temp = setFile(
-            clashPath, "template"
-        ) { getFromFile("${GExternalCacheDir}/template", "external-controller") }
+        val temp = getFromFile("${GExternalCacheDir}/template", "external-controller")
 
-        if (temp.startsWith(":")) {
-            return "127.0.0.1$temp"
+        return if (temp.startsWith(":")) {
+            "127.0.0.1$temp"
         } else {
-            return temp
+            temp
         }
 
     }
 
-    private fun setFile(dirPath: String, fileName: String, func: () -> String): String {
-        copyFile(dirPath, fileName)
-        val temp = func()
-        deleteFile(GExternalCacheDir, fileName)
-        return temp
-    }
+
 
     private fun setFileNR(dirPath: String, fileName: String, func: () -> Unit) {
         copyFile(dirPath, fileName)
@@ -224,9 +210,11 @@ object ClashConfig {
         outputFilePath: String
     )
 
+    private fun setTemplate() = copyFile(clashPath, "template")
 
     init {
         System.loadLibrary("yaml-reader")
+        setTemplate()
     }
 
 }
