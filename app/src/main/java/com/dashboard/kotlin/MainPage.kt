@@ -103,7 +103,7 @@ class MainPage : Fragment() {
                     handler.post{
 
                         cmd_result.let {
-                            kotlin.runCatching {
+                            runCatching {
                                 if (clash_status_text?.text == getString(R.string.clash_charging))
                                     it.text = "$clashV" + SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
                                 when {

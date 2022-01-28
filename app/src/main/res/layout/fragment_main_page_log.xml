@@ -1,28 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.circularreveal.CircularRevealFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainPage">
-    <ScrollView
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         style="@style/Default"
         android:id="@+id/scrollView"
         android:scrollbars="none"
-        android:layout_height="match_parent">
-        <com.google.android.material.card.MaterialCardView
+        android:layout_height="match_parent"
+        tools:context=".MainPage">
+    <com.google.android.material.card.MaterialCardView
             style="@style/DefaultCard"
             android:clickable="false"
             app:cardElevation="0dp"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <TextView
-                style="@style/DefaultCardText"
+        <TextView style="@style/DefaultCardText"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:id="@+id/cmd_result"
                 android:layout_width="match_parent"
+                android:breakStrategy="simple"
                 android:text="Error"/>
 
-        </com.google.android.material.card.MaterialCardView>
-    </ScrollView>
-</com.google.android.material.circularreveal.CircularRevealFrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+</ScrollView>

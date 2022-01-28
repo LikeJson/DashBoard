@@ -9,12 +9,15 @@ import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.findNavController
 import kotlinx.android.synthetic.main.fragment_ip_check_page.*
+import kotlinx.android.synthetic.main.fragment_ip_check_page_ip.*
+import kotlinx.android.synthetic.main.fragment_ip_cleck_page_web.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
+@ObsoleteCoroutinesApi
 class IpCheckPage : Fragment() {
 
     private lateinit var coroutineScope: Job
@@ -36,7 +39,6 @@ class IpCheckPage : Fragment() {
     }
 
 
-    @ObsoleteCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         sukkAPiThreadContext = newSingleThreadContext("sukkAPiThread")
         ipipNetThreadContext = newSingleThreadContext("ipipNetThread")
@@ -50,25 +52,22 @@ class IpCheckPage : Fragment() {
 
         coroutineScope = GlobalScope.launch(Dispatchers.IO) {
             async(sukkAPiThreadContext) {
-                var tempStr: String
-                try {
+                var tempStr: String = try {
                     val sukkaApiObj =
                         JSONObject(URL("https://forge.speedtest.cn/api/location/info").readText())
-                    tempStr = "${sukkaApiObj.optString("full_ip")}\n" +
+                    "${sukkaApiObj.optString("full_ip")}\n" +
                             "${sukkaApiObj.optString("country")} " +
                             "${sukkaApiObj.optString("province")} " +
                             "${sukkaApiObj.optString("city")} " +
                             "${sukkaApiObj.optString("distinct")} " +
-                            "${sukkaApiObj.optString("isp")}"
+                            sukkaApiObj.optString("isp")
                 } catch (ex: Exception) {
-                    tempStr = "error"
+                    "error"
                 }
 
                 withContext(Dispatchers.Main) {
-                    try {
+                    runCatching {
                         sukka_api_result.text = tempStr
-                    } catch (ex: Exception) {
-
                     }
                 }
 
@@ -88,10 +87,8 @@ class IpCheckPage : Fragment() {
                     tempStr = "error"
                 }
                 withContext(Dispatchers.Main) {
-                    try {
+                    runCatching {
                         ipip_net_result.text = tempStr
-                    } catch (ex: Exception) {
-
                     }
                 }
 
@@ -112,10 +109,8 @@ class IpCheckPage : Fragment() {
                     tempStr = "error"
                 }
                 withContext(Dispatchers.Main) {
-                    try {
+                    runCatching {
                         ip_sb_result.text = tempStr
-                    } catch (ex: Exception) {
-
                     }
                 }
             }
@@ -147,10 +142,8 @@ class IpCheckPage : Fragment() {
                     tempStr = "error"
                 }
                 withContext(Dispatchers.Main) {
-                    try {
+                    runCatching {
                         sukka_api_global_result.text = tempStr
-                    } catch (ex: Exception) {
-
                     }
                 }
             }
@@ -169,18 +162,14 @@ class IpCheckPage : Fragment() {
                     tempStr = "无法访问"
                 }
                 withContext(Dispatchers.Main) {
-                    try {
-                        val color: Int
-                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                    runCatching {
+                        val color = if (tempStr == "连接正常") ResourcesCompat.getColor(
                             resources,
                             R.color.green,
                             context?.theme
-                        ) else color =
-                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        ) else ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
                         baiduCheck.text = tempStr
                         baiduCheck.setTextColor(color)
-                    } catch (ex: Exception) {
-
                     }
                 }
 
@@ -198,18 +187,14 @@ class IpCheckPage : Fragment() {
                     tempStr = "无法访问"
                 }
                 withContext(Dispatchers.Main) {
-                    try {
-                        val color: Int
-                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                    runCatching {
+                        val color = if (tempStr == "连接正常") ResourcesCompat.getColor(
                             resources,
                             R.color.green,
                             context?.theme
-                        ) else color =
-                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        ) else ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
                         neteaseMusicCheck.text = tempStr
                         neteaseMusicCheck.setTextColor(color)
-                    } catch (ex: Exception) {
-
                     }
                 }
 
@@ -227,18 +212,14 @@ class IpCheckPage : Fragment() {
                     tempStr = "无法访问"
                 }
                 withContext(Dispatchers.Main) {
-                    try {
-                        val color: Int
-                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                    runCatching {
+                        val color = if (tempStr == "连接正常") ResourcesCompat.getColor(
                             resources,
                             R.color.green,
                             context?.theme
-                        ) else color =
-                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        ) else ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
                         githubCheck.text = tempStr
                         githubCheck.setTextColor(color)
-                    } catch (ex: Exception) {
-
                     }
                 }
 
@@ -249,25 +230,20 @@ class IpCheckPage : Fragment() {
                     val conn = URL("https://www.youtube.com/").openConnection()
                     conn.connectTimeout = 1000 * 10
                     conn.readTimeout = 1000 * 10
-                    if (conn.getInputStream().reader().readText() != "") tempStr =
-                        "连接正常" else tempStr = "无法访问"
+                    tempStr = if (conn.getInputStream().reader().readText() != "") "连接正常" else "无法访问"
                 } catch (ex: Exception) {
                     Log.d("ConnError", ex.toString())
                     tempStr = "无法访问"
                 }
                 withContext(Dispatchers.Main) {
-                    try {
-                        val color: Int
-                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                    runCatching {
+                        val color = if (tempStr == "连接正常") ResourcesCompat.getColor(
                             resources,
                             R.color.green,
                             context?.theme
-                        ) else color =
-                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        ) else ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
                         youtubeCheck.text = tempStr
                         youtubeCheck.setTextColor(color)
-                    } catch (ex: Exception) {
-
                     }
                 }
 
