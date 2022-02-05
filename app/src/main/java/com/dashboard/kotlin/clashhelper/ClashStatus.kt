@@ -64,20 +64,11 @@ class ClashStatus {
 
 object ClashConfig {
 
-    var corePath: String
-        get() = KV.decodeString("core_path")?:"/system/bin/clash"
-        set(value) {
-            KV.encode("core_path", value)
-        }
+    val corePath: String
+        get() = "/data/adb/modules/Clash_For_Magisk/system/bin/clash"
 
-    var scriptsPath: String
-        get() = KV.decodeString("scripts_path")?:"/data/clash/scripts"
-        set(value) {
-            if (value.last() == '/')
-                KV.encode("scripts_path",value.substring(0, value.length-1))
-            else
-                KV.encode("scripts_path", value)
-        }
+    val scriptsPath: String
+        get() = "/data/clash/scripts"
 
     val clashPath: String
         get() = "/data/clash"

@@ -25,13 +25,6 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
-        <action
-            android:id="@+id/action_manPage_to_settingPage"
-            app:destination="@+id/settingPage"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/webViewPage"
@@ -43,9 +36,4 @@
         android:name="com.dashboard.kotlin.IpCheckPage"
         android:label="fragment_ip_check_page"
         tools:layout="@layout/fragment_ip_check_page" />
-    <fragment
-        android:id="@+id/settingPage"
-        android:name="com.dashboard.kotlin.SettingPage"
-        android:label="fragment_setting_page"
-        tools:layout="@layout/fragment_setting_page"/>
 </navigation>

@@ -163,11 +163,6 @@ class MainPage : Fragment() {
             bundle.putString("URL", "https://fast.com/zh/cn/")
             it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
         }
-
-        menu_setting.setOnClickListener {
-            it.findNavController().navigate(R.id.action_manPage_to_settingPage)
-        }
-
     }
 
     override fun onDestroyView() {

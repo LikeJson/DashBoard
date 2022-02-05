@@ -18,7 +18,7 @@ android {
         minSdkVersion 26
         targetSdkVersion 32
         versionCode  gitCommitCount.toInteger()
-        versionName "4.3"
+        versionName "4.4"
         versionNameSuffix = ".r${gitCommitCount}.${gitCommitHash}"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -41,7 +41,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),'proguard-rules.pro'
         }
         debug {}
     }
