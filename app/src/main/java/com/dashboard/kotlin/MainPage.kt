@@ -54,7 +54,10 @@ class MainPage : Fragment() {
 
                     setStatusCmdRunning()
                     GlobalScope.async {
-                        doAssestsShellFile("CFM_Restart.sh")
+                        SuiHelper.suCmd("touch ${ClashConfig.clashPath}/run/cmdRunning && " +
+                                "${ClashConfig.scriptsPath}/clash.tool -u &&" +
+                                " rm -rf ${ClashConfig.scriptsPath}/../run/cmdRunning")
+                    //doAssestsShellFile("CFM_Update_GeoX.sh")
                     }
                 }
                 else -> return@setOnMenuItemClickListener false

@@ -4,6 +4,6 @@
     <item
         android:id="@+id/menu_restart"
         android:icon="@drawable/ic_restart"
-        android:title="@string/menu_restart"
+        android:title="@string/menu_update"
         app:showAsAction="always"/>
 </menu>

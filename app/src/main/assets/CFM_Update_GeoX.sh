@@ -1,5 +1,4 @@
 
 touch "$2"/../run/cmdRunning
-"$2"/clash.service -k
-"$2"/clash.service -s
+"$2"/clash.tool -u
 rm -rf "$2"/../run/cmdRunning
