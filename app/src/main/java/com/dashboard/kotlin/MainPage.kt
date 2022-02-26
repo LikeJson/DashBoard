@@ -54,10 +54,7 @@ class MainPage : Fragment() {
 
                     setStatusCmdRunning()
                     GlobalScope.async {
-                        SuiHelper.suCmd("touch ${ClashConfig.clashPath}/run/cmdRunning && " +
-                                "${ClashConfig.scriptsPath}/clash.tool -u &&" +
-                                " rm -rf ${ClashConfig.scriptsPath}/../run/cmdRunning")
-                    //doAssestsShellFile("CFM_Update_GeoX.sh")
+                        doAssestsShellFile("CFM_Update_GeoX.sh")
                     }
                 }
                 else -> return@setOnMenuItemClickListener false
@@ -169,7 +166,7 @@ class MainPage : Fragment() {
     }
 
     override fun onDestroyView() {
-        clashStatusClass.stopGetTraffic()
+        clashStatusClass.stopGetStatus()
         timer.cancel()
         Log.d("DestroyView", "MainPageDestroyView")
         super.onDestroyView()
@@ -216,23 +213,30 @@ class MainPage : Fragment() {
 
         netspeed_status_text.visibility = View.VISIBLE
 
-        clashStatusClass.getTraffic()
+        clashStatusClass.getStatus()
 
         scrollView.fullScroll(ScrollView.FOCUS_DOWN)
 
         GlobalScope.launch(Dispatchers.IO) {
-            while (clashStatusClass.trafficThreadFlag) {
+            while (clashStatusClass.statusThreadFlag) {
+                if (clashStatusClass.statusRawText.isEmpty()){
+                    delay(300)
+                    continue
+                }
                 try {
-                    val jsonObject = JSONObject(clashStatusClass.trafficRawText)
+                    val jsonObject = JSONObject(clashStatusClass.statusRawText)
                     val upText: String = commandhelper.autoUnit(jsonObject.optString("up"))
                     val downText: String =
                         commandhelper.autoUnit(jsonObject.optString("down"))
-
+                    val res = jsonObject.optString("RES")
+                    val cpu = jsonObject.optString("CPU")
                     withContext(Dispatchers.Main) {
                         netspeed_status_text.text =
                             getString(R.string.netspeed_status_text).format(
                                 upText,
-                                downText
+                                downText,
+                                res,
+                                cpu
                             )
                     }
                 } catch (ex: Exception) {
@@ -251,7 +255,7 @@ class MainPage : Fragment() {
         clash_status.setCardBackgroundColor(
             ResourcesCompat.getColor(
                 resources,
-                R.color.colorPrimary,
+                R.color.gray,
                 context?.theme
             )
         )
@@ -263,8 +267,8 @@ class MainPage : Fragment() {
             )
         )
         clash_status_text.text = getString(R.string.clash_charging)
-        netspeed_status_text.visibility = View.GONE
-        clashStatusClass.stopGetTraffic()
+        netspeed_status_text.visibility = View.INVISIBLE
+        clashStatusClass.stopGetStatus()
     }
 
     private fun setStatusStopped(){
@@ -282,7 +286,7 @@ class MainPage : Fragment() {
             )
         )
         clash_status_text.text = getString(R.string.clash_disable)
-        netspeed_status_text.visibility = View.GONE
-        clashStatusClass.stopGetTraffic()
+        netspeed_status_text.visibility = View.INVISIBLE
+        clashStatusClass.stopGetStatus()
     }
 }

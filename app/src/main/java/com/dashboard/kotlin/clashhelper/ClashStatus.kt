@@ -2,7 +2,6 @@ package com.dashboard.kotlin.clashhelper
 
 import android.util.Log
 import com.dashboard.kotlin.GExternalCacheDir
-import com.dashboard.kotlin.KV
 import java.net.HttpURLConnection
 import java.net.URL
 import com.dashboard.kotlin.suihelper.SuiHelper
@@ -10,12 +9,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import rikka.shizuku.Shizuku
+import java.io.DataInputStream
+import java.io.DataOutputStream
 import java.io.File
 import kotlin.concurrent.thread
 
 class ClashStatus {
-    var trafficThreadFlag: Boolean = true
-    var trafficRawText: String = "{\"up\":\"0\",\"down\":\"0\"}"
+    var statusThreadFlag: Boolean = true
+    var statusRawText: String = ""//"{\"up\":\"0\",\"down\":\"0\",\"RES\":\"0\",\"CPU\":\"0%\"}"
 
     fun runStatus(): Boolean {
         var isRunning = false
@@ -33,30 +35,60 @@ class ClashStatus {
         return isRunning
     }
 
-    fun getTraffic() {
-        trafficThreadFlag = true
+    fun getStatus() {
+        statusThreadFlag = true
         val secret = ClashConfig.clashSecret
         val baseURL = ClashConfig.baseURL
+
+        var process: Process? = null
+        var os: DataOutputStream? = null
+        var ls: DataInputStream? = null
         Thread {
             try {
                 val conn =
                     URL("${baseURL}/traffic").openConnection() as HttpURLConnection
                 conn.requestMethod = "GET"
                 conn.setRequestProperty("Authorization", "Bearer $secret")
+
+                process = try {
+                    Shizuku.newProcess(arrayOf("sh"), null, null)
+                }catch (e: Exception){
+                    Runtime.getRuntime().exec("su")
+                }
+                os = DataOutputStream(process?.outputStream)
+                ls = DataInputStream(process?.inputStream)
+                os?.writeBytes(
+                    "top -p `cat ${ClashConfig.clashPath}/run/clash.pid` | " +
+                            "grep clash\n")//
+                //// os!!.writeBytes("exit\n")
+                os?.flush()
+
                 conn.inputStream.use {
-                    while (trafficThreadFlag) {
-                        trafficRawText = it.bufferedReader().readLine()
-                        //Log.d("TRAFFIC", trafficRawText)
+                    while (statusThreadFlag) {
+                        val status = ls?.bufferedReader()?.readLine()?.split(Regex(" +"))
+                        statusRawText = it.bufferedReader().readLine()
+                            .replace("}", ",\"RES\":\"${
+                                status?.get(6)
+                            }\",\"CPU\":\"${
+                                status?.get(9)
+                            }%\"}")
                     }
                 }
             } catch (ex: Exception) {
-                Log.w("W", ex.toString())
+
+                Log.d("TRAFFIC-W", ex.toString())
+            }finally {
+                runCatching {
+                    os?.close()
+                    ls?.close()
+                    process?.destroy()
+                }
             }
         }.start()
     }
 
-    fun stopGetTraffic() {
-        trafficThreadFlag = false
+    fun stopGetStatus() {
+        statusThreadFlag = false
     }
 
 
