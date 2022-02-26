@@ -68,9 +68,9 @@ class ClashStatus {
                         val status = ls?.bufferedReader()?.readLine()?.split(Regex(" +"))
                         statusRawText = it.bufferedReader().readLine()
                             .replace("}", ",\"RES\":\"${
-                                status?.get(6)
+                                status?.get(5)
                             }\",\"CPU\":\"${
-                                status?.get(9)
+                                status?.get(8)
                             }%\"}")
                     }
                 }
