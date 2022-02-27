@@ -26,6 +26,7 @@ import java.io.File
 import java.util.*
 
 
+@DelicateCoroutinesApi
 class MainPage : Fragment() {
 
     lateinit var clashV: String
@@ -81,7 +82,7 @@ class MainPage : Fragment() {
                 )
             )
             clash_status_text.text = getString(R.string.sui_disable)
-            netspeed_status_text.visibility = View.GONE
+            resources_status_text.visibility = View.GONE
 
             GlobalScope.async {
                 while (true) {
@@ -216,7 +217,7 @@ class MainPage : Fragment() {
         )
         clash_status_text.text = getString(R.string.clash_enable)
 
-        netspeed_status_text.visibility = View.VISIBLE
+        resources_status_text.visibility = View.VISIBLE
 
         clashStatusClass.getStatus()
 
@@ -232,7 +233,7 @@ class MainPage : Fragment() {
                     val res = CommandHelper.autoUnitForSize(jsonObject.optString("RES"))
                     val cpu = jsonObject.optString("CPU")
                     withContext(Dispatchers.Main) {
-                        netspeed_status_text.text =
+                        resources_status_text.text =
                             getString(R.string.netspeed_status_text).format(
                                 upText,
                                 downText,
@@ -268,7 +269,7 @@ class MainPage : Fragment() {
             )
         )
         clash_status_text.text = getString(R.string.clash_charging)
-        netspeed_status_text.visibility = View.INVISIBLE
+        resources_status_text.visibility = View.INVISIBLE
         clashStatusClass.stopGetStatus()
     }
 
@@ -287,7 +288,7 @@ class MainPage : Fragment() {
             )
         )
         clash_status_text.text = getString(R.string.clash_disable)
-        netspeed_status_text.visibility = View.INVISIBLE
+        resources_status_text.visibility = View.INVISIBLE
         clashStatusClass.stopGetStatus()
     }
 }
