@@ -1,5 +1,6 @@
 package com.dashboard.kotlin
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
@@ -41,6 +42,7 @@ class MainPage : Fragment() {
 
     private val clashStatusClass = ClashStatus()
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "MainPageViewCreated")
@@ -63,6 +65,9 @@ class MainPage : Fragment() {
         }
 
         //TODO 添加 app 图标
+        mToolbar.title = getString(R.string.app_name) +
+                "-V" +
+                BuildConfig.VERSION_NAME.replace(Regex(".r.+$"),"")
 
         if (!SuiHelper.checkPermission()) {
             clash_status.setCardBackgroundColor(
@@ -105,7 +110,7 @@ class MainPage : Fragment() {
                         cmd_result.let {
                             runCatching {
                                 if (clash_status_text?.text == getString(R.string.clash_charging))
-                                    it.text = "$clashV" + SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
+                                    it.text = clashV + SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
                                 when {
                                     cmdRunning == "true\n" -> {
                                         setStatusCmdRunning()

@@ -90,7 +90,6 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                     style="@style/DefaultCardImage"
-                    android:layout_width="wrap_content"
                     android:src="@drawable/ic_detection" />
 
             <TextView
@@ -111,7 +110,6 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                     style="@style/DefaultCardImage"
-                    android:layout_width="wrap_content"
                     android:src="@drawable/ic_speed" />
 
             <TextView
