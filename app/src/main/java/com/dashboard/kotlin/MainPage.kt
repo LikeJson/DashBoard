@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.dashboard.kotlin.clashhelper.ClashConfig
 import com.dashboard.kotlin.clashhelper.ClashStatus
-import com.dashboard.kotlin.clashhelper.commandhelper
+import com.dashboard.kotlin.clashhelper.CommandHelper
 import com.dashboard.kotlin.suihelper.SuiHelper
 import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.fragment_main_page_buttons.*
@@ -219,16 +219,12 @@ class MainPage : Fragment() {
 
         GlobalScope.launch(Dispatchers.IO) {
             while (clashStatusClass.statusThreadFlag) {
-                if (clashStatusClass.statusRawText.isEmpty()){
-                    delay(300)
-                    continue
-                }
                 try {
                     val jsonObject = JSONObject(clashStatusClass.statusRawText)
-                    val upText: String = commandhelper.autoUnit(jsonObject.optString("up"))
+                    val upText: String = CommandHelper.autoUnitForSpeed(jsonObject.optString("up"))
                     val downText: String =
-                        commandhelper.autoUnit(jsonObject.optString("down"))
-                    val res = jsonObject.optString("RES")
+                        CommandHelper.autoUnitForSpeed(jsonObject.optString("down"))
+                    val res = CommandHelper.autoUnitForSize(jsonObject.optString("RES"))
                     val cpu = jsonObject.optString("CPU")
                     withContext(Dispatchers.Main) {
                         netspeed_status_text.text =

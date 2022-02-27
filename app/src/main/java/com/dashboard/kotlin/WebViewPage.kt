@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.toolbar.*
 
 
 class WebViewPage : Fragment() {
-    var isDark = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

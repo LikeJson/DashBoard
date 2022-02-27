@@ -13,11 +13,13 @@ import rikka.shizuku.Shizuku
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.io.File
+import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.concurrent.thread
 
 class ClashStatus {
     var statusThreadFlag: Boolean = true
-    var statusRawText: String = ""//"{\"up\":\"0\",\"down\":\"0\",\"RES\":\"0\",\"CPU\":\"0%\"}"
+    var statusRawText: String = "{\"up\":\"0\",\"down\":\"0\",\"RES\":\"0\",\"CPU\":\"0%\"}"
 
     fun runStatus(): Boolean {
         var isRunning = false
@@ -39,10 +41,6 @@ class ClashStatus {
         statusThreadFlag = true
         val secret = ClashConfig.clashSecret
         val baseURL = ClashConfig.baseURL
-
-        var process: Process? = null
-        var os: DataOutputStream? = null
-        var ls: DataInputStream? = null
         Thread {
             try {
                 val conn =
@@ -50,39 +48,55 @@ class ClashStatus {
                 conn.requestMethod = "GET"
                 conn.setRequestProperty("Authorization", "Bearer $secret")
 
-                process = try {
-                    Shizuku.newProcess(arrayOf("sh"), null, null)
-                }catch (e: Exception){
-                    Runtime.getRuntime().exec("su")
-                }
-                os = DataOutputStream(process?.outputStream)
-                ls = DataInputStream(process?.inputStream)
-                os?.writeBytes(
-                    "top -p `cat ${ClashConfig.clashPath}/run/clash.pid` | " +
-                            "grep clash\n")//
-                //// os!!.writeBytes("exit\n")
-                os?.flush()
-
                 conn.inputStream.use {
+                    var lastCpuTotal = 0L
+                    var lastClashCpuTotal = 0L
+
                     while (statusThreadFlag) {
-                        val status = ls?.bufferedReader()?.readLine()?.split(Regex(" +"))
+                        var cpuTotal = 0L
+                        var clashCpuTotal = 0L
+                        SuiHelper.suCmd("cat /proc/stat | grep \"cpu \"")
+                            .replace("\n","")
+                            .replace("cpu ","")
+                            .split(Regex(" +")).forEach{ str ->
+                                runCatching {
+                                    cpuTotal += str.toLong()
+                                }
+                            }
+                        SuiHelper.suCmd(
+                            "cat /proc/`cat ${ClashConfig.clashPath}/run/clash.pid`/stat")
+                            .split(Regex(" +"))
+                            .filterIndexed { index, _ -> index in 13..16 }
+                            .forEach{ str ->
+                                runCatching {
+                                    clashCpuTotal += str.toLong()
+                                }
+                            }
+                        val cpuAVG = BigDecimal(
+                            runCatching {
+                            ((clashCpuTotal - lastClashCpuTotal) /
+                                    (cpuTotal - lastCpuTotal).toDouble() *100)
+                            }.getOrDefault(0) as Double
+                        ).setScale(2, RoundingMode.HALF_UP)
+
+                        lastClashCpuTotal = clashCpuTotal
+                        lastCpuTotal = cpuTotal
+
+                        val res = SuiHelper.suCmd(
+                            "cat /proc/`cat ${ClashConfig.clashPath}/run/clash.pid`/status | " +
+                                    "grep VmRSS | " +
+                                    "awk '{print \$2}'").replace("\n", "")
+
+                        Log.e("getStatus", "$res $cpuAVG")
+
                         statusRawText = it.bufferedReader().readLine()
-                            .replace("}", ",\"RES\":\"${
-                                status?.get(5)
-                            }\",\"CPU\":\"${
-                                status?.get(8)
-                            }%\"}")
+                            .replace("}", ",\"RES\":\"$res\",\"CPU\":\"$cpuAVG%\"}")
+
+                        Thread.sleep(600)
                     }
                 }
             } catch (ex: Exception) {
-
                 Log.d("TRAFFIC-W", ex.toString())
-            }finally {
-                runCatching {
-                    os?.close()
-                    ls?.close()
-                    process?.destroy()
-                }
             }
         }.start()
     }
