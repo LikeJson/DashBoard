@@ -7,16 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
-import androidx.navigation.findNavController
-import kotlinx.android.synthetic.main.fragment_ip_check_page.*
 import kotlinx.android.synthetic.main.fragment_ip_check_page_ip.*
 import kotlinx.android.synthetic.main.fragment_ip_cleck_page_web.*
-import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
-import java.net.HttpURLConnection
 import java.net.URL
 
+@DelicateCoroutinesApi
 @ObsoleteCoroutinesApi
 class IpCheckPage : Fragment() {
 
@@ -52,7 +49,7 @@ class IpCheckPage : Fragment() {
 
         coroutineScope = GlobalScope.launch(Dispatchers.IO) {
             async(sukkAPiThreadContext) {
-                var tempStr: String = try {
+                val tempStr: String = try {
                     val sukkaApiObj =
                         JSONObject(URL("https://forge.speedtest.cn/api/location/info").readText())
                     "${sukkaApiObj.optString("full_ip")}\n" +
@@ -136,7 +133,7 @@ class IpCheckPage : Fragment() {
                     val ipSkkGeoIpObj = JSONObject(conn.getInputStream().reader().readText())
 
                     tempStr = "${ipSkkRip}\n" +
-                            "${ipSkkGeoIpObj.optString("geo")}"
+                            ipSkkGeoIpObj.optString("geo")
 
                 } catch (ex: Exception) {
                     tempStr = "error"
@@ -253,18 +250,6 @@ class IpCheckPage : Fragment() {
         }
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "ipCheckPageViewCreated")
-
-        toolbar.navigationIcon = ResourcesCompat.getDrawable(
-            resources,
-            R.drawable.ic_back,
-            context?.theme
-        )
-        toolbar.setNavigationOnClickListener {
-            val controller = it.findNavController()
-            controller.popBackStack()
-        }
-
-
     }
 
     override fun onDestroyView() {

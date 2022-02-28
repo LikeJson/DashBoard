@@ -9,7 +9,10 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.*
+import android.webkit.WebSettings
+import android.webkit.WebViewClient
 import android.widget.ScrollView
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -20,6 +23,7 @@ import com.dashboard.kotlin.suihelper.SuiHelper
 import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.fragment_main_page_buttons.*
 import kotlinx.android.synthetic.main.fragment_main_page_log.*
+import kotlinx.android.synthetic.main.fragment_webview_page.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.File
@@ -27,7 +31,7 @@ import java.util.*
 
 
 @DelicateCoroutinesApi
-class MainPage : Fragment() {
+class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickListener {
 
     lateinit var clashV: String
     val handler = Handler(Looper.getMainLooper())
@@ -48,22 +52,7 @@ class MainPage : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "MainPageViewCreated")
 
-        mToolbar.setOnMenuItemClickListener {
-            when(it.itemId){
-                R.id.menu_restart -> {
-                    if ((clash_status_text.text == getText(R.string.clash_charging))
-                        || (clash_status_text.text == getText(R.string.sui_disable)))
-                        return@setOnMenuItemClickListener true
-
-                    setStatusCmdRunning()
-                    GlobalScope.async {
-                        doAssestsShellFile("CFM_Update_GeoX.sh")
-                    }
-                }
-                else -> return@setOnMenuItemClickListener false
-            }
-            true
-        }
+        mToolbar.setOnMenuItemClickListener(this)
 
         //TODO 添加 app 图标
         mToolbar.title = getString(R.string.app_name) +
@@ -95,28 +84,26 @@ class MainPage : Fragment() {
             }
 
         } else {
-
             //这是一段屎一样的代码
             clashV = SuiHelper.suCmd("${ClashConfig.corePath} -v")
-            cmd_result.text = "$clashV${SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")}"
+            log_cat.text = "$clashV${SuiHelper.suCmd("cat ${ClashConfig.clashDataPath}/run/run.logs 2> /dev/null")}"
             timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
                     //val log = SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
-                    val cmdRunning = SuiHelper.suCmd(
-                        "if [ -f ${ClashConfig.clashPath}/run/cmdRunning ];then\necho 'true'\nelse\necho 'false'\nfi")
+                    val cmdRunning = CommandHelper.isCmdRunning()
                     //"cat ${ClashConfig.clashPath}/run/cmdRunning 2>&1")
                     handler.post{
 
-                        cmd_result.let {
+                        log_cat.let {
                             runCatching {
                                 if (clash_status_text?.text == getString(R.string.clash_charging))
-                                    it.text = clashV + SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
+                                    it.text = clashV + SuiHelper.suCmd("cat ${ClashConfig.clashDataPath}/run/run.logs 2> /dev/null")
                                 when {
-                                    cmdRunning == "true\n" -> {
+                                    cmdRunning -> {
                                         setStatusCmdRunning()
                                     }
-                                    ClashStatus().runStatus() -> {
+                                    clashStatusClass.runStatus() -> {
                                         setStatusRunning()
                                     }
                                     else ->
@@ -136,12 +123,12 @@ class MainPage : Fragment() {
             GlobalScope.async {
                 doAssestsShellFile(
                     "CFM_" +
-                            (if (ClashStatus().runStatus()) {
+                            (if (clashStatusClass.runStatus()) {
                                 "Stop"
                             } else {
                                 "Start"
                             }) +
-                            ".sh", !ClashStatus().runStatus()
+                            ".sh"
                 )
                 //restartApp()
                 true
@@ -154,7 +141,7 @@ class MainPage : Fragment() {
 
         menu_web_dashboard.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString("URL", "http://127.0.0.1:9090/ui/" +
+            bundle.putString("URL", "${ClashConfig.baseURL}/ui/" +
                     if ((context?.resources?.configuration?.uiMode
                             ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
                         "?theme=dark"
@@ -187,22 +174,22 @@ class MainPage : Fragment() {
         startActivity(intent)
     }
 
-    private fun doAssestsShellFile(fileName: String, isStart: Boolean = false) {
+    private fun doAssestsShellFile(fileName: String): String {
         context?.assets?.open(fileName)?.let { op ->
             File(context?.externalCacheDir, fileName).let { fo ->
                 fo.outputStream().let { ip ->
                     op.copyTo(ip)
                 }
-                if ((Build.VERSION.SDK_INT == Build.VERSION_CODES.R) and (ClashConfig.scriptsPath == "/data/adb/modules/Clash_For_Magisk/scripts")) {
+                val res = if ((Build.VERSION.SDK_INT == Build.VERSION_CODES.R) and (ClashConfig.scriptsPath == "/data/adb/modules/Clash_For_Magisk/scripts")) {
                     SuiHelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' true ${ClashConfig.scriptsPath} 2>&1")
-                }
-                else {
+                } else {
                     SuiHelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' false ${ClashConfig.scriptsPath} 2>&1")
                 }
-
                 fo.delete()
+                return res
             }
         }
+        return ""
     }
 
     private fun setStatusRunning(){
@@ -291,4 +278,33 @@ class MainPage : Fragment() {
         resources_status_text.visibility = View.INVISIBLE
         clashStatusClass.stopGetStatus()
     }
+
+    override fun onMenuItemClick(item: MenuItem): Boolean =
+        when(item.itemId){
+            R.id.menu_update_geox -> {
+                when{
+                    SuiHelper.checkPermission().not() ->
+                        Toast.makeText(context, "莫得权限呢", Toast.LENGTH_SHORT).show()
+                    CommandHelper.isCmdRunning() ->
+                        Toast.makeText(context, "现在不可以哦", Toast.LENGTH_SHORT).show()
+                    else ->{
+                        setStatusCmdRunning()
+                        GlobalScope.async {
+                            doAssestsShellFile("CFM_Update_GeoX.sh")
+                        }
+                    }
+                }
+                true
+            }
+            R.id.menu_update_config -> {
+                if (clashStatusClass.runStatus())
+                    ClashConfig.updateConfig{
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    }
+                else
+                    Toast.makeText(context, "Clash没启动呢", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> false
+        }
 }

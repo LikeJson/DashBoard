@@ -7,11 +7,10 @@
         android:orientation="vertical"
         tools:context=".IpCheckPage">
 
-    <include layout="@layout/toolbar"/>
-
     <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+        android:layout_marginBottom="18dp"
             android:orientation="horizontal">
 
         <ScrollView

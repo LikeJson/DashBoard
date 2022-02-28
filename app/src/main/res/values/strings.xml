@@ -18,5 +18,6 @@
     <string name="title_mmdb_download">MMDB 下载</string>
     <string name="hint_core_path">内核路径</string>
     <string name="hint_scripts_path">脚本路径</string>
-    <string name="menu_update">更新GeoX</string>
+    <string name="menu_update_geox">更新GeoX</string>
+    <string name="menu_update_config">热更新配置</string>
 </resources>

@@ -43,19 +43,20 @@ object CommandHelper {
         return "error"
     }
 
-
+    fun isCmdRunning() = SuiHelper.suCmd(
+        "if [ -f ${ClashConfig.clashDataPath}/run/cmdRunning ];then\necho 'true'\nelse\necho 'false'\nfi") == "true"
 
     fun doInstall(filePath: String, type: String, name: String = "") {
         when (type) {
             "SUB", "MMDB" -> {
-                SuiHelper.suCmd("mv -f '$filePath' '${ClashConfig.clashPath}/${name}'")
-                SuiHelper.suCmd("chmod 700 '${ClashConfig.clashPath}/${name}'")
-                SuiHelper.suCmd("chown system:system '${ClashConfig.clashPath}/${name}'")
-                ClashConfig.updateConfig("CFM")
+                SuiHelper.suCmd("mv -f '$filePath' '${ClashConfig.clashDataPath}/${name}'")
+                SuiHelper.suCmd("chmod 700 '${ClashConfig.clashDataPath}/${name}'")
+                SuiHelper.suCmd("chown system:system '${ClashConfig.clashDataPath}/${name}'")
+                ClashConfig.updateConfig{}
             }
             "DASHBOARD" -> {
-                SuiHelper.suCmd("unzip -o '$filePath' -d '${ClashConfig.clashPath}'")
-                SuiHelper.suCmd("chmod 000 '${ClashConfig.clashPath}/${name}/' -R")
+                SuiHelper.suCmd("unzip -o '$filePath' -d '${ClashConfig.clashDataPath}'")
+                SuiHelper.suCmd("chmod 000 '${ClashConfig.clashDataPath}/${name}/' -R")
                 ClashConfig.clashDashBoard = name
             }
         }

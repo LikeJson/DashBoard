@@ -18,12 +18,16 @@
         <entry key="app/src/main/res/drawable/ic_icon.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/drawable/ic_logs.xml" value="0.21041666666666667" />
+        <entry key="app/src/main/res/drawable/ic_refresh.xml" value="0.212" />
+        <entry key="app/src/main/res/drawable/ic_restart.xml" value="0.212" />
         <entry key="app/src/main/res/drawable/ic_service_not_running.xml" value="0.36666666666666664" />
         <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.20729166666666668" />
         <entry key="app/src/main/res/drawable/ic_speed.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/drawable/ic_stop.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/drawable/ic_switch.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/drawable/ic_template.xml" value="0.21041666666666667" />
+        <entry key="app/src/main/res/drawable/ic_update1.xml" value="0.2485" />
+        <entry key="app/src/main/res/drawable/ic_update2.xml" value="0.2485" />
         <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.33603603603603605" />
         <entry key="app/src/main/res/layout-land/fragment_ip_check_page.xml" value="0.25" />
         <entry key="app/src/main/res/layout-land/fragment_main_page.xml" value="0.22" />

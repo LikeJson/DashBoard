@@ -1,57 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:context=".MainPage">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".MainPage">
     <com.google.android.material.card.MaterialCardView
-            android:id="@+id/clash_status"
-            style="@style/DefaultCard"
-            android:layout_marginTop="18dp">
+        android:id="@+id/clash_status"
+        style="@style/DefaultCard"
+        android:layout_marginTop="18dp">
 
         <LinearLayout
-                style="@style/Default"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
+            style="@style/Default"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/clash_status_icon"
-                    style="@style/DefaultCardImage" />
+                android:id="@+id/clash_status_icon"
+                style="@style/DefaultCardImage" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                    style="@style/Default"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp">
+                style="@style/Default"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp">
 
                 <TextView
-                        android:id="@+id/clash_status_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"/>
+                    android:id="@+id/clash_status_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
                 <TextView
-                        android:id="@+id/resources_status_text"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="?attr/textAppearanceBody2"
-                        android:textColor="@android:color/white"
-                        android:autoSizeTextType="uniform"
-                        android:autoSizeMinTextSize="5sp"
-                        android:autoSizeMaxTextSize="11sp"
-                        android:maxLines="2"
-                        android:visibility="invisible"
-                        android:layout_marginStart="5dp"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/clash_status_text"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                    android:id="@+id/resources_status_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="@android:color/white"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="5sp"
+                    android:autoSizeMaxTextSize="11sp"
+                    android:maxLines="2"
+                    android:visibility="invisible"
+                    android:layout_marginStart="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/clash_status_text"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -60,64 +60,63 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-            android:id="@+id/menu_web_dashboard"
-            style="@style/DefaultCard"
-            app:cardElevation="0dp">
+        android:id="@+id/menu_web_dashboard"
+        style="@style/DefaultCard"
+        app:cardElevation="0dp">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/Default"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
+            style="@style/Default"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageView
-                    style="@style/DefaultCardImage"
-                    android:src="@drawable/ic_apps" />
+                style="@style/DefaultCardImage"
+                android:src="@drawable/ic_apps" />
 
             <TextView
-                    style="@style/DefaultCardText"
-                    android:text="@string/title_web_dashboard"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
+                style="@style/DefaultCardText"
+                android:text="@string/title_web_dashboard"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
-            android:id="@+id/menu_ip_check"
-            style="@style/DefaultCard"
-            app:cardElevation="0dp">
+        android:id="@+id/menu_ip_check"
+        style="@style/DefaultCard"
+        app:cardElevation="0dp">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/Default"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
+            style="@style/Default"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageView
-                    style="@style/DefaultCardImage"
-                    android:src="@drawable/ic_detection" />
+                style="@style/DefaultCardImage"
+                android:src="@drawable/ic_detection" />
 
             <TextView
-                    style="@style/DefaultCardText"
-                    android:text="@string/title_ip_check"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
+                style="@style/DefaultCardText"
+                android:text="@string/title_ip_check"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </com.google.android.material.card.MaterialCardView>
     <com.google.android.material.card.MaterialCardView
-            android:id="@+id/menu_speed_test"
-            style="@style/DefaultCard"
-            app:cardElevation="0dp">
+        android:id="@+id/menu_speed_test"
+        style="@style/DefaultCard"
+        app:cardElevation="0dp">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/Default"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
+            style="@style/Default"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatImageView
-                    style="@style/DefaultCardImage"
-                    android:src="@drawable/ic_speed" />
+                style="@style/DefaultCardImage"
+                android:src="@drawable/ic_speed" />
 
-            <TextView
-                    style="@style/DefaultCardText"
-                    android:text="@string/title_speed_test"
-                    android:textAppearance="?attr/textAppearanceHeadline6" />
+            <TextView style="@style/DefaultCardText"
+                android:text="@string/title_speed_test"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </com.google.android.material.card.MaterialCardView>
 </androidx.appcompat.widget.LinearLayoutCompat>

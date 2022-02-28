@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        tools:context=".MainPage">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".MainPage">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="18dp"
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-                android:id="@+id/mToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:title="@string/app_name"
-                app:menu="@menu/menu_restart"/>
+            android:id="@+id/mToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="@string/app_name"
+            app:menu="@menu/menu_restart"/>
 
         <ScrollView
-                style="@style/Default"
-                android:scrollbars="none"
-                android:layout_height="match_parent">
+            style="@style/Default"
+            android:scrollbars="none"
+            android:layout_height="match_parent">
             <include layout="@layout/fragment_main_page_buttons"/>
         </ScrollView>
 
@@ -33,8 +34,8 @@
 
 
     <include layout="@layout/fragment_main_page_log"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="match_parent"/>
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

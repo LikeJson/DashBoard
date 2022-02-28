@@ -58,7 +58,7 @@ object SuiHelper {
         var process: Process? = null
         var os: DataOutputStream? = null
         var ls: DataInputStream? = null
-        var result: String = ""
+        var result = ""
         try {
             //Log.i("suCmd", "suCmd: $cmd")
 
@@ -89,6 +89,6 @@ object SuiHelper {
             }
         }
         //Log.d("suCmd", ".\n~>\n$cmd\n\nres:\n$result")
-        return result
+        return result.dropLast(1)
     }
 }

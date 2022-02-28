@@ -8,8 +8,6 @@
     android:scrollbars="none"
     tools:context=".IpCheckPage">
 
-    <include layout="@layout/toolbar" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

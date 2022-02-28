@@ -8,10 +8,8 @@ import com.dashboard.kotlin.suihelper.SuiHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import rikka.shizuku.Shizuku
-import java.io.DataInputStream
-import java.io.DataOutputStream
 import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -64,7 +62,7 @@ class ClashStatus {
                                 }
                             }
                         SuiHelper.suCmd(
-                            "cat /proc/`cat ${ClashConfig.clashPath}/run/clash.pid`/stat")
+                            "cat /proc/`cat ${ClashConfig.clashDataPath}/run/clash.pid`/stat")
                             .split(Regex(" +"))
                             .filterIndexed { index, _ -> index in 13..16 }
                             .forEach{ str ->
@@ -74,8 +72,8 @@ class ClashStatus {
                             }
                         val cpuAVG = BigDecimal(
                             runCatching {
-                            ((clashCpuTotal - lastClashCpuTotal) /
-                                    (cpuTotal - lastCpuTotal).toDouble() *100)
+                                ((clashCpuTotal - lastClashCpuTotal) /
+                                        (cpuTotal - lastCpuTotal).toDouble() *100)
                             }.getOrDefault(0) as Double
                         ).setScale(2, RoundingMode.HALF_UP)
 
@@ -83,9 +81,9 @@ class ClashStatus {
                         lastCpuTotal = cpuTotal
 
                         val res = SuiHelper.suCmd(
-                            "cat /proc/`cat ${ClashConfig.clashPath}/run/clash.pid`/status | " +
+                            "cat /proc/`cat ${ClashConfig.clashDataPath}/run/clash.pid`/status | " +
                                     "grep VmRSS | " +
-                                    "awk '{print \$2}'").replace("\n", "")
+                                    "awk '{print \$2}'")
 
                         Log.e("getStatus", "$res $cpuAVG")
 
@@ -104,55 +102,68 @@ class ClashStatus {
     fun stopGetStatus() {
         statusThreadFlag = false
     }
-
-
 }
 
 object ClashConfig {
 
-    val corePath: String
+    init {
+        System.loadLibrary("yaml-reader")
+        setTemplate()
+    }
+
+    val corePath
         get() = "/data/adb/modules/Clash_For_Magisk/system/bin/clash"
 
-    val scriptsPath: String
+    val scriptsPath
         get() = "/data/clash/scripts"
 
-    val clashPath: String
+    val clashDataPath
         get() = "/data/clash"
 
+    val clashConfigPath
+        get() = "${clashDataPath}/run/config.yaml"
+
     val baseURL: String
-        get() {
-            return "http://${getExternalController()}"
-        }
+        get() = "http://${getExternalController()}"
+
     val clashSecret: String
-        get() {
-            return getSecret()
-        }
+        get() = getSecret()
 
     var clashDashBoard: String
         get() = getFromFile("${GExternalCacheDir}/template", "external-ui")
         set(value) {
             setFileNR(
-                clashPath, "template"
+                clashDataPath, "template"
             ) { modifyFile("${GExternalCacheDir}/template", "external-ui", value) }
             return
         }
 
-    fun updateConfig(type: String) {
-        when (type) {
-            "CFM" -> {
-                mergeConfig("${clashPath}/run/config.yaml")
-                updateConfigNet("${clashPath}/run/config.yaml")
-            }
-            "CPFM" -> {
-                mergeConfig("${clashPath}/config_new.yaml")
-                SuiHelper.suCmd("mv '${clashPath}/config_new.yaml' '${clashPath}/config.yaml'")
-                updateConfigNet("${clashPath}/config.yaml")
-            }
+    fun updateConfig(callBack: (r: String) -> Unit) {
+        runCatching {
+            mergeConfig("config_output.yaml")
+
+            if (SuiHelper.suCmd(
+                    "diff '${GExternalCacheDir}/config_output.yaml' '$clashConfigPath' > /dev/null" +
+                            "&& echo true") == "true") {
+                callBack("配置莫得变化")
+                return
+            } else
+                SuiHelper.suCmd(
+                    "mv '${GExternalCacheDir}/config_output.yaml' '$clashConfigPath'")
+        }.onFailure {
+            callBack("合并失败啦")
+            return
         }
+
+        if (SuiHelper.suCmd(
+                "$corePath -d $clashDataPath -f $clashConfigPath -t > /dev/null " +
+                        "&& echo true") == "true")
+            updateConfigNet(clashConfigPath, callBack)
+        else
+            callBack("配置文件有误唉")
     }
-
-
-    private fun updateConfigNet(configPath: String) {
+    
+    private fun updateConfigNet(configPath: String, callBack: (r: String) -> Unit) {
         GlobalScope.launch(Dispatchers.IO) {
             try {
                 val conn =
@@ -178,43 +189,44 @@ object ClashConfig {
                     val data = it.bufferedReader().readText()
                     Log.i("NET", data)
                 }
-
-
+                withContext(Dispatchers.Main){
+                    when (conn.responseCode){
+                        204 ->
+                            callBack("配置更新成功啦")
+                        else ->
+                            callBack("更新失败咯，状态码：${conn.responseCode}")
+                    }
+                }
             } catch (ex: Exception) {
+                withContext(Dispatchers.Main){
+                    callBack("IO操作出错，你是不是没给俺网络权限")
+                }
                 Log.w("NET", ex.toString())
             }
         }
-
-
     }
 
-    private fun mergeConfig(outputFilePath: String) {
-        setFileNR(clashPath, "config.yaml") {
-            setFileNR(clashPath, "template") {
-                mergeFile(
-                    "${GExternalCacheDir}/config.yaml",
-                    "${GExternalCacheDir}/template",
-                    "${GExternalCacheDir}/config_output.yaml"
-                )
-                SuiHelper.suCmd("mv '${GExternalCacheDir}/config_output.yaml' '$outputFilePath'")
-            }
-        }
+    private fun mergeConfig(outputFileName: String) {
+        copyFile(clashDataPath, "config.yaml")
+        copyFile(clashDataPath, "template")
+        mergeFile(
+            "${GExternalCacheDir}/template",
+            "${GExternalCacheDir}/config.yaml",
+            "${GExternalCacheDir}/$outputFileName"
+        )
+        deleteFile(GExternalCacheDir, "config.yaml")
     }
 
     private fun getSecret() = getFromFile("${GExternalCacheDir}/template", "secret")
-
-
 
     private fun getExternalController(): String {
 
         val temp = getFromFile("${GExternalCacheDir}/template", "external-controller")
 
-        return if (temp.startsWith(":")) {
+        return if (temp.startsWith(":"))
             "127.0.0.1$temp"
-        } else {
+        else
             temp
-        }
-
     }
 
 
@@ -233,9 +245,8 @@ object ClashConfig {
     }
 
     private fun deleteFile(dirPath: String, fileName: String) {
-        try {
+        runCatching {
             File(dirPath, fileName).delete()
-        } catch (ex: Exception) {
         }
     }
 
@@ -247,11 +258,5 @@ object ClashConfig {
         outputFilePath: String
     )
 
-    private fun setTemplate() = copyFile(clashPath, "template")
-
-    init {
-        System.loadLibrary("yaml-reader")
-        setTemplate()
-    }
-
+    private fun setTemplate() = copyFile(clashDataPath, "template")
 }

@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import com.dashboard.kotlin.suihelper.SuiHelper
 import com.tencent.mmkv.MMKV
-import kotlinx.android.synthetic.main.toolbar.*
 import java.io.DataInputStream
 import java.io.File
 import java.text.SimpleDateFormat
@@ -21,7 +20,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
 
         this.window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         this.window.statusBarColor = ResourcesCompat.getColor(

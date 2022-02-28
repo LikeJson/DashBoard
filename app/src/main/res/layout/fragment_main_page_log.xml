@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        style="@style/Default"
-        android:id="@+id/scrollView"
-        android:scrollbars="none"
-        android:layout_height="match_parent"
-        tools:context=".MainPage">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Default"
+    android:id="@+id/scrollView"
+    android:scrollbars="none"
+    android:layout_height="match_parent"
+    tools:context=".MainPage">
     <com.google.android.material.card.MaterialCardView
-            style="@style/DefaultCard"
-            android:clickable="false"
-            app:cardElevation="0dp"
-            android:layout_height="wrap_content">
+        style="@style/DefaultCard"
+        android:layout_marginTop="0dp"
+        android:clickable="false"
+        app:cardElevation="0dp"
+        android:layout_height="wrap_content">
 
         <TextView style="@style/DefaultCardText"
-                android:textAppearance="?attr/textAppearanceHeadline6"
-                android:id="@+id/cmd_result"
-                android:layout_width="match_parent"
-                android:breakStrategy="simple"
-                android:text="Error"/>
+            android:layout_marginHorizontal="18dp"
+            android:paddingTop="0dp"
+            android:textSize="15sp"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:id="@+id/log_cat"
+            android:layout_width="match_parent"
+            android:breakStrategy="simple"/>
 
     </com.google.android.material.card.MaterialCardView>
+
 </ScrollView>
