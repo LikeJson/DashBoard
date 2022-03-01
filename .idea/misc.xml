@@ -28,6 +28,7 @@
         <entry key="app/src/main/res/drawable/ic_template.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/drawable/ic_update1.xml" value="0.2485" />
         <entry key="app/src/main/res/drawable/ic_update2.xml" value="0.2485" />
+        <entry key="app/src/main/res/drawable/ic_web_dashboard.xml" value="0.212" />
         <entry key="app/src/main/res/layout-land/activity_main.xml" value="0.33603603603603605" />
         <entry key="app/src/main/res/layout-land/fragment_ip_check_page.xml" value="0.25" />
         <entry key="app/src/main/res/layout-land/fragment_main_page.xml" value="0.22" />

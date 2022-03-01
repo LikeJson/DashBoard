@@ -12,8 +12,12 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavAction
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.dashboard.kotlin.clashhelper.ClashConfig
 import com.dashboard.kotlin.clashhelper.ClashStatus
 import com.dashboard.kotlin.clashhelper.CommandHelper
@@ -83,17 +87,14 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
             timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
-                    //val log = SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
-                    //"cat ${ClashConfig.clashPath}/run/cmdRunning 2>&1")
                     handler.post{
                         runCatching {
                             when {
-                                clashStatusClass.runStatus() -> {
+                                clashStatusClass.runStatus() ->
                                     setStatusRunning()
-                                }
-                                CommandHelper.isCmdRunning() -> {
+
+                                CommandHelper.isCmdRunning() ->
                                     setStatusCmdRunning()
-                                }
                                 else ->
                                     setStatusStopped()
                             }
@@ -126,25 +127,13 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
             it.findNavController().navigate(R.id.action_mainPage_to_ipCheckPage)
         }
 
-        menu_web_dashboard.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("URL", "${ClashConfig.baseURL}/ui/" +
-                    if ((context?.resources?.configuration?.uiMode
-                            ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
-                        "?theme=dark"
-                    }else{
-                        "?theme=light"
-                    })
-            it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
-        }
-
         menu_speed_test.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("URL", "https://fast.com/zh/cn/")
             it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
         }
 
-        viewPage.adapter = object: FragmentStateAdapter(this){
+        viewPager.adapter = object: FragmentStateAdapter(this){
 
             val pages = listOf(
                 LogFragment::class.java,
@@ -171,6 +160,13 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
             }
 
         }
+        viewPager.setCurrentItem(KV.getInt("ViewPagerIndex", 0), false)
+        viewPager.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback(){
+                override fun onPageSelected(position: Int) {
+                    KV.putInt("ViewPagerIndex", position)
+                }
+            })
     }
 
     override fun onDestroyView() {
@@ -250,7 +246,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
     }
 
     private fun setStatusCmdRunning(){
-        if (CommandHelper.isCmdRunning())
+        if (clash_status_text.text == getString(R.string.clash_charging))
             return
         clash_status.isClickable = false
         clash_status.setCardBackgroundColor(
@@ -273,7 +269,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
     }
 
     private fun setStatusStopped(){
-        if (!clashStatusClass.runStatus())
+        if (clash_status_text.text == getString(R.string.clash_disable))
             return
         clash_status.isClickable = true
         clash_status.setCardBackgroundColor(
@@ -315,6 +311,21 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
                     }
                 else
                     Toast.makeText(context, "Clash没启动呢", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.menu_web_dashboard -> {
+                val bundle = Bundle()
+                bundle.putString(
+                    "URL", "${ClashConfig.baseURL}/ui/" +
+                            if ((context?.resources?.configuration?.uiMode
+                                    ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES
+                            ) {
+                                "?theme=dark"
+                            } else {
+                                "?theme=light"
+                            }
+                )
+                findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
                 true
             }
             else -> false

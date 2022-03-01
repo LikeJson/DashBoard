@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Default"
-    android:id="@+id/viewPage"
+    android:id="@+id/viewPager"
     android:scrollbars="none"
     android:layout_height="match_parent"
     android:layout_marginHorizontal="18dp"

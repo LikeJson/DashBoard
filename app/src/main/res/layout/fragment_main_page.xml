@@ -19,7 +19,7 @@
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:title="@string/app_name"
-            app:menu="@menu/menu_restart"/>
+            app:menu="@menu/main_menu"/>
 
         <include layout="@layout/fragment_main_page_buttons"/>
 
