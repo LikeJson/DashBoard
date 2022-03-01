@@ -85,8 +85,6 @@ class ClashStatus {
                                     "grep VmRSS | " +
                                     "awk '{print \$2}'")
 
-                        Log.e("getStatus", "$res $cpuAVG")
-
                         statusRawText = it.bufferedReader().readLine()
                             .replace("}", ",\"RES\":\"$res\",\"CPU\":\"$cpuAVG%\"}")
 
@@ -207,8 +205,11 @@ object ClashConfig {
     }
 
     private fun mergeConfig(outputFileName: String) {
-        copyFile(clashDataPath, "config.yaml")
+        //copyFile(clashDataPath, "config.yaml")
         copyFile(clashDataPath, "template")
+        SuiHelper.suCmd(
+            "sed -n -E '/^proxies:.*\$/,\$p' $clashDataPath/config.yaml" +
+                    " > $GExternalCacheDir/config.yaml")
         mergeFile(
             "${GExternalCacheDir}/template",
             "${GExternalCacheDir}/config.yaml",

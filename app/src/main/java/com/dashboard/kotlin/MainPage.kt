@@ -9,8 +9,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.*
-import android.webkit.WebSettings
-import android.webkit.WebViewClient
 import android.widget.ScrollView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
@@ -23,7 +21,6 @@ import com.dashboard.kotlin.suihelper.SuiHelper
 import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.fragment_main_page_buttons.*
 import kotlinx.android.synthetic.main.fragment_main_page_log.*
-import kotlinx.android.synthetic.main.fragment_webview_page.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.File
@@ -91,27 +88,24 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
             timer.schedule(object : TimerTask() {
                 override fun run() {
                     //val log = SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
-                    val cmdRunning = CommandHelper.isCmdRunning()
                     //"cat ${ClashConfig.clashPath}/run/cmdRunning 2>&1")
                     handler.post{
-
                         log_cat.let {
                             runCatching {
                                 if (clash_status_text?.text == getString(R.string.clash_charging))
                                     it.text = clashV + SuiHelper.suCmd("cat ${ClashConfig.clashDataPath}/run/run.logs 2> /dev/null")
                                 when {
-                                    cmdRunning -> {
-                                        setStatusCmdRunning()
-                                    }
                                     clashStatusClass.runStatus() -> {
                                         setStatusRunning()
+                                    }
+                                    CommandHelper.isCmdRunning() -> {
+                                        setStatusCmdRunning()
                                     }
                                     else ->
                                         setStatusStopped()
                                 }
                             }
                         }
-
                     }
                 }
             },0, 300)
@@ -238,7 +232,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
 
     private fun setStatusCmdRunning(){
         scrollView.fullScroll(ScrollView.FOCUS_DOWN)
-        if (clash_status_text.text == getString(R.string.clash_charging))
+        if (CommandHelper.isCmdRunning())
             return
         clash_status.isClickable = false
         clash_status.setCardBackgroundColor(
@@ -261,7 +255,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
     }
 
     private fun setStatusStopped(){
-        if (clash_status_text.text == getString(R.string.clash_disable))
+        if (!clashStatusClass.runStatus())
             return
         clash_status.isClickable = true
         clash_status.setCardBackgroundColor(
