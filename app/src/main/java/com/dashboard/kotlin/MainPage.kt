@@ -9,18 +9,18 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.*
-import android.widget.ScrollView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.dashboard.kotlin.clashhelper.ClashConfig
 import com.dashboard.kotlin.clashhelper.ClashStatus
 import com.dashboard.kotlin.clashhelper.CommandHelper
 import com.dashboard.kotlin.suihelper.SuiHelper
 import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.fragment_main_page_buttons.*
-import kotlinx.android.synthetic.main.fragment_main_page_log.*
+import kotlinx.android.synthetic.main.fragment_main_pages.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.File
@@ -29,8 +29,6 @@ import java.util.*
 
 @DelicateCoroutinesApi
 class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickListener {
-
-    lateinit var clashV: String
     val handler = Handler(Looper.getMainLooper())
     lateinit var timer: Timer
 
@@ -54,7 +52,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
         //TODO 添加 app 图标
         mToolbar.title = getString(R.string.app_name) +
                 "-V" +
-                BuildConfig.VERSION_NAME.replace(Regex(".r.+$"),"")
+                BuildConfig.VERSION_NAME.replace(Regex(".r.+$"),"-S")
 
         if (!SuiHelper.checkPermission()) {
             clash_status.setCardBackgroundColor(
@@ -82,31 +80,26 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
 
         } else {
             //这是一段屎一样的代码
-            clashV = SuiHelper.suCmd("${ClashConfig.corePath} -v")
-            log_cat.text = "$clashV${SuiHelper.suCmd("cat ${ClashConfig.clashDataPath}/run/run.logs 2> /dev/null")}"
             timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
                     //val log = SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
                     //"cat ${ClashConfig.clashPath}/run/cmdRunning 2>&1")
                     handler.post{
-                        log_cat.let {
-                            runCatching {
-                                if (clash_status_text?.text == getString(R.string.clash_charging))
-                                    it.text = clashV + SuiHelper.suCmd("cat ${ClashConfig.clashDataPath}/run/run.logs 2> /dev/null")
-                                when {
-                                    clashStatusClass.runStatus() -> {
-                                        setStatusRunning()
-                                    }
-                                    CommandHelper.isCmdRunning() -> {
-                                        setStatusCmdRunning()
-                                    }
-                                    else ->
-                                        setStatusStopped()
+                        runCatching {
+                            when {
+                                clashStatusClass.runStatus() -> {
+                                    setStatusRunning()
                                 }
+                                CommandHelper.isCmdRunning() -> {
+                                    setStatusCmdRunning()
+                                }
+                                else ->
+                                    setStatusStopped()
                             }
                         }
                     }
+
                 }
             },0, 300)
         }
@@ -149,6 +142,34 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
             val bundle = Bundle()
             bundle.putString("URL", "https://fast.com/zh/cn/")
             it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
+        }
+
+        viewPage.adapter = object: FragmentStateAdapter(this){
+
+            val pages = listOf(
+                LogFragment::class.java,
+                WebViewPage::class.java)
+
+            val bundles = listOf(
+                null,
+                Bundle().apply {
+                    putString("URL", "${ClashConfig.baseURL}/ui/" +
+                            if ((context?.resources?.configuration?.uiMode
+                                    ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
+                                "?theme=dark"
+                            }else{
+                                "?theme=light"
+                            })
+                })
+
+            override fun getItemCount() = pages.size
+
+            override fun createFragment(position: Int): Fragment {
+                val fragment = pages[position].newInstance()
+                fragment.arguments = bundles[position]
+                return fragment
+            }
+
         }
     }
 
@@ -202,8 +223,6 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
 
         clashStatusClass.getStatus()
 
-        scrollView.fullScroll(ScrollView.FOCUS_DOWN)
-
         GlobalScope.launch(Dispatchers.IO) {
             while (clashStatusClass.statusThreadFlag) {
                 try {
@@ -231,7 +250,6 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
     }
 
     private fun setStatusCmdRunning(){
-        scrollView.fullScroll(ScrollView.FOCUS_DOWN)
         if (CommandHelper.isCmdRunning())
             return
         clash_status.isClickable = false

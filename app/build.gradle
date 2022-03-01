@@ -70,6 +70,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.0'
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
 
     def shizuku_version = '11.0.3'

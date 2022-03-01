@@ -33,7 +33,7 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-    <include layout="@layout/fragment_main_page_log"
+    <include layout="@layout/fragment_main_pages"
         android:layout_width="0dp"
         android:layout_weight="2"
         android:layout_height="match_parent"/>
