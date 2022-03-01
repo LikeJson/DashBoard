@@ -232,7 +232,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
 
     private fun setStatusCmdRunning(){
         scrollView.fullScroll(ScrollView.FOCUS_DOWN)
-        if (CommandHelper.isCmdRunning())
+        if (clash_status_text.text == getString(R.string.clash_charging))
             return
         clash_status.isClickable = false
         clash_status.setCardBackgroundColor(
@@ -255,7 +255,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
     }
 
     private fun setStatusStopped(){
-        if (!clashStatusClass.runStatus())
+        if (clash_status_text.text == getString(R.string.clash_disable))
             return
         clash_status.isClickable = true
         clash_status.setCardBackgroundColor(

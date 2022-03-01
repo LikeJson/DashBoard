@@ -22,8 +22,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 style="@style/Default"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp">
+                android:paddingVertical="25dp">
 
                 <TextView
                     android:id="@+id/clash_status_text"
