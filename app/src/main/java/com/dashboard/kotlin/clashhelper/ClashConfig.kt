@@ -3,16 +3,14 @@ package com.dashboard.kotlin.clashhelper
 import android.util.Log
 import com.dashboard.kotlin.GExternalCacheDir
 import com.dashboard.kotlin.suihelper.SuiHelper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
 
 
+@DelicateCoroutinesApi
 object ClashConfig {
 
     var paths: List<String>
@@ -20,12 +18,13 @@ object ClashConfig {
     init {
         System.loadLibrary("yaml-reader")
         setTemplate()
-        copyFile(dataPath, "clash.config")
         SuiHelper.suCmd(
-            "echo '\necho \$Clash_bin_path;\$Clash_scripts_dir;'" +
-                " >> $GExternalCacheDir/clash.config")
-        paths = SuiHelper.suCmd("$GExternalCacheDir/clash.config")
+            "cp -f $dataPath/clash.config $dataPath/run/c.cfg &&" +
+                    " echo '\necho \"\${Clash_bin_path};\${Clash_scripts_dir};\"'" +
+                    " >> $dataPath/run/c.cfg")
+        paths = SuiHelper.suCmd("$dataPath/run/c.cfg")
             .split(';')
+        SuiHelper.suCmd("mv -f $dataPath/run/c.cfg")
     }
 
     val dataPath
@@ -84,7 +83,6 @@ object ClashConfig {
             callBack("合并失败啦")
             return
         }
-
         if (SuiHelper.suCmd(
                 "$corePath -d $dataPath -f $mergedConfigPath -t > /dev/null " +
                         "&& echo true") == "true")
@@ -162,9 +160,9 @@ object ClashConfig {
 
 
 
-    private fun setFileNR(dirPath: String, fileName: String, func: () -> Unit) {
+    private fun setFileNR(dirPath: String, fileName: String, func: (file: String) -> Unit) {
         copyFile(dirPath, fileName)
-        func()
+        func("$GExternalCacheDir/${fileName}")
         SuiHelper.suCmd("cp '$GExternalCacheDir/${fileName}' '${dirPath}/${fileName}'")
         deleteFile(GExternalCacheDir, fileName)
     }
