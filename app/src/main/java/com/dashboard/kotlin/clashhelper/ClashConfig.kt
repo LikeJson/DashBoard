@@ -24,7 +24,7 @@ object ClashConfig {
                     " >> $dataPath/run/c.cfg")
         paths = SuiHelper.suCmd("$dataPath/run/c.cfg")
             .split(';')
-        SuiHelper.suCmd("mv -f $dataPath/run/c.cfg")
+        SuiHelper.suCmd("rm -f $dataPath/run/c.cfg")
     }
 
     val dataPath
