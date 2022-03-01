@@ -54,7 +54,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
         //TODO 添加 app 图标
         mToolbar.title = getString(R.string.app_name) +
                 "-V" +
-                BuildConfig.VERSION_NAME.replace(Regex(".r.+$"),"")
+                BuildConfig.VERSION_NAME.replace(Regex(".r.+$"),"-Alpha")
 
         if (!SuiHelper.checkPermission()) {
             clash_status.setCardBackgroundColor(
@@ -83,7 +83,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
         } else {
             //这是一段屎一样的代码
             clashV = SuiHelper.suCmd("${ClashConfig.corePath} -v")
-            log_cat.text = "$clashV${SuiHelper.suCmd("cat ${ClashConfig.clashDataPath}/run/run.logs 2> /dev/null")}"
+            log_cat.text = "$clashV${SuiHelper.suCmd("cat ${ClashConfig.logPath} 2> /dev/null")}"
             timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
@@ -93,13 +93,13 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
                         log_cat.let {
                             runCatching {
                                 if (clash_status_text?.text == getString(R.string.clash_charging))
-                                    it.text = clashV + SuiHelper.suCmd("cat ${ClashConfig.clashDataPath}/run/run.logs 2> /dev/null")
+                                    it.text = clashV + SuiHelper.suCmd("cat ${ClashConfig.logPath} 2> /dev/null")
                                 when {
-                                    clashStatusClass.runStatus() -> {
-                                        setStatusRunning()
-                                    }
                                     CommandHelper.isCmdRunning() -> {
                                         setStatusCmdRunning()
+                                    }
+                                    clashStatusClass.runStatus() -> {
+                                        setStatusRunning()
                                     }
                                     else ->
                                         setStatusStopped()
@@ -281,12 +281,9 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
                         Toast.makeText(context, "莫得权限呢", Toast.LENGTH_SHORT).show()
                     CommandHelper.isCmdRunning() ->
                         Toast.makeText(context, "现在不可以哦", Toast.LENGTH_SHORT).show()
-                    else ->{
-                        setStatusCmdRunning()
-                        GlobalScope.async {
+                    else -> GlobalScope.async {
                             doAssestsShellFile("CFM_Update_GeoX.sh")
                         }
-                    }
                 }
                 true
             }

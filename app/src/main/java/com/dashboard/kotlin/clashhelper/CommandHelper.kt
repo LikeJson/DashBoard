@@ -44,20 +44,20 @@ object CommandHelper {
     }
 
     fun isCmdRunning() = SuiHelper.suCmd(
-        "if [ -f ${ClashConfig.clashDataPath}/run/cmdRunning ];then\necho 'true'\nelse\necho 'false'\nfi") == "true"
+        "if [ -f ${ClashConfig.dataPath}/run/cmdRunning ];then\necho 'true'\nelse\necho 'false'\nfi") == "true"
 
     fun doInstall(filePath: String, type: String, name: String = "") {
         when (type) {
             "SUB", "MMDB" -> {
-                SuiHelper.suCmd("mv -f '$filePath' '${ClashConfig.clashDataPath}/${name}'")
-                SuiHelper.suCmd("chmod 700 '${ClashConfig.clashDataPath}/${name}'")
-                SuiHelper.suCmd("chown system:system '${ClashConfig.clashDataPath}/${name}'")
+                SuiHelper.suCmd("mv -f '$filePath' '${ClashConfig.dataPath}/${name}'")
+                SuiHelper.suCmd("chmod 700 '${ClashConfig.dataPath}/${name}'")
+                SuiHelper.suCmd("chown system:system '${ClashConfig.dataPath}/${name}'")
                 ClashConfig.updateConfig{}
             }
             "DASHBOARD" -> {
-                SuiHelper.suCmd("unzip -o '$filePath' -d '${ClashConfig.clashDataPath}'")
-                SuiHelper.suCmd("chmod 000 '${ClashConfig.clashDataPath}/${name}/' -R")
-                ClashConfig.clashDashBoard = name
+                SuiHelper.suCmd("unzip -o '$filePath' -d '${ClashConfig.dataPath}'")
+                SuiHelper.suCmd("chmod 000 '${ClashConfig.dataPath}/${name}/' -R")
+                ClashConfig.dashBoard = name
             }
         }
         File(filePath).delete()
