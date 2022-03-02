@@ -116,16 +116,11 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
 
             GlobalScope.async {
                 doAssestsShellFile(
-                    "CFM_" +
-                            (if (clashStatusClass.runStatus()) {
-                                "Stop"
-                            } else {
-                                "Start"
-                            }) +
-                            ".sh"
-                )
-                //restartApp()
-                true
+                    if (clashStatusClass.runStatus()) {
+                        "CFM_Stop.sh"
+                    } else {
+                        "CFM_Start.sh"
+                    })
             }
         }
 
