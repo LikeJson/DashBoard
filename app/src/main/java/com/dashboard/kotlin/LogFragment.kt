@@ -28,13 +28,13 @@ class LogFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         GlobalScope.async {
             val clashV = SuiHelper.suCmd("${ClashConfig.corePath} -v")
-            var log = SuiHelper.suCmd("cat ${ClashConfig.clashDataPath}/run/run.logs 2> /dev/null")
+            var log = SuiHelper.suCmd("cat ${ClashConfig.logPath} 2> /dev/null")
             withContext(Dispatchers.Main){
                 log_cat.text = "$clashV\n$log"
             }
             while (true){
                 if (CommandHelper.isCmdRunning()) {
-                    log = SuiHelper.suCmd("cat ${ClashConfig.clashDataPath}/run/run.logs 2> /dev/null")
+                    log = SuiHelper.suCmd("cat ${ClashConfig.logPath} 2> /dev/null")
                     withContext(Dispatchers.Main) {
                         log_cat.text = "$clashV\n$log"
                         scrollView.fullScroll(ScrollView.FOCUS_DOWN)
