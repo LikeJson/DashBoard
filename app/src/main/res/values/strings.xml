@@ -1,23 +1,13 @@
 <resources>
     <string name="app_name">DashBoard</string>
-    <string name="title_setting">配置</string>
     <string name="title_ip_check">IP 检查</string>
     <string name="title_speed_test">网络测速</string>
     <string name="title_web_dashboard">网页面板</string>
-    <string name="title_web_dashboard_download">Clash 面板下载</string>
-    <string name="title_sub_download">订阅下载</string>
-    <string name="title_version_switch">模式切换</string>
     <string name="clash_enable">Clash 运行正常</string>
     <string name="clash_disable">Clash 已停止</string>
     <string name="clash_charging">命令执行中</string>
     <string name="sui_disable">未授予root权限\n请使用Sui或Magisk授权</string>
     <string name="netspeed_status_text">上传 %s  下载 %s\nRES %s  CPU %s</string>
-    <string name="text_confirm">确认</string>
-    <string name="text_cancel">取消</string>
-    <string name="text_add">添加</string>
-    <string name="title_mmdb_download">MMDB 下载</string>
-    <string name="hint_core_path">内核路径</string>
-    <string name="hint_scripts_path">脚本路径</string>
     <string name="menu_update_geox">更新GeoX</string>
     <string name="menu_update_config">热更新配置</string>
     <string name="large_text">

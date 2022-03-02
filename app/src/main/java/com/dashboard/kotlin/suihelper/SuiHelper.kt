@@ -36,7 +36,7 @@ object SuiHelper {
         var process: Process? = null
         var os: DataOutputStream? = null
         try {
-            process = Runtime.getRuntime().exec("su"); //切换到root帐号
+            process = Runtime.getRuntime().exec("su") //切换到root帐号
             os = DataOutputStream(process.outputStream)
             os.writeBytes("exit\n")
             os.flush()
