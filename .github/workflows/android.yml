@@ -57,8 +57,9 @@ jobs:
           echo 'org.gradle.parallel=true' >> gradle.properties
           echo 'org.gradle.vfs.watch=true' >> gradle.properties
           echo 'org.gradle.jvmargs=-Xmx2048m' >> gradle.properties
-          sudo apt install -y apksigner
           ./gradlew assemble
+          sudo apt install -y apksigner
+          echo '${{ secrets.SIGNING_KEY_BASE64 }}' | base64 --decode > key.jks
           apksigner sign --ks key.jks --ks-pass 'pass:${{ secrets.KEY_STORE_PASSWORD }}' "`ls app/build/outputs/apk/release/DashBoard*-v*-release.apk`"
           echo "::set-output name=releaseName::`ls app/build/outputs/apk/release/DashBoard*-v*-release.apk | awk -F '(/|.apk)' '{print $6}'`"
           echo "::set-output name=debugName::`ls app/build/outputs/apk/debug/DashBoard*-v*-debug.apk | awk -F '(/|.apk)' '{print $6}'`"
