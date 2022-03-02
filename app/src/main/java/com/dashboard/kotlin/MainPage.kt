@@ -54,7 +54,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
         //TODO 添加 app 图标
         mToolbar.title = getString(R.string.app_name) +
                 "-V" +
-                BuildConfig.VERSION_NAME.replace(Regex(".r.+$"),"-Alpha")
+                BuildConfig.VERSION_NAME.replace(Regex(".r.+$"),"")
 
         if (!SuiHelper.checkPermission()) {
             clash_status.setCardBackgroundColor(
