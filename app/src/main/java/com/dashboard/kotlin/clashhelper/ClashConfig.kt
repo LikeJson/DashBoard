@@ -31,14 +31,14 @@ object ClashConfig {
         get() = "/data/clash"
 
     val corePath
-        get() = paths.getOrElse(0){
-            "/data/adb/modules/Clash_For_Magisk/system/bin/clash"
-        }
+        get() = runCatching {
+            if (paths[0] == "") throw Error() else paths[0]
+        }.getOrDefault("/data/adb/modules/Clash_For_Magisk/system/bin/clash")
 
     val scriptsPath
-        get() = paths.getOrElse(1){
-            "/data/clash/scripts"
-        }
+        get() = runCatching {
+            if (paths[1] == "") throw Error() else paths[1]
+        }.getOrDefault( "/data/clash/scripts")
 
     val mergedConfigPath
         get() = "${dataPath}/run/config.yaml"
