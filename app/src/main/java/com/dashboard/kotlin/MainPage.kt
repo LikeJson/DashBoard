@@ -186,11 +186,9 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
                 fo.outputStream().let { ip ->
                     op.copyTo(ip)
                 }
-                val res = if ((Build.VERSION.SDK_INT == Build.VERSION_CODES.R) and (ClashConfig.scriptsPath == "/data/adb/modules/Clash_For_Magisk/scripts")) {
-                    SuiHelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' true ${ClashConfig.scriptsPath} 2>&1")
-                } else {
-                    SuiHelper.suCmd("sh '${context?.externalCacheDir}/${fileName}' false ${ClashConfig.scriptsPath} 2>&1")
-                }
+                SuiHelper.suCmd("mkdir -p ${ClashConfig.dataPath}/run &&" +
+                        "mv -f ${context?.externalCacheDir}/${fileName} ${ClashConfig.dataPath}/run/ass.sh")
+                val res = SuiHelper.suCmd("sh '${ClashConfig.dataPath}/run/ass.sh' ${ClashConfig.scriptsPath} 2>&1")
                 fo.delete()
                 return res
             }
@@ -290,12 +288,9 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
                         Toast.makeText(context, "莫得权限呢", Toast.LENGTH_SHORT).show()
                     CommandHelper.isCmdRunning() ->
                         Toast.makeText(context, "现在不可以哦", Toast.LENGTH_SHORT).show()
-                    else ->{
-                        setStatusCmdRunning()
-                        GlobalScope.async {
+                    else -> GlobalScope.async {
                             doAssestsShellFile("CFM_Update_GeoX.sh")
                         }
-                    }
                 }
                 true
             }
