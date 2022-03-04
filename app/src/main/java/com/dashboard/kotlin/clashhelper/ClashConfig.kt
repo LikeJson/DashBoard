@@ -19,12 +19,12 @@ object ClashConfig {
         System.loadLibrary("yaml-reader")
         setTemplate()
         SuiHelper.suCmd(
-            "cp -f $dataPath/clash.config $dataPath/run/c.cfg &&" +
+            "mkdir -p $dataPath/run &&" +
+                    "cp -f $dataPath/clash.config $dataPath/run/c.cfg &&" +
                     " echo '\necho \"\${Clash_bin_path};\${Clash_scripts_dir};\"'" +
                     " >> $dataPath/run/c.cfg")
-        paths = SuiHelper.suCmd("$dataPath/run/c.cfg")
-            .split(';')
-        SuiHelper.suCmd("mv -f $dataPath/run/c.cfg")
+        paths = SuiHelper.suCmd("$dataPath/run/c.cfg").split(';')
+        SuiHelper.suCmd("rm -f $dataPath/run/c.cfg")
     }
 
     val dataPath

@@ -5,6 +5,6 @@ else
   MAGISK_PATH="/data/adb/modules"
 fi
 
-touch "$2"/../run/cmdRunning
-"$2"/clash.service -k && "$2"/clash.tproxy -k
-rm -rf "$2"/../run/cmdRunning
+touch "$1"/../run/cmdRunning
+"$1"/clash.service -k && "$1"/clash.tproxy -k
+rm -rf "$1"/../run/cmdRunning
