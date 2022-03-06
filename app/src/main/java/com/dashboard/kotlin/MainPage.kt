@@ -82,8 +82,13 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
 
         } else {
             //这是一段屎一样的代码
-            clashV = SuiHelper.suCmd("${ClashConfig.corePath} -v")
-            log_cat.text = "$clashV${SuiHelper.suCmd("cat ${ClashConfig.logPath} 2> /dev/null")}"
+            GlobalScope.async {
+                clashV = SuiHelper.suCmd("${ClashConfig.corePath} -v")+'\n'
+                val log = "$clashV${SuiHelper.suCmd("cat ${ClashConfig.logPath} 2> /dev/null")}"
+                withContext(Dispatchers.Main){
+                    log_cat.text = log
+                }
+            }
             timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
