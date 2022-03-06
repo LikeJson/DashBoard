@@ -1,4 +1,4 @@
 
-touch "$2"/../run/cmdRunning
-"$2"/clash.tool -u
-rm -rf "$2"/../run/cmdRunning
+touch "$1"/../run/cmdRunning
+"$1"/clash.tool -u
+rm -rf "$1"/../run/cmdRunning
