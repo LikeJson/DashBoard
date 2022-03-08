@@ -4,14 +4,19 @@ import android.util.Log
 import java.net.HttpURLConnection
 import java.net.URL
 import com.dashboard.kotlin.suihelper.SuiHelper
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.concurrent.thread
 
+@DelicateCoroutinesApi
 class ClashStatus {
     var statusThreadFlag: Boolean = true
+        private set
     var statusRawText: String = "{\"up\":\"0\",\"down\":\"0\",\"RES\":\"0\",\"CPU\":\"0%\"}"
-
     fun runStatus(): Boolean {
         var isRunning = false
         thread(start = true) {
@@ -32,8 +37,8 @@ class ClashStatus {
         statusThreadFlag = true
         val secret = ClashConfig.secret
         val baseURL = ClashConfig.baseURL
-        Thread {
-            try {
+        GlobalScope.launch(Dispatchers.IO) {
+            runCatching {
                 val conn =
                     URL("${baseURL}/traffic").openConnection() as HttpURLConnection
                 conn.requestMethod = "GET"
@@ -84,10 +89,10 @@ class ClashStatus {
                         Thread.sleep(600)
                     }
                 }
-            } catch (ex: Exception) {
-                Log.d("TRAFFIC-W", ex.toString())
+            }.onFailure {
+                Log.d("TRAFFIC-W", it.toString())
             }
-        }.start()
+        }
     }
 
     fun stopGetStatus() {

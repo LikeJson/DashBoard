@@ -11,6 +11,7 @@ import java.io.DataInputStream
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.thread
 
 
 lateinit var GExternalCacheDir: String
@@ -38,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         //debug version print logs
         //if (BuildConfig.DEBUG) {
-        //    //thread { saveLogs() }
+        //    thread { saveLogs() }
         //} else {
         //    File(externalCacheDir.toString()).walk()
         //        .maxDepth(1)
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         //        .filter { it.extension == "txt" }
         //        .forEach { it.delete() }
         //}
-        //verbal
+        //verbal /storage/emulated/0/Android/data/com.dashboard.kotlin/cache
         GExternalCacheDir = applicationContext.externalCacheDir.toString()
         MMKV.initialize(this)
         KV = MMKV.defaultMMKV(MMKV.MULTI_PROCESS_MODE, null)

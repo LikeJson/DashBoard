@@ -11,8 +11,8 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.dashboard.kotlin.clashhelper.ClashConfig
@@ -31,15 +31,16 @@ import java.util.*
 @DelicateCoroutinesApi
 class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickListener {
 
-    lateinit var clashV: String
-    val handler = Handler(Looper.getMainLooper())
-    lateinit var timer: Timer
+    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var timer: Timer
+    private lateinit var statusScope: Job
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        Log.d("onCreateView", "MainPage onCreateView !")
         return inflater.inflate(R.layout.fragment_main_page, container, false)
     }
 
@@ -71,7 +72,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
             clash_status_text.text = getString(R.string.sui_disable)
             resources_status_text.visibility = View.GONE
 
-            GlobalScope.async {
+            lifecycleScope.launch {
                 while (true) {
                     if (SuiHelper.checkPermission(request = false)) {
                         restartApp()
@@ -82,31 +83,13 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
             }
 
         } else {
-            //这是一段屎一样的代码
-            timer = Timer()
-            timer.schedule(object : TimerTask() {
-                override fun run() {
-                    handler.post{
-                        runCatching {
-                            when {
-                                clashStatusClass.runStatus() ->
-                                    setStatusRunning()
-
-                                CommandHelper.isCmdRunning() ->
-                                    setStatusCmdRunning()
-                                else ->
-                                    setStatusStopped()
-                            }
-                        }
-                    }
-                }
-            },0, 300)
+            setRunStatusTimer()
         }
 
         clash_status.setOnClickListener {
             //setStatusCmdRunning()
 
-            GlobalScope.async {
+            GlobalScope.launch {
                 doAssestsShellFile(
                     if (clashStatusClass.runStatus()) {
                         "CFM_Stop.sh"
@@ -158,13 +141,68 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
             })
     }
 
-    override fun onDestroyView() {
-        clashStatusClass.stopGetStatus()
-        timer.cancel()
-        Log.d("DestroyView", "MainPageDestroyView")
-        super.onDestroyView()
+    private fun setRunStatusTimer(){
+        runCatching { timer.cancel() }
+        timer = Timer()
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                handler.post{
+                    runCatching {
+                        when {
+                            clashStatusClass.runStatus() ->
+                                setStatusRunning()
+                            CommandHelper.isCmdRunning() ->
+                                setStatusCmdRunning()
+                            else ->
+                                setStatusStopped()
+                        }
+                    }
+                }
+            }
+        },0, 300)
     }
 
+    private fun setStatusScope() {
+        runCatching { statusScope.cancel() }
+        statusScope = lifecycleScope.launch(Dispatchers.IO) {
+            while (clashStatusClass.statusThreadFlag) {
+                runCatching {
+                    val jsonObject = JSONObject(clashStatusClass.statusRawText)
+                    val upText: String = CommandHelper.autoUnitForSpeed(jsonObject.optString("up"))
+                    val downText: String =
+                        CommandHelper.autoUnitForSpeed(jsonObject.optString("down"))
+                    val res = CommandHelper.autoUnitForSize(jsonObject.optString("RES"))
+                    val cpu = jsonObject.optString("CPU")
+                    withContext(Dispatchers.Main) {
+                        resources_status_text.text =
+                            getString(R.string.netspeed_status_text).format(
+                                upText,
+                                downText,
+                                res,
+                                cpu
+                            )
+                    }
+                }
+                delay(600)
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("onPause", "MainPagePause")
+        clashStatusClass.stopGetStatus()
+        timer.cancel()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("onResume", "MainPageResume")
+        clashStatusClass.getStatus()
+        setRunStatusTimer()
+        if (clashStatusClass.runStatus())
+            setStatusScope()
+    }
 
     private fun restartApp() {
         val intent: Intent? = activity?.baseContext?.packageManager
@@ -206,30 +244,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
 
         clashStatusClass.getStatus()
 
-        GlobalScope.launch(Dispatchers.IO) {
-            while (clashStatusClass.statusThreadFlag) {
-                try {
-                    val jsonObject = JSONObject(clashStatusClass.statusRawText)
-                    val upText: String = CommandHelper.autoUnitForSpeed(jsonObject.optString("up"))
-                    val downText: String =
-                        CommandHelper.autoUnitForSpeed(jsonObject.optString("down"))
-                    val res = CommandHelper.autoUnitForSize(jsonObject.optString("RES"))
-                    val cpu = jsonObject.optString("CPU")
-                    withContext(Dispatchers.Main) {
-                        resources_status_text.text =
-                            getString(R.string.netspeed_status_text).format(
-                                upText,
-                                downText,
-                                res,
-                                cpu
-                            )
-                    }
-                } catch (ex: Exception) {
-                    Log.w("trafficText", ex.toString())
-                }
-                delay(600)
-            }
-        }
+        setStatusScope()
     }
 
     private fun setStatusCmdRunning(){
@@ -282,7 +297,7 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
                         Toast.makeText(context, "莫得权限呢", Toast.LENGTH_SHORT).show()
                     CommandHelper.isCmdRunning() ->
                         Toast.makeText(context, "现在不可以哦", Toast.LENGTH_SHORT).show()
-                    else -> GlobalScope.async {
+                    else -> GlobalScope.launch {
                             doAssestsShellFile("CFM_Update_GeoX.sh")
                         }
                 }

@@ -27,7 +27,7 @@ Java_com_dashboard_kotlin_clashhelper_ClashConfig_getFromFile(JNIEnv *env, jobje
 
         return env->NewStringUTF(secret.c_str());
     } catch (const std::exception &e) {
-        LOGE("%s", e.what())
+        //LOGE("%s", e.what())
         return env->NewStringUTF("");
     }
 }
