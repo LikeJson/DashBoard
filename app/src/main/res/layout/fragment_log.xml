@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView"
+    tools:context=".LogFragment">
+
+    <TextView style="@style/DefaultCardText"
+        android:layout_marginHorizontal="18dp"
+        android:paddingTop="0dp"
+        android:textSize="15sp"
+        android:textAppearance="?attr/textAppearanceHeadline6"
+        android:id="@+id/log_cat"
+        android:layout_width="match_parent"
+        android:breakStrategy="simple"/>
+
+</androidx.core.widget.NestedScrollView>

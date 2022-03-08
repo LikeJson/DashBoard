@@ -13,14 +13,19 @@ import android.widget.ScrollView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavAction
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.dashboard.kotlin.clashhelper.ClashConfig
 import com.dashboard.kotlin.clashhelper.ClashStatus
 import com.dashboard.kotlin.clashhelper.CommandHelper
 import com.dashboard.kotlin.suihelper.SuiHelper
 import kotlinx.android.synthetic.main.fragment_main_page.*
 import kotlinx.android.synthetic.main.fragment_main_page_buttons.*
-import kotlinx.android.synthetic.main.fragment_main_page_log.*
+import kotlinx.android.synthetic.main.fragment_main_pages.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.File
@@ -82,33 +87,19 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
 
         } else {
             //这是一段屎一样的代码
-            GlobalScope.async {
-                clashV = SuiHelper.suCmd("${ClashConfig.corePath} -v")+'\n'
-                val log = "$clashV${SuiHelper.suCmd("cat ${ClashConfig.logPath} 2> /dev/null")}"
-                withContext(Dispatchers.Main){
-                    log_cat.text = log
-                }
-            }
             timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
-                    //val log = SuiHelper.suCmd("cat ${ClashConfig.clashPath}/run/run.logs 2> /dev/null")
-                    //"cat ${ClashConfig.clashPath}/run/cmdRunning 2>&1")
                     handler.post{
-                        log_cat.let {
-                            runCatching {
-                                if (clash_status_text?.text == getString(R.string.clash_charging))
-                                    it.text = clashV + SuiHelper.suCmd("cat ${ClashConfig.logPath} 2> /dev/null")
-                                when {
-                                    CommandHelper.isCmdRunning() -> {
-                                        setStatusCmdRunning()
-                                    }
-                                    clashStatusClass.runStatus() -> {
-                                        setStatusRunning()
-                                    }
-                                    else ->
-                                        setStatusStopped()
-                                }
+                        runCatching {
+                            when {
+                                clashStatusClass.runStatus() ->
+                                    setStatusRunning()
+
+                                CommandHelper.isCmdRunning() ->
+                                    setStatusCmdRunning()
+                                else ->
+                                    setStatusStopped()
                             }
                         }
                     }
@@ -133,23 +124,46 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
             it.findNavController().navigate(R.id.action_mainPage_to_ipCheckPage)
         }
 
-        menu_web_dashboard.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("URL", "${ClashConfig.baseURL}/ui/" +
-                    if ((context?.resources?.configuration?.uiMode
-                            ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
-                        "?theme=dark"
-                    }else{
-                        "?theme=light"
-                    })
-            it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
-        }
-
         menu_speed_test.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("URL", "https://fast.com/zh/cn/")
             it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
         }
+
+        viewPager.adapter = object: FragmentStateAdapter(this){
+
+            val pages = listOf(
+                LogFragment::class.java,
+                WebViewPage::class.java)
+
+            val bundles = listOf(
+                null,
+                Bundle().apply {
+                    putString("URL", "${ClashConfig.baseURL}/ui/" +
+                            if ((context?.resources?.configuration?.uiMode
+                                    ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
+                                "?theme=dark"
+                            }else{
+                                "?theme=light"
+                            })
+                })
+
+            override fun getItemCount() = pages.size
+
+            override fun createFragment(position: Int): Fragment {
+                val fragment = pages[position].newInstance()
+                fragment.arguments = bundles[position]
+                return fragment
+            }
+
+        }
+        viewPager.setCurrentItem(KV.getInt("ViewPagerIndex", 0), false)
+        viewPager.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback(){
+                override fun onPageSelected(position: Int) {
+                    KV.putInt("ViewPagerIndex", position)
+                }
+            })
     }
 
     override fun onDestroyView() {
@@ -200,8 +214,6 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
 
         clashStatusClass.getStatus()
 
-        scrollView.fullScroll(ScrollView.FOCUS_DOWN)
-
         GlobalScope.launch(Dispatchers.IO) {
             while (clashStatusClass.statusThreadFlag) {
                 try {
@@ -229,7 +241,6 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
     }
 
     private fun setStatusCmdRunning(){
-        scrollView.fullScroll(ScrollView.FOCUS_DOWN)
         if (clash_status_text.text == getString(R.string.clash_charging))
             return
         clash_status.isClickable = false
@@ -292,6 +303,21 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
                     }
                 else
                     Toast.makeText(context, "Clash没启动呢", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.menu_web_dashboard -> {
+                val bundle = Bundle()
+                bundle.putString(
+                    "URL", "${ClashConfig.baseURL}/ui/" +
+                            if ((context?.resources?.configuration?.uiMode
+                                    ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES
+                            ) {
+                                "?theme=dark"
+                            } else {
+                                "?theme=light"
+                            }
+                )
+                findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
                 true
             }
             else -> false
