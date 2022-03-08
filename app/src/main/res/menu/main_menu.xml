@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_web_dashboard"
-        android:icon="@drawable/ic_web_dashboard"
-        android:title="@string/title_web_dashboard"
-        app:showAsAction="always"/>
-
-    <item
         android:id="@+id/menu_update_config"
         android:icon="@drawable/ic_update1"
         android:title="@string/menu_update_config"

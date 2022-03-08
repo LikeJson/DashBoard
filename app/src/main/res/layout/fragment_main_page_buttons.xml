@@ -59,6 +59,28 @@
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/menu_web_dashboard"
+        style="@style/DefaultCard"
+        app:cardElevation="0dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Default"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                style="@style/DefaultCardImage"
+                android:src="@drawable/ic_apps" />
+
+            <TextView
+                style="@style/DefaultCardText"
+                android:text="@string/title_web_dashboard"
+                android:textAppearance="?attr/textAppearanceHeadline6" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/menu_ip_check"
         style="@style/DefaultCard"
         app:cardElevation="0dp">

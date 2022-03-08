@@ -3,18 +3,14 @@ package com.dashboard.kotlin
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.*
-import android.widget.ScrollView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavAction
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -124,6 +120,18 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
             it.findNavController().navigate(R.id.action_mainPage_to_ipCheckPage)
         }
 
+        menu_web_dashboard.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("URL", "${ClashConfig.baseURL}/ui/" +
+                    if ((context?.resources?.configuration?.uiMode
+                            ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
+                        "?theme=dark"
+                    }else{
+                        "?theme=light"
+                    })
+            it.findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
+        }
+
         menu_speed_test.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("URL", "https://fast.com/zh/cn/")
@@ -131,32 +139,16 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
         }
 
         viewPager.adapter = object: FragmentStateAdapter(this){
-
             val pages = listOf(
-                LogFragment::class.java,
-                WebViewPage::class.java)
-
-            val bundles = listOf(
-                null,
-                Bundle().apply {
-                    putString("URL", "${ClashConfig.baseURL}/ui/" +
-                            if ((context?.resources?.configuration?.uiMode
-                                    ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES) {
-                                "?theme=dark"
-                            }else{
-                                "?theme=light"
-                            })
-                })
+                Fragment::class.java,
+                LogFragment::class.java
+            )
 
             override fun getItemCount() = pages.size
 
-            override fun createFragment(position: Int): Fragment {
-                val fragment = pages[position].newInstance()
-                fragment.arguments = bundles[position]
-                return fragment
-            }
-
+            override fun createFragment(position: Int) = pages[position].newInstance()
         }
+
         viewPager.setCurrentItem(KV.getInt("ViewPagerIndex", 0), false)
         viewPager.registerOnPageChangeCallback(
             object : ViewPager2.OnPageChangeCallback(){
@@ -303,21 +295,6 @@ class MainPage : Fragment(), androidx.appcompat.widget.Toolbar.OnMenuItemClickLi
                     }
                 else
                     Toast.makeText(context, "Clash没启动呢", Toast.LENGTH_SHORT).show()
-                true
-            }
-            R.id.menu_web_dashboard -> {
-                val bundle = Bundle()
-                bundle.putString(
-                    "URL", "${ClashConfig.baseURL}/ui/" +
-                            if ((context?.resources?.configuration?.uiMode
-                                    ?.and(Configuration.UI_MODE_NIGHT_MASK)) == Configuration.UI_MODE_NIGHT_YES
-                            ) {
-                                "?theme=dark"
-                            } else {
-                                "?theme=light"
-                            }
-                )
-                findNavController().navigate(R.id.action_mainPage_to_webViewPage, bundle)
                 true
             }
             else -> false
