@@ -89,6 +89,8 @@ object SuiHelper {
             }
         }
         //Log.d("suCmd", ".\n~>\n$cmd\n\nres:\n$result")
-        return result.dropLast(1)
+        return runCatching {
+            if (result.last() == '\n') result.dropLast(1) else result
+        }.getOrDefault("")
     }
 }

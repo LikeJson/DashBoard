@@ -10,24 +10,39 @@ YAML::Node merge_nodes(YAML::Node a, YAML::Node b);
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_dashboard_kotlin_clashhelper_ClashConfig_getFromFile(JNIEnv *env, jobject thiz,
-                                                              jstring jpath, jstring jnode) {
+                                                              jstring jpath, jobjectArray jnodes) {
     try {
         jboolean isCopy;
         const char *filePath = env->GetStringUTFChars(jpath, &isCopy);
         //LOGV("isCopy jpath:%d", isCopy)
         //LOGV("path: %s", filePath)
-        const char *node = env->GetStringUTFChars(jnode, &isCopy);
-        //LOGV("isCopy jpath:%d", isCopy)
-        //LOGV("node: %s", node)
-
-
         YAML::Node config = YAML::LoadFile(filePath);
-        const std::string secret = config[node].as<std::string>();
-        //LOGV("result: %s", secret.c_str())
+        int stringCount = env->GetArrayLength(jnodes);
+        for (int i = 0; i < stringCount; ++i) {
+            auto jnode = (jstring)(env->GetObjectArrayElement(jnodes, i));
+            const char *node = env->GetStringUTFChars(jnode, &isCopy);
+            config = config[node];
+        }
+        switch (config.Type()) {
+            case YAML::NodeType::Sequence: {
+                std::string res;
+                for (auto && i : config)
+                    res += i.as<std::string>();
+                return env->NewStringUTF(res.c_str());
+            }
+            case YAML::NodeType::Map:
+                LOGE("Map")
+                for (auto && i : config) {
+                    LOGE("Map: %s", i.as<std::string>().c_str())
+                }
+                break;
+            default:
+                return env->NewStringUTF(config.as<std::string>().c_str());
+        }
+        return env->NewStringUTF("");
 
-        return env->NewStringUTF(secret.c_str());
     } catch (const std::exception &e) {
-        //LOGE("%s", e.what())
+        LOGE("ERROR %s", e.what())
         return env->NewStringUTF("");
     }
 }

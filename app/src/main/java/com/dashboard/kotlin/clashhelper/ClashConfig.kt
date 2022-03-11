@@ -30,15 +30,17 @@ object ClashConfig {
     val dataPath
         get() = "/data/clash"
 
-    val corePath
-        get() = runCatching {
+    val corePath by lazy {
+        runCatching {
             if (paths[0] == "") throw Error() else paths[0]
         }.getOrDefault("/data/adb/modules/Clash_For_Magisk/system/bin/clash")
+    }
 
-    val scriptsPath
-        get() = runCatching {
+    val scriptsPath by lazy {
+        runCatching {
             if (paths[1] == "") throw Error() else paths[1]
         }.getOrDefault( "/data/clash/scripts")
+    }
 
     val mergedConfigPath
         get() = "${dataPath}/run/config.yaml"
@@ -52,11 +54,12 @@ object ClashConfig {
     val configPath
         get() = "${dataPath}/config.yaml"
 
-    val baseURL: String
-        get() = "http://${getExternalController()}"
+    val baseURL by lazy {
+        "http://${getExternalController()}"
+    }
 
     var dashBoard: String
-        get() = getFromFile("$GExternalCacheDir/template", "external-ui")
+        get() = getFromFile("$GExternalCacheDir/template", arrayOf("external-ui"))
         set(value) {
             setFileNR(
                 dataPath, "template"
@@ -64,8 +67,9 @@ object ClashConfig {
             return
         }
 
-    val secret
-        get() = getFromFile("$GExternalCacheDir/template", "secret")
+    val secret by lazy {
+        getFromFile("$GExternalCacheDir/template", arrayOf("secret"))
+    }
 
     fun updateConfig(callBack: (r: String) -> Unit) {
         runCatching {
@@ -150,7 +154,7 @@ object ClashConfig {
 
     private fun getExternalController(): String {
 
-        val temp = getFromFile("$GExternalCacheDir/template", "external-controller")
+        val temp = getFromFile("$GExternalCacheDir/template", arrayOf("external-controller"))
 
         return if (temp.startsWith(":"))
             "127.0.0.1$temp"
@@ -179,7 +183,7 @@ object ClashConfig {
         }
     }
 
-    private external fun getFromFile(path: String, node: String): String
+    private external fun getFromFile(path: String, nodes: Array<String>): String
     private external fun modifyFile(path: String, node: String, value: String)
     private external fun mergeFile(
         mainFilePath: String,
