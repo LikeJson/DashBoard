@@ -2,7 +2,6 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
-    id "org.jetbrains.kotlin.plugin.serialization" version "1.6.10-RC"
 }
 
 def gitCommitCount = "git rev-list HEAD --count".execute().text.trim()

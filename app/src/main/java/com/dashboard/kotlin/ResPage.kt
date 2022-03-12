@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-class ResFragment : Fragment() {
+class ResPage : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

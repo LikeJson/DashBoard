@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_log.*
 import kotlinx.coroutines.*
 
 @DelicateCoroutinesApi
-class LogFragment : Fragment() {
+class LogPage : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
