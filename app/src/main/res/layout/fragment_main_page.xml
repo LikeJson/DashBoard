@@ -10,6 +10,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
@@ -26,6 +27,7 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-    <include layout="@layout/fragment_main_pages"/>
+    <include layout="@layout/fragment_main_pages"
+        style="@style/DefaultCard"/>
 
 </LinearLayout>

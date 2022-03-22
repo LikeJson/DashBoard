@@ -6,13 +6,12 @@
     android:id="@+id/scrollView"
     tools:context=".LogPage">
 
-    <TextView style="@style/DefaultCardText"
-        android:layout_marginHorizontal="18dp"
-        android:paddingTop="0dp"
+    <TextView
+        android:layout_height="wrap_content"
         android:textSize="15sp"
         android:textAppearance="?attr/textAppearanceHeadline6"
         android:id="@+id/log_cat"
         android:layout_width="match_parent"
-        android:breakStrategy="simple"/>
+        android:breakStrategy="simple" />
 
 </androidx.core.widget.NestedScrollView>

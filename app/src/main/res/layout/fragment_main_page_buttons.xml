@@ -22,14 +22,14 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 style="@style/Default"
-                android:paddingVertical="25dp">
+                android:paddingVertical="30dp">
 
                 <TextView
                     android:id="@+id/clash_status_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp"
+                    android:textSize="21sp"
                     android:textStyle="bold"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -60,8 +60,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/menu_web_dashboard"
-        style="@style/DefaultCard"
-        app:cardElevation="0dp">
+        style="@style/DefaultCard">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Default"
@@ -82,8 +81,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/menu_ip_check"
-        style="@style/DefaultCard"
-        app:cardElevation="0dp">
+        style="@style/DefaultCard">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Default"
@@ -102,8 +100,7 @@
     </com.google.android.material.card.MaterialCardView>
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/menu_speed_test"
-        style="@style/DefaultCard"
-        app:cardElevation="0dp">
+        style="@style/DefaultCard">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Default"
