@@ -28,6 +28,8 @@
 
 
     <include layout="@layout/fragment_main_pages"
-        style="@style/DefaultCard"/>
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        style="@style/DefaultCard" />
 
 </LinearLayout>
