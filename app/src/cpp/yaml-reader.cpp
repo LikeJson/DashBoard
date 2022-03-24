@@ -9,44 +9,59 @@ YAML::Node merge_nodes(YAML::Node a, YAML::Node b);
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_dashboard_kotlin_clashhelper_clashConfig_getFromFile(JNIEnv *env, jobject thiz,
-                                                              jstring jpath, jstring jnode) {
+Java_com_dashboard_kotlin_clashhelper_ClashConfig_getFromFile(JNIEnv *env, jobject thiz,
+                                                              jstring jpath, jobjectArray jnodes) {
     try {
         jboolean isCopy;
         const char *filePath = env->GetStringUTFChars(jpath, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("path: %s", filePath)
-        const char *node = env->GetStringUTFChars(jnode, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("node: %s", node)
-
-
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("path: %s", filePath)
         YAML::Node config = YAML::LoadFile(filePath);
-        const std::string secret = config[node].as<std::string>();
-        LOGV("result: %s", secret.c_str())
+        int stringCount = env->GetArrayLength(jnodes);
+        for (int i = 0; i < stringCount; ++i) {
+            auto jnode = (jstring)(env->GetObjectArrayElement(jnodes, i));
+            const char *node = env->GetStringUTFChars(jnode, &isCopy);
+            config = config[node];
+        }
+        switch (config.Type()) {
+            case YAML::NodeType::Sequence: {
+                std::string res;
+                for (auto && i : config)
+                    res += i.as<std::string>();
+                return env->NewStringUTF(res.c_str());
+            }
+            case YAML::NodeType::Map:
+                LOGE("Map")
+                for (auto && i : config) {
+                    LOGE("Map: %s", i.as<std::string>().c_str())
+                }
+                break;
+            default:
+                return env->NewStringUTF(config.as<std::string>().c_str());
+        }
+        return env->NewStringUTF("");
 
-        return env->NewStringUTF(secret.c_str());
     } catch (const std::exception &e) {
-        LOGE("%s", e.what())
+        LOGE("ERROR %s", e.what())
         return env->NewStringUTF("");
     }
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_com_dashboard_kotlin_clashhelper_clashConfig_modifyFile(JNIEnv *env, jobject thiz,
+Java_com_dashboard_kotlin_clashhelper_ClashConfig_modifyFile(JNIEnv *env, jobject thiz,
                                                              jstring jpath, jstring jnode,
                                                              jstring jvalue) {
     try {
         jboolean isCopy;
         const char *filePath = env->GetStringUTFChars(jpath, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("path: %s", filePath)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("path: %s", filePath)
         const char *node = env->GetStringUTFChars(jnode, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("node: %s", node)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("node: %s", node)
         const char *value = env->GetStringUTFChars(jvalue, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("value: %s", value)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("value: %s", value)
 
         YAML::Node config = YAML::LoadFile(filePath);
         config[node] = value;
@@ -60,7 +75,7 @@ Java_com_dashboard_kotlin_clashhelper_clashConfig_modifyFile(JNIEnv *env, jobjec
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_dashboard_kotlin_clashhelper_clashConfig_mergeFile(JNIEnv *env, jobject thiz,
+Java_com_dashboard_kotlin_clashhelper_ClashConfig_mergeFile(JNIEnv *env, jobject thiz,
                                                             jstring jmainFilePath,
                                                             jstring jtemplatePath,
                                                             jstring joutputFilePath) {
@@ -68,14 +83,14 @@ Java_com_dashboard_kotlin_clashhelper_clashConfig_mergeFile(JNIEnv *env, jobject
 
         jboolean isCopy;
         const char *mainFilePath = env->GetStringUTFChars(jmainFilePath, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("mainFilePath: %s", mainFilePath)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("mainFilePath: %s", mainFilePath)
         const char *templatePath = env->GetStringUTFChars(jtemplatePath, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("templatePath: %s", templatePath)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("templatePath: %s", templatePath)
         const char *outputFilePath = env->GetStringUTFChars(joutputFilePath, &isCopy);
-        LOGV("isCopy jpath:%d", isCopy)
-        LOGV("outputFilePath: %s", outputFilePath)
+        //LOGV("isCopy jpath:%d", isCopy)
+        //LOGV("outputFilePath: %s", outputFilePath)
 
         YAML::Node mainFileObj = YAML::LoadFile(mainFilePath);
         YAML::Node templateObj = YAML::LoadFile(templatePath);

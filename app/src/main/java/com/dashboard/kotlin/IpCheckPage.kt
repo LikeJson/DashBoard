@@ -7,15 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
-import androidx.navigation.findNavController
-import kotlinx.android.synthetic.main.fragment_ip_check_page.*
-import kotlinx.android.synthetic.main.toolbar.*
+import androidx.lifecycle.lifecycleScope
+import kotlinx.android.synthetic.main.fragment_ip_check_page_ip.*
+import kotlinx.android.synthetic.main.fragment_ip_cleck_page_web.*
 import kotlinx.coroutines.*
 import org.json.JSONObject
-import java.net.HttpURLConnection
 import java.net.URL
 
-class ipCheckPage : Fragment() {
+@DelicateCoroutinesApi
+class IpCheckPage : Fragment() {
 
     private lateinit var coroutineScope: Job
     private lateinit var sukkAPiThreadContext: ExecutorCoroutineDispatcher
@@ -36,7 +36,6 @@ class ipCheckPage : Fragment() {
     }
 
 
-    @ObsoleteCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         sukkAPiThreadContext = newSingleThreadContext("sukkAPiThread")
         ipipNetThreadContext = newSingleThreadContext("ipipNetThread")
@@ -48,34 +47,31 @@ class ipCheckPage : Fragment() {
         youtubeCheckThreadContext = newSingleThreadContext("youtubeCheckThread")
 
 
-        coroutineScope = GlobalScope.launch(Dispatchers.IO) {
-            async(sukkAPiThreadContext) {
-                var tempStr: String
-                try {
+        coroutineScope = lifecycleScope.launch(Dispatchers.IO) {
+            launch(sukkAPiThreadContext) {
+                val tempStr: String = try {
                     val sukkaApiObj =
                         JSONObject(URL("https://forge.speedtest.cn/api/location/info").readText())
-                    tempStr = "${sukkaApiObj.optString("full_ip")}\n" +
+                    "${sukkaApiObj.optString("full_ip")}\n" +
                             "${sukkaApiObj.optString("country")} " +
                             "${sukkaApiObj.optString("province")} " +
                             "${sukkaApiObj.optString("city")} " +
                             "${sukkaApiObj.optString("distinct")} " +
-                            "${sukkaApiObj.optString("isp")}"
+                            sukkaApiObj.optString("isp")
                 } catch (ex: Exception) {
-                    tempStr = "error"
+                    "error"
                 }
 
                 withContext(Dispatchers.Main) {
-                    try {
+                    runCatching {
                         sukka_api_result.text = tempStr
-                    } catch (ex: Exception) {
-
                     }
                 }
 
             }
 
 
-            async(ipipNetThreadContext) {
+            launch(ipipNetThreadContext) {
                 //IPIP.NET
                 var tempStr: String
                 try {
@@ -88,10 +84,8 @@ class ipCheckPage : Fragment() {
                     tempStr = "error"
                 }
                 withContext(Dispatchers.Main) {
-                    try {
+                    runCatching {
                         ipip_net_result.text = tempStr
-                    } catch (ex: Exception) {
-
                     }
                 }
 
@@ -99,32 +93,26 @@ class ipCheckPage : Fragment() {
 
 
             //IP.SB Api
-            async(ipSbApiThreadContext) {   // IP.SB API
-                var tempStr: String
-                try {
+            launch(ipSbApiThreadContext) {   // IP.SB API
+                val tempStr = runCatching {
                     val ipsbObj = JSONObject(URL("https://api.ip.sb/geoip").readText())
-                    tempStr = "${ipsbObj.optString("ip")}\n" +
+                    "${ipsbObj.optString("ip")}\n" +
                             "${ipsbObj.optString("country")} " +
                             "${ipsbObj.optString("organization")} " +
                             "${ipsbObj.optString("asn")} " +
                             "${ipsbObj.optString("asn_organization")} "
-                } catch (ex: Exception) {
-                    tempStr = "error"
-                }
+                }.getOrDefault("error")
                 withContext(Dispatchers.Main) {
-                    try {
+                    runCatching {
                         ip_sb_result.text = tempStr
-                    } catch (ex: Exception) {
-
                     }
                 }
             }
 
 
             //Sukka Global Api
-            async(sukkaGlobalThreadContext) {
-                var tempStr: String
-                try {
+            launch(sukkaGlobalThreadContext) {
+                val tempStr = runCatching {
                     var ipSkkRip = URL("https://ip.skk.moe/cdn-cgi/trace").readText()
                     ipSkkRip = ipSkkRip.replaceBefore("ip=", "")
                     ipSkkRip = ipSkkRip.replaceAfter("ts=", "")
@@ -140,134 +128,105 @@ class ipCheckPage : Fragment() {
                     )
                     val ipSkkGeoIpObj = JSONObject(conn.getInputStream().reader().readText())
 
-                    tempStr = "${ipSkkRip}\n" +
-                            "${ipSkkGeoIpObj.optString("geo")}"
+                    "${ipSkkRip}\n" + ipSkkGeoIpObj.optString("geo")
 
-                } catch (ex: Exception) {
-                    tempStr = "error"
-                }
+                }.getOrDefault("error")
                 withContext(Dispatchers.Main) {
-                    try {
+                    runCatching {
                         sukka_api_global_result.text = tempStr
-                    } catch (ex: Exception) {
-
                     }
                 }
             }
 
 
-            async(baiduCheckThreadContext) {
-                var tempStr: String
-                try {
+            launch(baiduCheckThreadContext) {
+                val tempStr = runCatching {
                     val conn = URL("https://baidu.com/").openConnection()
                     conn.connectTimeout = 1000 * 10
                     conn.readTimeout = 1000 * 10
-                    if (conn.getInputStream().reader().readText() != "") tempStr =
-                        "连接正常" else tempStr = "无法访问"
-                } catch (ex: Exception) {
-                    Log.d("ConnError", ex.toString())
-                    tempStr = "无法访问"
-                }
+                    if (conn.getInputStream().reader().readText() != "")
+                        "连接正常"
+                    else
+                        "无法访问"
+                }.getOrDefault("无法访问")
                 withContext(Dispatchers.Main) {
-                    try {
-                        val color: Int
-                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                    runCatching {
+                        val color = if (tempStr == "连接正常") ResourcesCompat.getColor(
                             resources,
                             R.color.green,
                             context?.theme
-                        ) else color =
-                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        ) else ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
                         baiduCheck.text = tempStr
                         baiduCheck.setTextColor(color)
-                    } catch (ex: Exception) {
-
                     }
                 }
 
             }
-            async(netEaseCheckThreadContext) {
-                var tempStr: String
-                try {
+            launch(netEaseCheckThreadContext) {
+                val tempStr = runCatching {
                     val conn = URL("https://music.163.com/").openConnection()
                     conn.connectTimeout = 1000 * 10
                     conn.readTimeout = 1000 * 10
-                    if (conn.getInputStream().reader().readText() != "") tempStr =
-                        "连接正常" else tempStr = "无法访问"
-                } catch (ex: Exception) {
-                    Log.d("ConnError", ex.toString())
-                    tempStr = "无法访问"
-                }
+                    if (conn.getInputStream().reader().readText() != "")
+                        "连接正常"
+                    else
+                        "无法访问"
+                }.getOrDefault("无法访问")
                 withContext(Dispatchers.Main) {
-                    try {
-                        val color: Int
-                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                    runCatching {
+                        val color = if (tempStr == "连接正常") ResourcesCompat.getColor(
                             resources,
                             R.color.green,
                             context?.theme
-                        ) else color =
-                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        ) else ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
                         neteaseMusicCheck.text = tempStr
                         neteaseMusicCheck.setTextColor(color)
-                    } catch (ex: Exception) {
-
                     }
                 }
 
             }
-            async(githubCheckThreadContext) {
-                var tempStr: String
-                try {
+            launch(githubCheckThreadContext) {
+                val tempStr = runCatching {
                     val conn = URL("https://github.com/").openConnection()
                     conn.connectTimeout = 1000 * 10
                     conn.readTimeout = 1000 * 10
-                    if (conn.getInputStream().reader().readText() != "") tempStr =
-                        "连接正常" else tempStr = "无法访问"
-                } catch (ex: Exception) {
-                    Log.d("ConnError", ex.toString())
-                    tempStr = "无法访问"
-                }
+                    if (conn.getInputStream().reader().readText() != "")
+                        "连接正常"
+                    else
+                        "无法访问"
+                }.getOrDefault("无法访问")
                 withContext(Dispatchers.Main) {
-                    try {
-                        val color: Int
-                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                    runCatching {
+                        val color = if (tempStr == "连接正常") ResourcesCompat.getColor(
                             resources,
                             R.color.green,
                             context?.theme
-                        ) else color =
-                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        ) else ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
                         githubCheck.text = tempStr
                         githubCheck.setTextColor(color)
-                    } catch (ex: Exception) {
-
                     }
                 }
 
             }
-            async(youtubeCheckThreadContext) {
-                var tempStr: String
-                try {
+            launch(youtubeCheckThreadContext) {
+                val tempStr = runCatching {
                     val conn = URL("https://www.youtube.com/").openConnection()
                     conn.connectTimeout = 1000 * 10
                     conn.readTimeout = 1000 * 10
-                    if (conn.getInputStream().reader().readText() != "") tempStr =
-                        "连接正常" else tempStr = "无法访问"
-                } catch (ex: Exception) {
-                    Log.d("ConnError", ex.toString())
-                    tempStr = "无法访问"
-                }
+                    if (conn.getInputStream().reader().readText() != "")
+                        "连接正常"
+                    else
+                        "无法访问"
+                }.getOrDefault("无法访问")
                 withContext(Dispatchers.Main) {
-                    try {
-                        val color: Int
-                        if (tempStr == "连接正常") color = ResourcesCompat.getColor(
+                    runCatching {
+                        val color = if (tempStr == "连接正常") ResourcesCompat.getColor(
                             resources,
                             R.color.green,
                             context?.theme
-                        ) else color =
-                            ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
+                        ) else ResourcesCompat.getColor(resources, R.color.orange, context?.theme)
                         youtubeCheck.text = tempStr
                         youtubeCheck.setTextColor(color)
-                    } catch (ex: Exception) {
-
                     }
                 }
 
@@ -277,18 +236,6 @@ class ipCheckPage : Fragment() {
         }
         super.onViewCreated(view, savedInstanceState)
         Log.d("ViewCreated", "ipCheckPageViewCreated")
-
-        toolbar.navigationIcon = ResourcesCompat.getDrawable(
-            resources,
-            R.drawable.ic_back,
-            context?.theme
-        )
-        toolbar.setNavigationOnClickListener {
-            val controller = it.findNavController()
-            controller.popBackStack()
-        }
-
-
     }
 
     override fun onDestroyView() {

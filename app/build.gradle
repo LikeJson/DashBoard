@@ -2,45 +2,32 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
-    id "org.jetbrains.kotlin.plugin.serialization" version "1.5.20-RC"
 }
 
 def gitCommitCount = "git rev-list HEAD --count".execute().text.trim()
 def gitCommitHash = "git rev-parse --verify --short HEAD".execute().text.trim()
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
     ndkVersion "22.1.7171670"
 
     defaultConfig {
         applicationId "com.dashboard.kotlin"
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 32
         versionCode  gitCommitCount.toInteger()
-        versionName "2.07"
+        versionName "4.8"
         versionNameSuffix = ".r${gitCommitCount}.${gitCommitHash}"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
         externalNativeBuild{
             cmake{
                 cppFlags "-std=c++20"
+                abiFilters 'arm64-v8a'
             }
         }
-    }
-    signingConfigs {
-        release {
-            def properties = new Properties()
-            def inputStream = project.rootProject.file('local.properties').newDataInputStream()
-            properties.load(inputStream)
-
-            File strFile = new File(properties.getProperty('fileDir'))
-            storeFile file(strFile)
-            storePassword properties.getProperty('storePassword')
-            keyAlias properties.getProperty('keyAlias')
-            keyPassword properties.getProperty('keyPassword')
-
+        ndk {
+            abiFilters 'arm64-v8a'
         }
     }
 
@@ -50,17 +37,13 @@ android {
         }
     }
 
-
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
-            signingConfig signingConfigs.release
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),'proguard-rules.pro'
         }
-        debug {
-            signingConfig signingConfigs.release
-        }
+        debug {}
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -79,23 +62,15 @@ android {
 
 dependencies {
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
-
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3'
-
-
-    def shizuku_version = '11.0.3'
-    implementation "dev.rikka.shizuku:api:$shizuku_version"
-
-
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.4.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.4.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0-native-mt'
+    implementation "dev.rikka.shizuku:api:12.1.0"
     //mmkv
-    implementation 'com.tencent:mmkv-static:1.2.10'
-
+    implementation 'com.tencent:mmkv-static:1.2.12'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'

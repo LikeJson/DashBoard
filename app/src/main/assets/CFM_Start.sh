@@ -5,5 +5,6 @@ else
   MAGISK_PATH="/data/adb/modules"
 fi
 
-disABpath=${MAGISK_PATH}/Clash_For_Magisk/disable
-rm -f ${disABpath}
+touch "$1"/../run/cmdRunning
+"$1"/clash.service -s && "$1"/clash.tproxy -s
+rm -rf "$1"/../run/cmdRunning
